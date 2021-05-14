@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Dashboard</title>
+    <title>Home</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{asset('vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
@@ -38,8 +38,8 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item {{Route::currentRouteName()=='admin.dashboard'? 'active': ''}}">
-                <a class="nav-link" href="{{route('admin.dashboard')}}">
+            <li class="nav-item">
+                <a class="nav-link" href="#">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -48,43 +48,6 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Nav Item -->
-            @can('viewAny', App\Models\Curso::class)
-            <li class="nav-item {{Route::currentRouteName()=='admin.cursos'? 'active': ''}}">
-                <a class="nav-link" href="{{route('admin.cursos')}}">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Cursos</span></a>
-            </li>
-            @endcan
-
-            <!-- Nav Item -->
-            @can('viewAny', App\Models\Disciplina::class)
-            <li class="nav-item {{Route::currentRouteName()=='admin.disciplinas'? 'active': ''}}">
-                <a class="nav-link" href="{{route('admin.disciplinas')}}">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Disciplinas</span></a>
-                </li>
-            @endcan
-
-            <!-- Nav Item -->
-            @can('viewAny', App\Models\Docente::class)
-            <li class="nav-item {{Route::currentRouteName()=='admin.docentes'? 'active': ''}}">
-                <a class="nav-link" href="{{route('admin.docentes')}}">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Docentes</span>
-                </a>
-            </li>
-            @endcan
-
-            <!-- Nav Item -->
-            @can('viewAny', App\Models\Aluno::class)
-            <li class="nav-item {{Route::currentRouteName()=='admin.alunos'? 'active': ''}}">
-                <a class="nav-link" href="{{route('admin.alunos')}}">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Alunos</span>
-                </a>
-            </li>
-            @endcan
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -125,7 +88,7 @@
                     <ul class="navbar-nav ml-auto">
                         @guest
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            <a class="nav-link" href="#">{{ __('Login') }}</a>
                         </li>
                         @else
                         <!-- Nav Item - User Information -->
@@ -136,7 +99,7 @@
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="{{auth()->user()->tipo=='A'?route('admin.alunos.edit',auth()->user()->aluno):route('admin.docentes.edit',auth()->user()->docente)}}">
+                                <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Perfil
                                 </a>
@@ -216,9 +179,9 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary"  href="{{route('logout')}}" onclick="event.preventDefault();
+                    <a class="btn btn-primary"  href="#" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">Logout</a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    <form id="logout-form" action="#" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </div>
