@@ -17,8 +17,13 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [PageController::class, 'index'])->name('home');
 
+Route::get('catalogo', [CatalogoController::class, 'index'])->name('catalogo');
 
 Auth::routes();
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
 

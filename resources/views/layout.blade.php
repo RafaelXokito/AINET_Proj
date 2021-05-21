@@ -37,26 +37,11 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Categorias</span>
+                    <span>Catálogo</span>
                 </a>
             </li>
 
@@ -64,7 +49,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Clientes</span>
+                    <span>Gestão de Utilizadores</span>
                 </a>
             </li>
 
@@ -72,7 +57,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Cores</span>
+                    <span>As minhas Estampas</span>
                 </a>
             </li>
 
@@ -80,7 +65,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Encomendas</span>
+                    <span>As minhas Encomendas</span>
                 </a>
             </li>
 
@@ -88,7 +73,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Estampas</span>
+                    <span>Recibos</span>
                 </a>
             </li>
 
@@ -96,7 +81,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Preços</span>
+                    <span>Estatísticas</span>
                 </a>
             </li>
 
@@ -104,7 +89,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>T-shirts</span>
+                    <span>Preview de T-shirts</span>
                 </a>
             </li>
 
@@ -131,6 +116,10 @@
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
+                    </button>
+
+                    <button id="shoppingCart" class="btn btn-link rounded-circle mr-3">
+                        <i class="fa fa-shopping-cart"></i>
                     </button>
 
                     <ul class="navbar-nav ml-auto">
