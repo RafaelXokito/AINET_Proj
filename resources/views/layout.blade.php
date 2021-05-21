@@ -56,7 +56,55 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Parte Publica</span>
+                    <span>Categorias</span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{url('/')}}">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Clientes</span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{url('/')}}">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Cores</span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{url('/')}}">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Encomendas</span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{url('/')}}">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Estampas</span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{url('/')}}">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>Preços</span>
+                </a>
+            </li>
+
+            <!-- Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{url('/')}}">
+                    <i class="fas fa-fw fa-home"></i>
+                    <span>T-shirts</span>
                 </a>
             </li>
 
