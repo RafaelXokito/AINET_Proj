@@ -136,7 +136,7 @@
                     <ul class="navbar-nav ml-auto">
                         @guest
                         <li class="nav-item">
-                            <a class="nav-link" href="#">{{ __('Login') }}</a>
+                            <a class="nav-link" href="{{route('login')}}">{{ __('Login') }}</a>
                         </li>
                         @else
                         <!-- Nav Item - User Information -->
