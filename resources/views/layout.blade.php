@@ -39,7 +39,7 @@
 
             <!-- Nav Item -->
             <li class="nav-item">
-                <a class="nav-link" href="{{url('/')}}">
+                <a class="nav-link" href="{{route('catalogo')}}">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Catálogo</span>
                 </a>
@@ -233,6 +233,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>

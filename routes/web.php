@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\EstampasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [PageController::class, 'index'])->name('home');
 
-Route::get('catalogo', [CatalogoController::class, 'index'])->name('catalogo');
+Route::get('catalogo', [EstampasController::class, 'index'])->name('catalogo');
 
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
