@@ -24,4 +24,5 @@ Route::get('catalogo', [EstampasController::class, 'index'])->name('catalogo');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Auth::routes(['verify' => true]);
+Auth::routes(['register' => true, 'verify' => true]);
+Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
