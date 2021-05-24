@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Home</title>
+    <title>{{env('APP_NAME','MagicTshirts')}}</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{asset('vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
@@ -31,7 +31,7 @@
                 <div class="sidebar-brand-icon">
                     <img src="/img/logo.png" alt="Logo" class="logo-img">
                 </div>
-                <div class="sidebar-brand-text mx-3">DEI</div>
+                <div class="sidebar-brand-text mx-3">{{env('APP_NAME','MagicTshirts')}}</div>
             </a>
 
             <!-- Divider -->
@@ -65,18 +65,18 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>As minhas Encomendas</span>
+                    <span>Recibos</span>
                 </a>
             </li>
-
+            @can('view', App\Models\Preco::class)
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Recibos</span>
+                    <span>Preços Tshirts</span>
                 </a>
             </li>
-
+            @endcan
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
@@ -127,6 +127,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{route('login')}}">{{ __('Login') }}</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('register')}}">{{ __('Register') }}</a>
+                        </li>
                         @else
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
@@ -141,7 +144,12 @@
                                     Perfil
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-clipboard-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Histórico de encomendas
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{route('logout')}}" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
