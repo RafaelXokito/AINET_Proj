@@ -35,6 +35,11 @@ class PrecoPolicy
         return false;
     }
 
+    public function edit(User $user)
+    {
+        return false;
+    }
+
     public function update(User $user, Preco $preco)
     {
         return false;

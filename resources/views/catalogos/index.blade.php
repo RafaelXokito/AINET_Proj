@@ -31,8 +31,6 @@
         88@endforeach
     </div>
 </div>-->
-<div class="d-flex justify-content-center">
-    {!! $estampas->links() !!}
-</div>
+{{ $estampas->withQueryString()->links() }}
 
 @endsection
