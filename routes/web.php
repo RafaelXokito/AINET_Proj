@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\EstampasController;
 use App\Http\Controllers\PrecosController;
+use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,8 @@ use App\Http\Controllers\PrecosController;
 Route::get('/', [PageController::class, 'index'])->name('home');
 
 Route::get('catalogo', [EstampasController::class, 'index'])->name('catalogo');
+
+Route::get('users', [UsersController::class, 'admin'])->name('gestaoUtilizadores');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 

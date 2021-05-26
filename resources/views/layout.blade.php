@@ -27,7 +27,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{url('/')}}">
                 <div class="sidebar-brand-icon">
                     <img src="/img/logo.png" alt="Logo" class="logo-img">
                 </div>
@@ -40,15 +40,15 @@
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{route('catalogo')}}">
-                    <i class="fas fa-fw fa-home"></i>
+                    <i class="fas fa-fw fa-tshirt"></i>
                     <span>Catálogo</span>
                 </a>
             </li>
 
             <!-- Nav Item -->
             <li class="nav-item">
-                <a class="nav-link" href="{{url('/')}}">
-                    <i class="fas fa-fw fa-home"></i>
+                <a class="nav-link" href="{{route('gestaoUtilizadores')}}">
+                    <i class="fas fa-fw fa-user-astronaut"></i>
                     <span>Gestão de Utilizadores</span>
                 </a>
             </li>
@@ -56,7 +56,7 @@
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
-                    <i class="fas fa-fw fa-home"></i>
+                    <i class="fab fa-fw fa-fort-awesome-alt"></i>
                     <span>As minhas Estampas</span>
                 </a>
             </li>
@@ -88,7 +88,7 @@
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
-                    <i class="fas fa-fw fa-home"></i>
+                    <i class="fas fa-fw fa-magic"></i>
                     <span>Preview de T-shirts</span>
                 </a>
             </li>
