@@ -57,15 +57,6 @@
                 </a>
             </li>
             @endauth
-            @can('viewAny', App\Models\User::class)
-            <!-- Nav Item -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('gestaoUtilizadores')}}">
-                    <i class="fas fa-fw fa-user-astronaut"></i>
-                    <span>Gestão de Utilizadores</span>
-                </a>
-            </li>
-            @endcan
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
@@ -82,7 +73,6 @@
                 </a>
             </li>
             @endcan
-
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
@@ -92,8 +82,9 @@
             </li>
 
             <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
 
+            @can('viewAny', App\Models\User::class)
+            <hr class="sidebar-divider d-none d-md-block">
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{route('gestaoUtilizadores')}}">
@@ -109,7 +100,7 @@
                     <span>Estatísticas</span>
                 </a>
             </li>
-
+            @endcan
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 

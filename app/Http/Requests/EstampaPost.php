@@ -24,12 +24,12 @@ class EstampaPost extends FormRequest
     public function rules()
     {
         return [
-            'cliente_id' => 'exists:cliente,id',
-            'cliente_id' => '',
-            'cliente_id' => '',
-            'cliente_id' => '',
-            'cliente_id' => '',
-            'cliente_id' => '',
+            'cliente_id' => 'exists:clientes,id',
+            'categoria_id' => 'required|exists:categorias,id',
+            'nome' => 'required|max:255',
+            'descricao' => 'required',
+            'imagem_url' => 'required|max:255|mimes:png,jpg',
+            'informacao_extra' => 'nullable',
         ];
     }
 }
