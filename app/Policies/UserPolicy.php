@@ -13,7 +13,7 @@ class UserPolicy
     //$ability -> assim podemos continuar a usar este método
     public function before($user, $ability)
     {
-        if ($user->admin) {
+        if ($user->tipo == 'A') {
             return true;
         }
     }

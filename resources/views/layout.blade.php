@@ -63,11 +63,10 @@
                     <span>Preview de T-shirts</span>
                 </a>
             </li>
-
-            @can('view', App\Models\Preco::class)
+            @can('edit', App\Models\Preco::class)
             <!-- Nav Item -->
             <li class="nav-item">
-                <a class="nav-link" href="{{url('/')}}">
+                <a class="nav-link" href="{{route('precos.edit')}}">
                     <i class="fad fa-fw fa-tags"></i>
                     <span>Preços Tshirts</span>
                 </a>
@@ -157,15 +156,10 @@
                                     Histórico de encomendas
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();
-                                                    document.getElementById('logout-form').submit();">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
-                            </a>
+                                </a>
                             </div>
                         </li>
                         @endguest
@@ -239,7 +233,7 @@
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     <a class="btn btn-primary"  href="#" onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">Logout</a>
-                    <form id="logout-form" action="#" method="POST" style="display: none;">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </div>

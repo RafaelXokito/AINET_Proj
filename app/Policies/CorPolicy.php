@@ -14,7 +14,7 @@ class CorPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        if ($user->admin) {
+        if ($user->tipo == 'A') {
             return true;
         }
     }
