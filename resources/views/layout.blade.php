@@ -16,6 +16,9 @@
     <!-- Custom styles for this template-->
     <link href="{{asset('css/sb-admin-2.min.css')}}" rel="stylesheet">
 
+    <!-- Custom icons for this template-->
+    <link href="https://kit-pro.fontawesome.com/releases/v5.15.3/css/pro.min.css" rel="stylesheet">
+
 </head>
 
 <body id="page-top">
@@ -29,7 +32,7 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{url('/')}}">
                 <div class="sidebar-brand-icon">
-                    <img src="/img/logo.png" alt="Logo" class="logo-img">
+                    <i class="fas fa-hat-wizard"></i>
                 </div>
                 <div class="sidebar-brand-text mx-3">{{env('APP_NAME','MagicTshirts')}}</div>
             </a>
@@ -40,7 +43,7 @@
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{route('estampas')}}">
-                    <i class="fas fa-fw fa-tshirt"></i>
+                    <i class="fad fa-fw fa-book-spells"></i>
                     <span>Estampas</span>
                 </a>
             </li>
@@ -49,7 +52,7 @@
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{route('estampasUser', ['user' => Auth::user()])}}">
-                    <i class="fab fa-fw fa-fort-awesome-alt"></i>
+                    <i class="fad fa-fw fa-book-user"></i>
                     <span>As minhas Estampas</span>
                 </a>
             </li>
@@ -66,32 +69,44 @@
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
-                    <i class="fas fa-fw fa-home"></i>
-                    <span>Recibos</span>
+                    <i class="fal fa-fw fa-wand-magic"></i>
+                    <span>Preview de T-shirts</span>
                 </a>
             </li>
             @can('edit', App\Models\Preco::class)
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{route('precos.edit')}}">
-                    <i class="fas fa-dollar-sign"></i>
+                    <i class="fad fa-fw fa-tags"></i>
                     <span>Preços Tshirts</span>
                 </a>
             </li>
             @endcan
+
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
-                    <i class="fas fa-fw fa-home"></i>
-                    <span>Estatísticas</span>
+                    <i class="fad fa-fw fa-chart-pie"></i>
+                    <span>Recibos</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('gestaoUtilizadores')}}">
+                    <i class="fad fa-fw fa-user-astronaut"></i>
+                    <span>Gestão de Utilizadores</span>
                 </a>
             </li>
 
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
-                    <i class="fas fa-fw fa-magic"></i>
-                    <span>Preview de T-shirts</span>
+                    <i class="fad fa-fw fa-scroll-old"></i>
+                    <span>Estatísticas</span>
                 </a>
             </li>
 

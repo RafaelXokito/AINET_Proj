@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Tshirt;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -25,7 +26,7 @@ class TshirtPolicy
         return false;
     }
 
-    public function view(User $user, Noticia $noticia)
+    public function view(User $user, Tshirt $tshirt)
     {
         return false;
     }
@@ -35,22 +36,22 @@ class TshirtPolicy
         return false;
     }
 
-    public function update(User $user, Noticia $noticia)
+    public function update(User $user, Tshirt $tshirt)
     {
         return false;
     }
 
-    public function delete(User $user, Noticia $noticia)
+    public function delete(User $user, Tshirt $tshirt)
     {
         return false;
     }
 
-    public function restore(User $user, Noticia $noticia)
+    public function restore(User $user, Tshirt $tshirt)
     {
         //
     }
 
-    public function forceDelete(User $user, Noticia $noticia)
+    public function forceDelete(User $user, Tshirt $tshirt)
     {
         //
     }

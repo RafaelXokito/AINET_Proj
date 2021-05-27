@@ -10,11 +10,11 @@
     <div class="col-9">
         <form method="GET" action="{{route('gestaoUtilizadores')}}" class="form-group">
             <div class="input-group">
-            <select class="custom-select" name="tipo" id="inputTipo" aria-label="Tipo">
-                <option value="" {{'' == old('tipo', '') ? 'selected' : ''}}>Todos Tipos</option>
-                <option value="C" {{"C" == old('tipo', "Cliente") ? 'selected' : 'C'}}>Cliente</option>
-                <option value="F" {{"F" == old('tipo', "Funcionário") ? 'selected' : 'F'}}>Funcionário</option>
-                <option value="A" {{"A" == old('tipo', "Administrador") ? 'selected' : 'A'}}>Administrador</option>
+            <select class="custom-select" name="tipo" id="tipo" aria-label="tipo">
+                <option value="" {{'' == $tipo ? 'selected' : ''}}>Todos Tipos</option>
+                <option value="C" {{"C" == $tipo ? 'selected' : 'Cliente'}}>Cliente</option>
+                <option value="F" {{"F" == $tipo ? 'selected' : 'Funcionário'}}>Funcionário</option>
+                <option value="A" {{"A" == $tipo ? 'selected' : 'Administrador'}}>Administrador</option>
             </select>
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit">Filtrar</button>
@@ -37,12 +37,18 @@
             @foreach($users as $user)
                 <tr {{$user->admin ? 'class=table-success' : ''}}>
                     <td>
-                        <img src="{{$user->url_foto ? asset('storage/fotos/' . $docente->user->url_foto) : asset('img/default_img.png') }}" alt="Foto do docente"  class="img-profile rounded-circle" style="width:40px;height:40px">
+                        <img src="{{$user->foto_url ? asset('storage/fotos/' . $user->foto_url) : asset('img/default_img.png') }}" alt="Foto do docente"  class="img-profile rounded-circle" style="width:40px;height:40px">
                     </td>
                     <td>{{$user->name}}</td>
-                    <td>{{$user->tipo}}</td>
+                    @if ($user->tipo == 'C')
+                        <td>Cliente</td>
+                    @elseif ($user->tipo == 'F')
+                        <td>Funcionário</td>
+                    @elseif ($user->tipo == 'A')
+                        <td>Administrador</td>
+                    @endif
                     <td>
-                        @can('view', $user)
+                        @can('edit', $user)
                             <a href="{{route('gestaoUtilizadores.edit', ['user' => $user])}}" class="btn btn-primary btn-sm" role="button" aria-pressed="true">Alterar</a>
                         @endcan
                     </td>
