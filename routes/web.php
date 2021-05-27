@@ -34,12 +34,12 @@ Route::get('users/create', [UsersController::class, 'create'])->name('gestaoUtil
 ->middleware('can:create,App\Models\User');
 Route::post('users', [UsersController::class, 'store'])->name('gestaoUtilizadores.store')
 ->middleware('can:create,App\Models\User');
-/*Route::put('users/{user}', [UsersController::class, 'update'])->name('gestaoUtilizadores.update')
+Route::put('users/{user}', [UsersController::class, 'update'])->name('gestaoUtilizadores.update')
 ->middleware('can:update,user');
 Route::delete('users/{user}', [UsersController::class, 'destroy'])->name('gestaoUtilizadores.destroy')
 ->middleware('can:delete,user');
 Route::delete('users/{user}/foto', [UsersController::class, 'destroy_foto'])->name('gestaoUtilizadores.foto.destroy')
-->middleware('can:update,user');*/
+->middleware('can:update,user');
 
 Auth::routes(['register' => true, 'verify' => true]);
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
