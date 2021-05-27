@@ -27,6 +27,27 @@ class UsersController extends Controller
         }
         $users = $qry->paginate(10);
         return view('gestaoUtilizadores.users')
-            ->withUsers($users);
+            ->withUsers($users)
+            ->withTipo($tipo);
+    }
+
+    public function store(UserPost $request)
+    {
+        $validated_data = $request->validated();
+        $newUser = new User;
+        $newUser->email = $validated_data['email'];
+        $newUser->name = $validated_data['name'];
+        $newUser->admin = $validated_data['admin'];
+        $newUser->tipo = $validated_data['tipo'];
+        $newUser->genero = $validated_data['bloqueado'];
+        $newUser->password = Hash::make('123');
+        if ($request->hasFile('foto')) {
+            $path = $request->foto->store('public/fotos');
+            $newUser->foto_url = basename($path);
+        }
+        $newUser->save();
+        return redirect()->route('gestaoUtilizadores')
+            ->with('alert-msg', 'Utilizador "' . $validated_data['name'] . '" foi criado com sucesso!')
+            ->with('alert-type', 'success');
     }
 }

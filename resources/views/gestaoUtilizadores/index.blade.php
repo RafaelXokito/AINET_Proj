@@ -10,7 +10,7 @@
                         asset('img/default_img.png') }}" alt="Imagem do user">
         </div>
         <div class="user-info-area">
-        <div class="user-name">{{$>user->name}}</div>
+        <div class="user-name">{{$user->name}}</div>
             <div class="user-info">
                 <span class="user-label"><i class="fas fa-envelope"></i></span>
                 <span class="user-info-desc"><a href="mailto:{{$user->email}}">{{$user->email}}</a>

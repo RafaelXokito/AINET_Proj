@@ -26,5 +26,19 @@ Route::get('users', [UsersController::class, 'admin'])->name('gestaoUtilizadores
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+// admininstração de users
+Route::get('users/{user}/edit', [UsersController::class, 'edit'])->name('gestaoUtilizadores.edit')
+->middleware('can:edit,user');
+Route::get('users/create', [UsersController::class, 'create'])->name('gestaoUtilizadores.create')
+->middleware('can:create,App\Models\User');
+Route::post('users', [UsersController::class, 'store'])->name('gestaoUtilizadores.store')
+->middleware('can:create,App\Models\User');
+/*Route::put('users/{user}', [UsersController::class, 'update'])->name('gestaoUtilizadores.update')
+->middleware('can:update,user');
+Route::delete('users/{user}', [UsersController::class, 'destroy'])->name('gestaoUtilizadores.destroy')
+->middleware('can:delete,user');
+Route::delete('users/{user}/foto', [UsersController::class, 'destroy_foto'])->name('gestaoUtilizadores.foto.destroy')
+->middleware('can:update,user');*/
+
 Auth::routes(['register' => true, 'verify' => true]);
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');

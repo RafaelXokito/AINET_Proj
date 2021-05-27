@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Categoria;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -24,7 +25,7 @@ class CategoriaPolicy
         return false;
     }
 
-    public function view(User $user, Noticia $noticia)
+    public function view(User $user, Categoria $categoria)
     {
         return false;
     }
@@ -34,22 +35,22 @@ class CategoriaPolicy
         return false;
     }
 
-    public function update(User $user, Noticia $noticia)
+    public function update(User $user, Categoria $categoria)
     {
         return false;
     }
 
-    public function delete(User $user, Noticia $noticia)
+    public function delete(User $user, Categoria $categoria)
     {
         return false;
     }
 
-    public function restore(User $user, Noticia $noticia)
+    public function restore(User $user, Categoria $categoria)
     {
         //
     }
 
-    public function forceDelete(User $user, Noticia $noticia)
+    public function forceDelete(User $user, Categoria $categoria)
     {
         //
     }
