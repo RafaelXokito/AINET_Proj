@@ -1,6 +1,12 @@
 @extends('layout')
 @section('title','Estampas' )
 @section('content')
+
+@if (count($estampas) == 0)
+<div class="text-center pt-5">
+    <h3>Você ainda não tem estampas. Crie algumas primeiro!</h3>
+</div>
+@endif
 <div class="card-columns">
     @foreach ($estampas as $estampa)
     <div class="card">

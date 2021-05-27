@@ -21,19 +21,23 @@ use App\Http\Controllers\UsersController;
 
 Route::get('/', [PageController::class, 'index'])->name('home');
 
-Route::get('catalogo', [EstampasController::class, 'index'])->name('catalogo');
+Route::get('/estampas', [EstampasController::class, 'index'])->name('estampas');
 
 Route::get('users', [UsersController::class, 'admin'])->name('gestaoUtilizadores');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Auth::routes(['register' => true, 'verify' => true]);
-Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
 
 Route::middleware('auth')->middleware('verified')->group( function () {
 
-    Route::get('precos/edit', [PrecosController::class, 'edit'])->name('precos.edit')->middleware('can:edit,App\Models\Preco');
+    Route::get('precos/editar', [PrecosController::class, 'edit'])->name('precos.edit')->middleware('can:edit,App\Models\Preco');
     Route::put('precos/{precos}/update', [PrecosController::class, 'update'])->name('precos.update')->middleware('can:update,App\Models\Preco');
-
-
+    Route::get('estampas/proprias/{user}', [EstampasController::class, 'index'])->name('estampasUser')->middleware('can:viewTshirtsProprias,user');
+    Route::get('estampas/criar', [EstampasController::class, 'create'])->name('estampas.create')->middleware('can:create,App\Models\Estampa');
 });
+
+Auth::routes(['register' => true, 'verify' => true]);
+

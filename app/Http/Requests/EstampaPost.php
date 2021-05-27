@@ -13,7 +13,7 @@ class EstampaPost extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,12 @@ class EstampaPost extends FormRequest
     public function rules()
     {
         return [
-            //
+            'cliente_id' => 'exists:cliente,id',
+            'cliente_id' => '',
+            'cliente_id' => '',
+            'cliente_id' => '',
+            'cliente_id' => '',
+            'cliente_id' => '',
         ];
     }
 }

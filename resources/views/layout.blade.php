@@ -39,12 +39,22 @@
 
             <!-- Nav Item -->
             <li class="nav-item">
-                <a class="nav-link" href="{{route('catalogo')}}">
+                <a class="nav-link" href="{{route('estampas')}}">
                     <i class="fas fa-fw fa-tshirt"></i>
-                    <span>Catálogo</span>
+                    <span>Estampas</span>
                 </a>
             </li>
 
+            @auth
+            <!-- Nav Item -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('estampasUser', ['user' => Auth::user()])}}">
+                    <i class="fab fa-fw fa-fort-awesome-alt"></i>
+                    <span>As minhas Estampas</span>
+                </a>
+            </li>
+            @endauth
+            @can('viewAny', App\Models\User::class)
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{route('gestaoUtilizadores')}}">
@@ -52,15 +62,7 @@
                     <span>Gestão de Utilizadores</span>
                 </a>
             </li>
-
-            <!-- Nav Item -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{url('/')}}">
-                    <i class="fab fa-fw fa-fort-awesome-alt"></i>
-                    <span>As minhas Estampas</span>
-                </a>
-            </li>
-
+            @endcan
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
@@ -117,10 +119,16 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
+                    @if (Route::currentRouteName()=='estampas' || Route::currentRouteName()=='estampasUser')
+                        <a class="nav-link" href="{{route('estampas.create')}}">Criar estampa</a>
+                    @endif
 
-                    <button id="shoppingCart" class="btn btn-link rounded-circle mr-3">
-                        <i class="fa fa-shopping-cart"></i>
-                    </button>
+                    @if (Route::currentRouteName()=='estampas')
+                    <a class="nav-link border-left" href="{{route('estampasUser', ['user' => Auth::user()])}}">
+                        <i class="fab fa-fw fa-fort-awesome-alt"></i>
+                        <span>As minhas Estampas</span>
+                    </a>
+                    @endif
 
                     <ul class="navbar-nav ml-auto">
                         @guest
@@ -131,6 +139,11 @@
                             <a class="nav-link" href="{{route('register')}}">{{ __('Register') }}</a>
                         </li>
                         @else
+
+                        <button id="shoppingCart" class="btn btn-link rounded-circle mr-3">
+                            <i class="fa fa-shopping-cart"></i>
+                        </button>
+
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

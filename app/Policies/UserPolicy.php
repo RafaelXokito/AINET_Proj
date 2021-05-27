@@ -25,7 +25,7 @@ class UserPolicy
         return false;
     }
 
-    public function view(User $user, Noticia $noticia)
+    public function view(User $user, User $user2)
     {
         return false;
     }
@@ -35,22 +35,30 @@ class UserPolicy
         return false;
     }
 
-    public function update(User $user, Noticia $noticia)
+    public function viewTshirtsProprias(User $user, User $user2)
+    {
+        if ($user2->id == $user->id) {
+            return true;
+        }
+        return false;
+    }
+
+    public function update(User $user, User $user2)
     {
         return false;
     }
 
-    public function delete(User $user, Noticia $noticia)
+    public function delete(User $user, User $user2)
     {
         return false;
     }
 
-    public function restore(User $user, Noticia $noticia)
+    public function restore(User $user, User $user2)
     {
         //
     }
 
-    public function forceDelete(User $user, Noticia $noticia)
+    public function forceDelete(User $user, User $user2)
     {
         //
     }

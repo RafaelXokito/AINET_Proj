@@ -2,8 +2,10 @@
 
 namespace App\Policies;
 
+use App\Models\Estampa;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class EstampaPolicy
 {
@@ -22,30 +24,36 @@ class EstampaPolicy
 
     public function viewAny(User $user)
     {
-        return false;
+        return true;
     }
 
-    public function view(User $user, Noticia $noticia)
+    public function view(User $user, Estampa $estampa)
     {
+        if ($estampa->cliente_id == $user->id) {
+            return true;
+        }
         return false;
     }
 
     public function create(User $user)
     {
+        if ($user->id > 0) {
+            return true;
+        }
         return false;
     }
 
-    public function update(User $user, Noticia $noticia)
+    public function update(User $user, Estampa $estampa)
     {
         return false;
     }
 
-    public function delete(User $user, Noticia $noticia)
+    public function delete(User $user, Estampa $estampa)
     {
         return false;
     }
 
-    public function restore(User $user, Noticia $noticia)
+    public function restore(User $user, Estampa $estampa)
     {
         //
     }
