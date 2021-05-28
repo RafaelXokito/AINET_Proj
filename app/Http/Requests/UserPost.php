@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserPost extends FormRequest
@@ -13,7 +14,7 @@ class UserPost extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,15 @@ class UserPost extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' =>         'required',
+            'bloqueado' =>    'required|in:0,1',
+            'tipo' =>         'required|in:F,A',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($this->user_id),
+            ],
+            'foto' =>         'nullable|image|max:8192',   // Máximum size = 8Mb
         ];
     }
 }

@@ -13,14 +13,15 @@ class UserPolicy
     //$ability -> assim podemos continuar a usar este método
     public function before($user, $ability)
     {
-        if ($user->tipo == 'A') {
-            return true;
-        }
+        //
     }
 
 
     public function viewAny(User $user)
     {
+        if ($user->tipo == 'A') {
+            return true;
+        }
         return false;
     }
 
@@ -48,6 +49,7 @@ class UserPolicy
 
     public function edit(User $user, User $user2)
     {
+        return true;
         if ($user->tipo == 'C' && $user2->id == $user->id) {
             return true;
         }elseif ($user->tipo == 'C') {
@@ -70,6 +72,9 @@ class UserPolicy
 
     public function create(User $user)
     {
+        if ($user->tipo == 'A') {
+            return true;
+        }
         return false;
     }
 
@@ -83,18 +88,33 @@ class UserPolicy
 
     public function update(User $user, User $user2)
     {
+        if ($user->tipo == 'A' && $user2->tipo == 'F') {
+            return true;
+        }elseif($user->tipo == 'A' && $user2->tipo == 'A')
+        {
+            return true;
+        }elseif($user2->id == $user->id)
+        {
+            return true;
+        }
+
         return false;
     }
 
-    public function delete(User $user, User $user2)
+    public function delete(User $user)
     {
-
+        if ($user->tipo == 'A') {
+            return true;
+        }
         return false;
     }
 
     public function restore(User $user, User $user2)
     {
-        //
+        if ($user->tipo == 'A') {
+            return true;
+        }
+        return false;
     }
 
     public function forceDelete(User $user, User $user2)
