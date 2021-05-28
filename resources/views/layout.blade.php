@@ -129,12 +129,14 @@
                         <a class="nav-link" href="{{route('estampas.create')}}">Criar estampa</a>
                     @endif
 
+                    @auth
                     @if (Route::currentRouteName()=='estampas')
                     <a class="nav-link border-left" href="{{route('estampasUser', ['user' => Auth::user()])}}">
                         <i class="fab fa-fw fa-fort-awesome-alt"></i>
                         <span>As minhas Estampas</span>
                     </a>
                     @endif
+                    @endauth
 
                     <ul class="navbar-nav ml-auto">
                         @guest

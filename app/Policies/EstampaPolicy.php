@@ -43,8 +43,19 @@ class EstampaPolicy
         return false;
     }
 
+    public function edit(User $user, Estampa $estampa)
+    {
+        if ($estampa->cliente_id == $user->id) {
+            return true;
+        }
+        return false;
+    }
+
     public function update(User $user, Estampa $estampa)
     {
+        if ($estampa->cliente_id == $user->id) {
+            return true;
+        }
         return false;
     }
 

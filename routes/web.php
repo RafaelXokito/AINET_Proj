@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
@@ -24,11 +25,9 @@ Route::get('/', [PageController::class, 'index'])->name('home');
 Route::get('/estampas', [EstampasController::class, 'index'])->name('estampas');
 
 Route::get('users', [UsersController::class, 'admin'])->name('gestaoUtilizadores');
-
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 
-Auth::routes(['register' => true, 'verify' => true]);
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->middleware('verified')->group( function () {
@@ -37,6 +36,11 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::put('precos/{precos}/update', [PrecosController::class, 'update'])->name('precos.update')->middleware('can:update,App\Models\Preco');
     Route::get('estampas/proprias/{user}', [EstampasController::class, 'index'])->name('estampasUser')->middleware('can:viewTshirtsProprias,user');
     Route::get('estampas/criar', [EstampasController::class, 'create'])->name('estampas.create')->middleware('can:create,App\Models\Estampa');
+    Route::post('estampas/store', [EstampasController::class, 'store'])->name('estampas.store')->middleware('can:create,App\Models\Estampa');
+    Route::get('estampas/{estampa}/show', [EstampasController::class, 'show'])->name('estampas.show')->middleware('can:view,estampa');
+    Route::get('estampas/{estampa}/{cor}/preview', [EstampasController::class, 'preview'])->name('estampas.preview')->middleware('can:view,estampa');
+    Route::put('estampas/{estampa}/update', [EstampasController::class, 'update'])->name('estampas.update')->middleware('can:update,estampa');
+    Route::get('estampas/{estampa}/editar', [EstampasController::class, 'edit'])->name('estampas.edit')->middleware('can:edit,estampa');
 
     // admininstração de users
     Route::get('users/{user}/edit', [UsersController::class, 'edit'])->name('gestaoUtilizadores.edit')->middleware('can:edit,user');

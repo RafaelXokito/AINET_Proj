@@ -28,7 +28,7 @@ class EstampaPost extends FormRequest
             'categoria_id' => 'required|exists:categorias,id',
             'nome' => 'required|max:255',
             'descricao' => 'required',
-            'imagem_url' => 'required|max:255|mimes:png,jpg',
+            'imagem_url' => 'required|mimes:png,jpg,jpeg,bmp|max:8192',
             'informacao_extra' => 'nullable',
         ];
     }
