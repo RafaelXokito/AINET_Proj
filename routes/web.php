@@ -50,7 +50,6 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::delete('users/{user}', [UsersController::class, 'destroy'])->name('gestaoUtilizadores.destroy')->middleware('can:delete,user');
     Route::delete('users/{user}/foto', [UsersController::class, 'destroy_foto'])->name('gestaoUtilizadores.foto.destroy')->middleware('can:update,user');
 
-
 });
 
 Auth::routes(['register' => true, 'verify' => true]);
