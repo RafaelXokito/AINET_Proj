@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\EstampasController;
 use App\Http\Controllers\PrecosController;
+use App\Http\Controllers\TshirtsController;
 use App\Http\Controllers\UsersController;
 
 /*
@@ -24,14 +25,13 @@ Route::get('/', [PageController::class, 'index'])->name('home');
 
 Route::get('/estampas', [EstampasController::class, 'index'])->name('estampas');
 
-Route::get('users', [UsersController::class, 'admin'])->name('gestaoUtilizadores');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-
 
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->middleware('verified')->group( function () {
 
+    //estampas
     Route::get('precos/editar', [PrecosController::class, 'edit'])->name('precos.edit')->middleware('can:edit,App\Models\Preco');
     Route::put('precos/{precos}/update', [PrecosController::class, 'update'])->name('precos.update')->middleware('can:update,App\Models\Preco');
     Route::get('estampas/proprias/{user}', [EstampasController::class, 'index'])->name('estampasUser')->middleware('can:viewTshirtsProprias,user');
@@ -42,13 +42,22 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::put('estampas/{estampa}/update', [EstampasController::class, 'update'])->name('estampas.update')->middleware('can:update,estampa');
     Route::get('estampas/{estampa}/editar', [EstampasController::class, 'edit'])->name('estampas.edit')->middleware('can:edit,estampa');
 
+    //carrinho de compras
+    Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho');
+    Route::post('carrinho/estampas/{estampa}', [TshirtsController::class, 'store_estampa'])->name('carrinho.store_estampa');
+    Route::put('carrinho/estampas/{estampa}', [TshirtsController::class, 'update_estampa'])->name('carrinho.update_estampa');
+    Route::delete('carrinho/estampas/{estampa}', [TshirtsController::class, 'destroy_estampa'])->name('carrinho.destroy_estampa');
+    Route::post('carrinho', [TshirtsController::class, 'store'])->name('carrinho.store');
+    Route::delete('carrinho', [TshirtsController::class, 'destroy'])->name('carrinho.destroy');
+
     // admininstração de users
-    Route::get('users/{user}/edit', [UsersController::class, 'edit'])->name('gestaoUtilizadores.edit')->middleware('can:edit,user');
-    Route::get('users/create', [UsersController::class, 'create'])->name('gestaoUtilizadores.create')->middleware('can:create,App\Models\User');
-    Route::post('users', [UsersController::class, 'store'])->name('gestaoUtilizadores.store')->middleware('can:create,App\Models\User');
-    Route::put('users/{user}', [UsersController::class, 'update'])->name('gestaoUtilizadores.update')->middleware('can:update,user');
-    Route::delete('users/{user}', [UsersController::class, 'destroy'])->name('gestaoUtilizadores.destroy')->middleware('can:delete,user');
-    Route::delete('users/{user}/foto', [UsersController::class, 'destroy_foto'])->name('gestaoUtilizadores.foto.destroy')->middleware('can:update,user');
+    Route::get('users', [UsersController::class, 'admin'])->name('utilizadores')->middleware('can:viewAny,App\Models\User');
+    Route::get('users/{user}/edit', [UsersController::class, 'edit'])->name('utilizadores.edit')->middleware('can:edit,user');
+    Route::get('users/create', [UsersController::class, 'create'])->name('utilizadores.create')->middleware('can:create,App\Models\User');
+    Route::post('users', [UsersController::class, 'store'])->name('utilizadores.store')->middleware('can:create,App\Models\User');
+    Route::put('users/{user}', [UsersController::class, 'update'])->name('utilizadores.update')->middleware('can:update,user');
+    Route::delete('users/{user}', [UsersController::class, 'destroy'])->name('utilizadores.destroy')->middleware('can:delete,user');
+    Route::delete('users/{user}/foto', [UsersController::class, 'destroy_foto'])->name('utilizadores.foto.destroy')->middleware('can:update,user');
 
 });
 

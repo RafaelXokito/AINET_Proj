@@ -4,11 +4,11 @@
 <div class="row mb-3">
     <div class="col-3">
         @can('create', App\Models\User::class)
-            <a href="{{route('gestaoUtilizadores.create')}}" class="btn btn-success" role="button" aria-pressed="true">Novo User</a>
+            <a href="{{route('utilizadores.create')}}" class="btn btn-success" role="button" aria-pressed="true">Novo User</a>
         @endcan
     </div>
     <div class="col-9">
-        <form method="GET" action="{{route('gestaoUtilizadores')}}" class="form-group">
+        <form method="GET" action="{{route('utilizadores')}}" class="form-group">
             <div class="input-group">
                 @can('viewAny', App\Models\User::class)
                 <select class="input-group-prepend" name="apagado">
@@ -56,12 +56,12 @@
                     @endif
                     <td>
                         @can('edit', $user)
-                            <a href="{{route('gestaoUtilizadores.edit', ['user' => $user])}}" class="btn btn-primary btn-sm" role="button" aria-pressed="true">Alterar</a>
+                            <a href="{{route('utilizadores.edit', ['user' => $user])}}" class="btn btn-primary btn-sm" role="button" aria-pressed="true">Alterar</a>
                         @endcan
                     </td>
                     <td>
                         @can('delete', $user)
-                            <form action="{{route('gestaoUtilizadores.destroy', ['user' => $user])}}" method="POST">
+                            <form action="{{route('utilizadores.destroy', ['user' => $user])}}" method="POST">
                                 @csrf
                                 @method("DELETE")
                                 <input type="submit" class="btn btn-danger btn-sm" value="Apagar">

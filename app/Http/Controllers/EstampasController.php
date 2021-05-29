@@ -113,4 +113,7 @@ class EstampasController extends Controller
 
         return $img->response('jpg');
     }
+
+
+
 }

@@ -49,7 +49,6 @@ class UserPolicy
 
     public function edit(User $user, User $user2)
     {
-        return true;
         if ($user->tipo == 'C' && $user2->id == $user->id) {
             return true;
         }elseif ($user->tipo == 'C') {

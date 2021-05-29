@@ -13,7 +13,7 @@ class UsersController extends Controller
     public function index()
     {
         $users = User::select('name', 'email', 'foto_url', 'tipo')->get();
-        return view('gestaoUtilizadores.users')->withUsers($users);
+        return view('utilizadores.users')->withUsers($users);
     }
 
     public function admin(Request $request)
@@ -37,14 +37,14 @@ class UsersController extends Controller
         }
         $users = $qry->paginate(10);
         //dd($users);
-        return view('gestaoUtilizadores.users')
+        return view('utilizadores.users')
             ->withUsers($users)
             ->withTipo($tipo);
     }
 
     public function edit(User $user)
     {
-        return view('gestaoUtilizadores.edit')
+        return view('utilizadores.edit')
             ->withUser($user);
     }
 
@@ -61,7 +61,7 @@ class UsersController extends Controller
             $user->foto_url = basename($path);
         }
         $user->save();
-        return redirect()->route('gestaoUtilizadores')
+        return redirect()->route('utilizadores')
             ->with('alert-msg', 'User "' . $user->name . '" foi alterado com sucesso!')
             ->with('alert-type', 'success');
     }
@@ -69,7 +69,7 @@ class UsersController extends Controller
     public function create()
     {
         $newUser = new User;
-        return view('gestaoUtilizadores.create')
+        return view('utilizadores.create')
             ->withUser($newUser);
     }
 
@@ -88,7 +88,7 @@ class UsersController extends Controller
             $newUser->foto_url = basename($path);
         }
         $newUser->save();
-        return redirect()->route('gestaoUtilizadores')
+        return redirect()->route('utilizadores')
             ->with('alert-msg', 'Utilizador "' . $validated_data['name'] . '" foi criado com sucesso!')
             ->with('alert-type', 'success');
     }
@@ -102,7 +102,7 @@ class UsersController extends Controller
             $user->delete();
             User::destroy($oldUserID);
             Storage::delete('public/fotos/' . $oldUrlFoto);
-            return redirect()->route('gestaoUtilizadores')
+            return redirect()->route('utilizadores')
                 ->with('alert-msg', 'User "' . $oldName . '" foi apagado com sucesso!')
                 ->with('alert-type', 'success');
         } catch (\Throwable $th) {
@@ -110,11 +110,11 @@ class UsersController extends Controller
             // Descomentar a próxima linha para verificar qual a informação que a exceção tem
 
             if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
-                return redirect()->route('gestaoUtilizadores')
+                return redirect()->route('utilizadores')
                     ->with('alert-msg', 'Não foi possível apagar o User "' . $oldName . '", porque este user já está em uso!')
                     ->with('alert-type', 'danger');
             } else {
-                return redirect()->route('gestaoUtilizadores')
+                return redirect()->route('utilizadores')
                     ->with('alert-msg', 'Não foi possível apagar o User "' . $oldName . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
             }

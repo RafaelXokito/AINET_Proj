@@ -19,6 +19,10 @@
             <h5 class="card-title">{{$estampa->nome}}</h5>
             <p class="card-text">{{$estampa->descricao}}</p>
             <a href="{{route('estampas.edit', ['estampa' => $estampa])}}" class="btn btn-primary">Ver Estampa na t-shirt</a>
+            <form action="{{route('carrinho.store_disciplina', $disc)}}" method="POST">
+                @csrf
+                <input type="submit" value="Add">
+            </form>
         </div>
     </div>
     @endforeach
