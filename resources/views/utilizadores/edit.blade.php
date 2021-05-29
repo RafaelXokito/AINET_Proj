@@ -1,11 +1,11 @@
 @extends('layout')
 @section('title','Alterar User' )
 @section('content')
-    <form method="POST" action="{{route('gestaoUtilizadores.update', ['user' => $user]) }}" class="form-group" enctype="multipart/form-data">
+    <form method="POST" action="{{route('utilizadores.update', ['user' => $user]) }}" class="form-group" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <input type="hidden" name="user_id" value="{{$user->id}}">
-        @include('gestaoUtilizadores.partials.create-edit')
+        @include('utilizadores.partials.create-edit')
         @isset($user->foto_url)
             <div class="form-group">
                 <img src="{{$user->foto_url ? asset('storage/fotos/' . $user->foto_url) : asset('img/default_img.png') }}"
@@ -22,10 +22,10 @@
             @can('update', $user)
                 <button type="submit" class="btn btn-success" name="ok">Save</button>
             @endcan
-            <a href="{{route('gestaoUtilizadores.edit', ['user' => $user]) }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{route('utilizadores.edit', ['user' => $user]) }}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
-    <form id="form_delete_photo" action="{{route('gestaoUtilizadores.foto.destroy', ['user' => $user])}}" method="POST">
+    <form id="form_delete_photo" action="{{route('utilizadores.foto.destroy', ['user' => $user])}}" method="POST">
         @csrf
         @method('DELETE')
     </form>

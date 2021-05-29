@@ -87,7 +87,7 @@
             <hr class="sidebar-divider d-none d-md-block">
             <!-- Nav Item -->
             <li class="nav-item">
-                <a class="nav-link" href="{{route('gestaoUtilizadores')}}">
+                <a class="nav-link" href="{{route('utilizadores')}}">
                     <i class="fad fa-fw fa-user-astronaut"></i>
                     <span>Gestão de Utilizadores</span>
                 </a>
@@ -148,8 +148,11 @@
                         </li>
                         @else
 
-                        <button id="shoppingCart" class="btn btn-link rounded-circle mr-3">
-                            <i class="fa fa-shopping-cart"></i>
+                        <button id="carrinho" class="btn btn-link rounded-circle mr-3">
+                            <a href="{{route('carrinho')}}">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+
                         </button>
 
                         <!-- Nav Item - User Information -->
