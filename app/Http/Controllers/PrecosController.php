@@ -32,7 +32,7 @@ class PrecosController extends Controller
             $precos->quantidade_desconto = $validated_data['quantidade_desconto'];
             $precos->save();
 
-            return view('precos.edit')
+            return redirect()->route('precos.edit')
                 ->with('alert-msg', 'Página de preços alterada com sucesso!')
                 ->with('alert-type', 'success')
                 ->withPrecos($precos);

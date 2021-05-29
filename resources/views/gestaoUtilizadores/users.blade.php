@@ -11,11 +11,13 @@
         <form method="GET" action="{{route('gestaoUtilizadores')}}" class="form-group">
             <div class="input-group">
                 @can('viewAny', App\Models\User::class)
-                <select class="input-group-prepend" name="apagado">
-                    <option value="all" {{'all' == 'apagado' ? 'selected' : 'all'}} class="dropdown-item">Todos Utilizadores</option>
-                    <option value="notDeleted" {{'notDeleted' == 'apagado' ? 'selected' : 'notDeleted'}} class="dropdown-item">Utilizadores Disponíveis</option>
-                    <option value="deleted" {{'deleted' == 'apagado' ? 'selected' : 'deleted'}} class="dropdown-item">Utilizadores Apagados</option>
-                </select>
+                <div class="input-group-prepend">
+                    <select class="rounded-left input-group-text" name="apagado">
+                        <option value="all" {{'all' == 'apagado' ? 'selected' : 'all'}} class="dropdown-item">Todos Utilizadores</option>
+                        <option value="notDeleted" {{'notDeleted' == 'apagado' ? 'selected' : 'notDeleted'}} class="dropdown-item">Utilizadores Disponíveis</option>
+                        <option value="deleted" {{'deleted' == 'apagado' ? 'selected' : 'deleted'}} class="dropdown-item">Utilizadores Apagados</option>
+                    </select>
+                </div>
                 @endcan
             <select class="custom-select" name="tipo" id="tipo" aria-label="tipo">
                 <option value="" {{'' == $tipo ? 'selected' : ''}}>Todos Tipos</option>
