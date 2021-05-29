@@ -53,15 +53,63 @@ class EstampasController extends Controller
 
     public function update(Request $request, Estampa $estampa)
     {
-        dd($request);
+        $cor = Cores::first();
         $listaCategorias = Categoria::pluck('nome', 'id');
         $listaCores = Cores::pluck('nome', 'codigo');
-        $cor = Cores::first();
-        return view('estampas.edit')
-            ->withCor($cor)
-            ->withCores($listaCores)
-            ->withEstampa($estampa)
-            ->withCategorias($listaCategorias);
+        try {
+
+            $validatedData = $request->validate([
+                'categoria_id' => 'required|exists:categorias,id',
+                'nome' => 'required|max:255',
+                'descricao' => 'required|string',
+                'cor_codigo' => 'exists:cores,codigo',
+                'inputOpacidade' => 'min:0|max:100',
+                'inputPosicao' => 'in:top,center,bottom',
+                'inputRotacao' => 'min:0|max:360',
+                'imagem_url' => 'image|max:8192',
+            ]);
+
+            $cor = Cores::where('codigo', $validatedData['cor_codigo'])->get()->first();
+            $estampa = Estampa::findOrFail($estampa->id);
+
+            $estampa->categoria_id = $validatedData['categoria_id'];
+            $estampa->nome = $validatedData['nome'];
+            $estampa->descricao = $validatedData['descricao'];
+            if ($request->has('imagem_url')) {
+                Storage::delete('estampas_privadas/'.$estampa->imagem_url);
+                $estampa->imagem_url = $validatedData['imagem_url'];
+            }
+            $estampa->informacao_extra = [
+                'cor_codigo' => $validatedData['cor_codigo'],
+                'inputOpacidade' => $validatedData['inputOpacidade'],
+                'inputPosicao' => $validatedData['inputPosicao'],
+                'inputRotacao' => $validatedData['inputRotacao']
+            ];
+
+            $estampa->save();
+
+            return redirect()->route('estampas.edit')
+                ->withCor($cor)
+                ->withCores($listaCores)
+                ->withEstampa($estampa)
+                ->withCategorias($listaCategorias)
+                ->with('alert-msg', 'Estampa foi alterada com sucesso!')
+                ->with('alert-type', 'error');
+        } catch (\Throwable $th) {
+            $data = array(
+                'name'      =>  env('APP_NAME', 'fallback_app_name').' - PrecoController',
+                'message'   =>   $th->getMessage()
+            );
+
+            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->send(new SendMail($data));
+            return view('estampas.edit')
+                ->withCor($cor)
+                ->withCores($listaCores)
+                ->withEstampa($estampa)
+                ->withCategorias($listaCategorias)
+                ->with('alert-msg', 'Estampa NÃO foi alterada com sucesso!')
+                ->with('alert-type', 'error');
+        }
     }
 
     public function store(EstampaPost $request)
