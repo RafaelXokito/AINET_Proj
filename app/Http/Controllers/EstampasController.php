@@ -43,7 +43,9 @@ class EstampasController extends Controller
     {
         $listaCategorias = Categoria::pluck('nome', 'id');
         $listaCores = Cores::pluck('nome', 'codigo');
+        $cor = Cores::first();
         return view('estampas.edit')
+            ->withCor($cor)
             ->withCores($listaCores)
             ->withEstampa($estampa)
             ->withCategorias($listaCategorias);
@@ -97,20 +99,35 @@ class EstampasController extends Controller
         return response()->file(storage_path('app\estampas_privadas\\'.$estampa->imagem_url));
     }
 
-    public function preview(Estampa $estampa = null, $cor)
+    public function preview(Estampa $estampa = null, $cor, $posicao, $rotacao, $opacidade)
     {
-        // create new Intervention Image
-        $img = Image::make(public_path('storage\tshirt_base\\').'00a2f2.jpg');
+        try {
 
-        // paste another image
-        $img->insert(storage_path('app\estampas_privadas\\'.$estampa->imagem_url));
-        // create a new Image instance for inserting
-        $watermark = Image::make(storage_path('app\estampas_privadas\\'.$estampa->imagem_url));
-        $img->insert($watermark, 'center');
+            // create new Intervention Image
+            $img = Image::make(public_path('storage\tshirt_base\\'). $cor.'.jpg');
 
-        // insert watermark at bottom-right corner with 10px offset
-        $img->insert(storage_path('app\estampas_privadas\\'.$estampa->imagem_url), 'bottom-right', 10, 10);
+            $width = 200; // your max width
+            $height = 200; // your max height
+            $watermark = Image::make(storage_path('app\estampas_privadas\\'.$estampa->imagem_url));
+            $watermark->height() > $img->width() ? $width=null : $height=null;
+            $watermark->resize($width, $height, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            if ($rotacao != 0) {
+                $watermark->rotate($rotacao);
+            }
+            if ($opacidade != 100) {
+                $watermark->opacity($opacidade);
+            }
+            $img->insert($watermark, $posicao, 0, 100);
 
-        return $img->response('jpg');
+            return $img->response('jpg');
+        } catch (\Throwable $th) {
+            return null;
+            return response()->json([
+                'success' => false,
+                'responseText' => $th->getMessage(),
+            ]);
+        }
     }
 }
