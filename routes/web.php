@@ -41,6 +41,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::get('estampas/{estampa}/{cor}/{posicao}/{rotacao}/{opacidade}/preview', [EstampasController::class, 'preview'])->name('estampas.preview')->middleware('can:view,estampa');
     Route::put('estampas/{estampa}/update', [EstampasController::class, 'update'])->name('estampas.update')->middleware('can:update,estampa');
     Route::get('estampas/{estampa}/editar', [EstampasController::class, 'edit'])->name('estampas.edit')->middleware('can:edit,estampa');
+    Route::get('estampas/{estampa}/ver', [EstampasController::class, 'edit'])->name('estampas.view')->middleware('can:view,estampa');
 
     // admininstração de users
     Route::get('users/{user}/edit', [UsersController::class, 'edit'])->name('gestaoUtilizadores.edit')->middleware('can:edit,user');

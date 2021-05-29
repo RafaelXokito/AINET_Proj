@@ -37,7 +37,7 @@
         <label class="" for="inputFoto">Foto da estampa</label>
         <div class="custom-file">
             <input type="file" class="custom-file-input" name="imagem_url" id="inputFoto">
-            <label id="lblimagem_url" class="custom-file-label" for="inputFoto">Selecione uma foto</label>
+            <label id="lblimagem_url" class="custom-file-label" for="inputFoto">{{$estampa->imagem_url == null ? 'Selecione uma foto' : 'Já selecionada'}}</label>
             @error('imagem_url')
                 <div class="small text-danger">{{$message}}</div>
             @enderror

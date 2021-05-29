@@ -185,7 +185,6 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
                     @if (session('alert-msg'))
                         @include('partials.message')
                     @endif

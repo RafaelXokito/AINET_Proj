@@ -32,6 +32,9 @@ class EstampaPolicy
         if ($estampa->cliente_id == $user->id) {
             return true;
         }
+        if ($estampa->cliente_id == null) {
+            return true;
+        }
         return false;
     }
 

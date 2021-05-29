@@ -27,7 +27,7 @@
                         <select class="form-control" name="cor_codigo" id="inputCor">
                             <!--<option value="" selected>Escolher cor...</option>-->
                             @foreach ($cores as $abr => $nome)
-                            <option value={{$abr}} >{{$nome}}</option>
+                            <option value={{$abr}} {{$abr == old('cor_codigo', $cor->codigo) ? 'selected' : ''}}>{{$nome}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -40,10 +40,10 @@
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text  border-0" id="inputOpacidadeValue">
-                                100
+                                {{old('inputOpacidade', $inputOpacidade) ? : '100'}}
                              </span>
                             <span class="input-group-text  border-0 rounded-right" id="">
-                                <input type="range" value="100" class="form-range" id="inputOpacidade" name="inputOpacidade" oninput="inputOpacidadeOnInput(this.value)" onchange="inputOpacidadeChange(this.value)" >
+                                <input type="range" value="{{old('inputOpacidade', $inputOpacidade) ?? '100'}}" class="form-range" id="inputOpacidade" name="inputOpacidade" oninput="inputOpacidadeOnInput(this.value)" onchange="inputOpacidadeChange(this.value)" >
                             </span>
                         </div>
                     </div>
@@ -59,14 +59,26 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text  border-0" id="basic-addon1">
                                 <span class="input-group-addon">
-                                    <i id="inputPosicaoIcon" class="bi bi-align-top"></i>
+                                    @switch(old('inputPosicao',$inputPosicao ?? ''))
+                                        @case('top')
+                                            <i id="inputPosicaoIcon" class="bi bi-align-top"></i>
+                                            @break
+                                        @case('center')
+                                            <i id="inputPosicaoIcon" class="bi bi-align-center"></i>
+                                            @break
+                                        @case('bottom')
+                                            <i id="inputPosicaoIcon" class="bi bi-align-bottom"></i>
+                                            @break
+                                        @default
+                                            <i id="inputPosicaoIcon" class="bi bi-align-top"></i>
+                                    @endswitch
                                 </span>
                             </span>
                         </div>
                         <select class="form-control" style="float: left;width: initial;" name="inputPosicao" id="inputPosicao">
-                            <option value="top">Cima</option>
-                            <option value="center">Centro</option>
-                            <option value="bottom">Baixo</option>
+                            <option value="top" {{old('inputPosicao',$inputPosicao ?? '')=='top'?'selected':''}}>Cima</option>
+                            <option value="center" {{old('inputPosicao',$inputPosicao ?? '')=='center'?'selected':''}}>Centro</option>
+                            <option value="bottom" {{old('inputPosicao',$inputPosicao ?? '')=='bottom'?'selected':''}}>Baixo</option>
                         </select>
                     </div>
                     @error('categoria_id')
@@ -78,10 +90,10 @@
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text  border-0" id="inputRotacaoValue">
-                                0º
+                                {{old('inputRotacao', $inputRotacao) ? : '0'}}º
                              </span>
                             <span class="input-group-text  border-0 rounded-right" id="">
-                                <input type="range" value="0" min="0" max="360" step="1" class="form-range" name="inputRotacao" id="inputRotacao" oninput="inputRotacaoOnInput(this.value)" onchange="inputRotacaoChange(this.value)">
+                                <input type="range" value="{{old('inputRotacao', $inputRotacao) ?? '0'}}" min="0" max="360" step="1" class="form-range" name="inputRotacao" id="inputRotacao" oninput="inputRotacaoOnInput(this.value)" onchange="inputRotacaoChange(this.value)">
                             </span>
                         </div>
                     </div>
@@ -98,11 +110,15 @@
     </div>
     <div class="row d-flex justify-content-center mt-5">
         <div class="form-group">
-            <button type="submit" class="btn btn-success" name="ok">Save</button>
-            <a href="{{route('estampas.edit', ['estampa' => $estampa])}}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-success" name="ok">Guardar</button>
+            <a href="" class="btn btn-info" data-toggle="modal" data-target="#adicionarAoCarrinhoModal">
+                <i class="fa fa-shopping-cart"></i>
+                Adicionar ao carrinho
+            </a>
+            <a href="{{route('estampas.edit', ['estampa' => $estampa])}}" class="btn btn-secondary">Cancelar</a>
         </div>
     </div>
 </form>
-<form id="previewForm"></form>
+@include('estampas.partials.modal')
 <script src="{{asset('js/estampas-edit.js')}}"></script>
 @endsection
