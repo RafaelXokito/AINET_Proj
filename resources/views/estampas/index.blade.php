@@ -18,11 +18,11 @@
         <div class="card-body">
             <h5 class="card-title">{{$estampa->nome}}</h5>
             <p class="card-text">{{$estampa->descricao}}</p>
-            <a href="{{route('estampas.edit', ['estampa' => $estampa])}}" class="btn btn-primary">Ver Estampa na t-shirt</a>
-            <form action="{{route('carrinho.store_disciplina', $disc)}}" method="POST">
-                @csrf
-                <input type="submit" value="Add">
-            </form>
+            @if ($estampa->cliente_id == null)
+                <a href="{{route('estampas.view', ['estampa' => $estampa])}}" class="btn btn-primary">Ver Estampa na t-shirt</a>
+            @else
+                <a href="{{route('estampas.edit', ['estampa' => $estampa])}}" class="btn btn-primary">Ver Estampa na t-shirt</a>
+            @endif
         </div>
     </div>
     @endforeach

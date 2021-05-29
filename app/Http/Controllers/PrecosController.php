@@ -47,7 +47,7 @@ class PrecosController extends Controller
             return redirect()->route('precos.edit')
                 ->withPrecos($precos)
                 ->with('alert-msg', 'Página de preços NÃO alterada com sucesso!')
-                ->with('alert-type', 'error');
+                ->with('alert-type', 'danger');
         }
     }
 }

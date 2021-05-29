@@ -38,9 +38,10 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::get('estampas/criar', [EstampasController::class, 'create'])->name('estampas.create')->middleware('can:create,App\Models\Estampa');
     Route::post('estampas/store', [EstampasController::class, 'store'])->name('estampas.store')->middleware('can:create,App\Models\Estampa');
     Route::get('estampas/{estampa}/show', [EstampasController::class, 'show'])->name('estampas.show')->middleware('can:view,estampa');
-    Route::get('estampas/{estampa}/{cor}/preview', [EstampasController::class, 'preview'])->name('estampas.preview')->middleware('can:view,estampa');
+    Route::get('estampas/{estampa}/{cor}/{posicao}/{rotacao}/{opacidade}/preview', [EstampasController::class, 'preview'])->name('estampas.preview')->middleware('can:view,estampa');
     Route::put('estampas/{estampa}/update', [EstampasController::class, 'update'])->name('estampas.update')->middleware('can:update,estampa');
     Route::get('estampas/{estampa}/editar', [EstampasController::class, 'edit'])->name('estampas.edit')->middleware('can:edit,estampa');
+    Route::get('estampas/{estampa}/ver', [EstampasController::class, 'edit'])->name('estampas.view')->middleware('can:view,estampa');
 
     //carrinho de compras
     Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho');
