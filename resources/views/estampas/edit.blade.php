@@ -7,6 +7,7 @@
 <br>
 <form method="POST" action="{{route('estampas.update', ['estampa' => $estampa])}}" class="form-group" enctype="multipart/form-data">
     @csrf
+    @method('PUT')
     <div class="row">
         <div class="col-6">
             <input id="estampa_id" value="{{$estampa->id}}" hidden>
@@ -23,7 +24,7 @@
                                 <img id="colorInputCor" style="width: 16px; height: 16px; background-color: #{{$cor->codigo}}" />
                              </span>
                         </div>
-                        <select form="previewForm" class="form-control" name="cor_codigo" id="inputCor">
+                        <select class="form-control" name="cor_codigo" id="inputCor">
                             <!--<option value="" selected>Escolher cor...</option>-->
                             @foreach ($cores as $abr => $nome)
                             <option value={{$abr}} >{{$nome}}</option>
@@ -42,7 +43,7 @@
                                 100
                              </span>
                             <span class="input-group-text  border-0 rounded-right" id="">
-                                <input type="range" value="100" class="form-range" id="inputOpacidade" name="inputOpacidade" onchange="inputOpacidadeChange(this.value)" >
+                                <input type="range" value="100" class="form-range" id="inputOpacidade" name="inputOpacidade" oninput="inputOpacidadeOnInput(this.value)" onchange="inputOpacidadeChange(this.value)" >
                             </span>
                         </div>
                     </div>
@@ -62,7 +63,7 @@
                                 </span>
                             </span>
                         </div>
-                        <select class="form-control" style="float: left;width: initial;" id="inputPosicao">
+                        <select class="form-control" style="float: left;width: initial;" name="inputPosicao" id="inputPosicao">
                             <option value="top">Cima</option>
                             <option value="center">Centro</option>
                             <option value="bottom">Baixo</option>
@@ -80,7 +81,7 @@
                                 0º
                              </span>
                             <span class="input-group-text  border-0 rounded-right" id="">
-                                <input type="range" value="0" min="0" max="360" step="1" class="form-range" name="inputRotacao" id="inputRotacao" onchange="inputRotacaoChange(this.value)">
+                                <input type="range" value="0" min="0" max="360" step="1" class="form-range" name="inputRotacao" id="inputRotacao" oninput="inputRotacaoOnInput(this.value)" onchange="inputRotacaoChange(this.value)">
                             </span>
                         </div>
                     </div>

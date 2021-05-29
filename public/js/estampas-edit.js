@@ -11,13 +11,19 @@ document.getElementById('inputCor').onchange = function() {
 };
 
 function inputOpacidadeChange(newValue) {
-    $('#inputOpacidadeValue').html(newValue);
     $("#previewImage").attr('src','http://ainet_proj.test/estampas/'+ $('#estampa_id').val() +'/'+$('#inputCor').val()+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/preview');
 }
 
+function inputOpacidadeOnInput(newValue) {
+    $('#inputOpacidadeValue').html(newValue);
+}
+
 function inputRotacaoChange(newValue) {
-    $('#inputRotacaoValue').html(newValue+'º');
     $("#previewImage").attr('src','http://ainet_proj.test/estampas/'+ $('#estampa_id').val() +'/'+$('#inputCor').val()+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/preview');
+}
+
+function inputRotacaoOnInput(newValue) {
+    $('#inputRotacaoValue').html(newValue+'º');
 }
 
 document.getElementById('inputPosicao').onchange = function() {

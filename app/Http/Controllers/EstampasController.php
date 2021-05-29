@@ -51,11 +51,15 @@ class EstampasController extends Controller
             ->withCategorias($listaCategorias);
     }
 
-    public function update(Estampa $estampa)
+    public function update(Request $request, Estampa $estampa)
     {
-        $estampa = new Estampa;
+        dd($request);
         $listaCategorias = Categoria::pluck('nome', 'id');
+        $listaCores = Cores::pluck('nome', 'codigo');
+        $cor = Cores::first();
         return view('estampas.edit')
+            ->withCor($cor)
+            ->withCores($listaCores)
             ->withEstampa($estampa)
             ->withCategorias($listaCategorias);
     }
@@ -113,12 +117,8 @@ class EstampasController extends Controller
             $watermark->resize($width, $height, function ($constraint) {
                 $constraint->aspectRatio();
             });
-            if ($rotacao != 0) {
-                $watermark->rotate($rotacao);
-            }
-            if ($opacidade != 100) {
-                $watermark->opacity($opacidade);
-            }
+            $watermark->rotate($rotacao);
+            $watermark->opacity($opacidade);
             $img->insert($watermark, $posicao, 0, 100);
 
             return $img->response('jpg');
