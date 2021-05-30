@@ -1,11 +1,36 @@
 @extends('layout')
 @section('title','Estampas' )
 @section('content')
+
+<div class="row mb-3">
+    <div class="col-9">
+        <form method="GET" action="{{Route::currentRouteName()=='estampas' ? route('estampas') : route('estampasUser', ['user' => Auth::user()]) }}" class="form-group">
+            <div class="input-group">
+                <select class="form-control" name="categoria" id="inputCategoria">
+                    <option value="" selected>Todas as categoria...</option>
+                    <option value="0" {{$categoria == '0' ? 'selected' : ''}}>Sem categoria</option>
+                    @foreach ($categorias as $abr => $nomeCategoria)
+                    <option value={{$abr}} {{$abr == $categoria ? 'selected' : ''}}>{{$nomeCategoria}}</option>
+                    @endforeach
+                </select>
+                <input id="inputNome" name="nome" class="form-control" placeholder="Nome" value="{{$nome}}">
+                <input id="inputDescricao" name="descricao" class="form-control" placeholder="Descrição" value="{{$descricao}}">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">Filtrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 @if (count($estampas) == 0)
 <div class="text-center pt-5">
-    <h3>Você ainda não tem estampas. Crie algumas primeiro!</h3>
+    @if (Route::currentRouteName()=='estampas')
+        <h3>Não foram encontradas estampas!</h3>
+    @else
+        <h3>Você ainda não tem estampas. Crie algumas primeiro!</h3>
+    @endif
 </div>
-@endif
+@else
 <div class="card-columns">
     @foreach ($estampas as $estampa)
     <div class="card">
@@ -28,6 +53,7 @@
     @endforeach
 </div>
 <div class="d-flex justify-content-center">
-    {!! $estampas->links("pagination::bootstrap-4") !!}
+    {!! $estampas->withQueryString()->links("pagination::bootstrap-4") !!}
 </div>
+@endif
 @endsection

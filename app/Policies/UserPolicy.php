@@ -29,18 +29,15 @@ class UserPolicy
     {
         if ($user->tipo == 'C' && $user2->id == $user->id) {
             return true;
-        }elseif ($user->tipo == 'C') {
+        } elseif ($user->tipo == 'C') {
             return false;
         }
-        if($user->tipo == 'F')
-        {
+        if ($user->tipo == 'F') {
             return false;
         }
-        if($user->tipo == 'A' && $user2->tipo == 'C')
-        {
+        if ($user->tipo == 'A' && $user2->tipo == 'C') {
             return false;
-        }elseif($user->tipo == 'A')
-        {
+        } elseif ($user->tipo == 'A') {
             return true;
         }
 
@@ -65,6 +62,22 @@ class UserPolicy
 
         return false;
 
+    }
+
+    public function isAdmin(User $user)
+    {
+        if ($user->tipo == 'A') {
+            return true;
+        }
+        return false;
+    }
+
+    public function isStaff(User $user)
+    {
+        if ($user->tipo == 'A' || $user->tipo == 'F') {
+            return true;
+        }
+        return false;
     }
 
     public function create(User $user)

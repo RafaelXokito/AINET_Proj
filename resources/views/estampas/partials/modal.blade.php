@@ -19,7 +19,7 @@
                     <hr>
                     <p class="mb-0">Para adicionar ao carrinho clique em "Confirmar".</p>
                 </div>
-                <form action="" id="formAdicionarAoCarrinho">
+                <form action="{{route('estampas')}}" id="formAdicionarAoCarrinho">
                 <div class="row">
                     <div class="form-group col-4">
                         <label for="inputTamanho">Tamanho</label>

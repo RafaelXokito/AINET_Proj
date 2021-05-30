@@ -10,35 +10,29 @@ use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
 {
-    public function index()
-    {
-        $users = User::select('name', 'email', 'foto_url', 'tipo')->get();
-        return view('utilizadores.users')->withUsers($users);
-    }
 
-    public function admin(Request $request)
+    public function index(Request $request)
     {
         $tipo = $request->tipo ?? '';
-
+        $apagado = $request->apagado ?? '';
         // Use Debugbar to compare both solutions
         // Comment one of the following 2 lines
         $qry = User::query();
 
-        if($request->apagado == 'deleted')
-        {
+        if ($apagado == 'deleted') {
             $qry->onlyTrashed();
-        }elseif($request->apagado == 'all')
-        {
+        } elseif ($apagado == 'all') {
             $qry->withTrashed();
         }
-
         if ($tipo) {
             $qry->where('tipo', $tipo);
         }
+
         $users = $qry->paginate(10);
         //dd($users);
-        return view('utilizadores.users')
+        return view('utilizadores.index')
             ->withUsers($users)
+            ->withApagado($apagado)
             ->withTipo($tipo);
     }
 

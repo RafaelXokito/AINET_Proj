@@ -12,42 +12,56 @@ class CategoriaPolicy
 
     // If user is admin, authorization check always return true
     // Admin user is granted all previleges over "Disciplina" entity
-    public function before($user, $ability)
-    {
-        if ($user->tipo == 'A') {
-            return true;
-        }
-    }
-
-
     public function viewAny(User $user)
     {
-        return false;
-    }
-
-    public function view(User $user, Categoria $categoria)
-    {
-        return false;
+        return true;
     }
 
     public function create(User $user)
     {
+        if ($user->tipo == 'A') {
+            return true;
+        }
+        return false;
+    }
+
+    public function store(User $user, Categoria $categoria)
+    {
+        if ($user->tipo == 'A') {
+            return true;
+        }
+        return false;
+    }
+
+    public function edit(User $user, Categoria $categoria)
+    {
+        if ($user->tipo == 'A') {
+            return true;
+        }
         return false;
     }
 
     public function update(User $user, Categoria $categoria)
     {
+        if ($user->tipo == 'A') {
+            return true;
+        }
         return false;
     }
 
     public function delete(User $user, Categoria $categoria)
     {
+        if ($user->tipo == 'A' && $categoria->deleted_at == null) {
+            return true;
+        }
         return false;
     }
 
     public function restore(User $user, Categoria $categoria)
     {
-        //
+        if ($user->tipo == 'A' && $categoria->deleted_at != null) {
+            return true;
+        }
     }
 
     public function forceDelete(User $user, Categoria $categoria)
