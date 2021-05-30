@@ -2,7 +2,7 @@
     <div class="form-group col-6">
         <label for="inputCategoria">Categoria</label>
         <select class="form-control" name="categoria_id" id="inputCategoria">
-            <option value="" selected>Escolher categoria...</option>
+            <option value="" {{old('categoria_id') == '' || $estampa->categoria_id == null ? 'selected' : ''}}>Sem categoria</option>
             @foreach ($categorias as $abr => $nome)
             <option value={{$abr}} {{$abr == old('categoria_id', $estampa->categoria_id) ? 'selected' : ''}}>{{$nome}}</option>
             @endforeach

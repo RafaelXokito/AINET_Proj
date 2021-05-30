@@ -57,22 +57,7 @@
                 </a>
             </li>
             @endauth
-            <!-- Nav Item -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{url('/')}}">
-                    <i class="fal fa-fw fa-wand-magic"></i>
-                    <span>Preview de T-shirts</span>
-                </a>
-            </li>
-            @can('edit', App\Models\Preco::class)
-            <!-- Nav Item -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('precos.edit')}}">
-                    <i class="fad fa-fw fa-tags"></i>
-                    <span>Preços Tshirts</span>
-                </a>
-            </li>
-            @endcan
+
             <!-- Nav Item -->
             <li class="nav-item">
                 <a class="nav-link" href="{{url('/')}}">
@@ -81,25 +66,48 @@
                 </a>
             </li>
 
-            <!-- Divider -->
+            <!-- Divider STAFF -->
+            @can('isStaff', App\Models\User::class)
+                <hr class="sidebar-divider d-none d-md-block">
 
-            @can('viewAny', App\Models\User::class)
-            <hr class="sidebar-divider d-none d-md-block">
-            <!-- Nav Item -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('utilizadores')}}">
-                    <i class="fad fa-fw fa-user-astronaut"></i>
-                    <span>Gestão de Utilizadores</span>
-                </a>
-            </li>
+                @can('viewAny', App\Models\User::class)
+                <!-- Nav Item -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('utilizadores')}}">
+                        <i class="fad fa-fw fa-user-astronaut"></i>
+                        <span>Gestão de Utilizadores</span>
+                    </a>
+                </li>
+                @endcan
 
-            <!-- Nav Item -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{url('/')}}">
-                    <i class="fad fa-fw fa-scroll-old"></i>
-                    <span>Estatísticas</span>
-                </a>
-            </li>
+                <!-- Nav Item -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url('/')}}">
+                        <i class="fad fa-fw fa-scroll-old"></i>
+                        <span>Estatísticas</span>
+                    </a>
+                </li>
+
+                @can('edit', App\Models\Preco::class)
+                <!-- Nav Item -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('precos.edit')}}">
+                        <i class="fad fa-fw fa-tags"></i>
+                        <span>Preços Tshirts</span>
+                    </a>
+                </li>
+                @endcan
+
+                @can('viewAny', App\Models\Categoria::class)
+                <!-- Nav Item -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('categorias')}}">
+                        <i class="fad fa-boxes"></i>
+                        <span>Categorias</span>
+                    </a>
+                </li>
+                @endcan
+
             @endcan
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -126,13 +134,17 @@
                         <i class="fa fa-bars"></i>
                     </button>
                     @if (Route::currentRouteName()=='estampas' || Route::currentRouteName()=='estampasUser')
-                        <a class="nav-link" href="{{route('estampas.create')}}">Criar estampa</a>
+
+                        <a class="nav-link" href="{{route('estampas.create')}}">
+                            <i class="fal fa-fw fa-wand-magic"></i>
+                            <span>Criar estampa</span>
+                        </a>
                     @endif
 
                     @auth
                     @if (Route::currentRouteName()=='estampas')
                     <a class="nav-link border-left" href="{{route('estampasUser', ['user' => Auth::user()])}}">
-                        <i class="fab fa-fw fa-fort-awesome-alt"></i>
+                        <i class="fad fa-fw fa-book-user"></i>
                         <span>As minhas Estampas</span>
                     </a>
                     @endif
@@ -159,11 +171,11 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{Auth::user()->name}}</span>
-                                <img class="img-profile rounded-circle" src="{{Auth::user()->url_foto ? asset('storage/fotos/' . Auth::user()->url_foto) : asset('img/default_img.png') }}">
+                                <img class="img-profile rounded-circle" src="{{Auth::user()->foto_url ? asset('storage/fotos/' . Auth::user()->foto_url) : asset('img/default_img.png') }}">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{{route('utilizadores.edit', ['user' => Auth::user()])}}">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Perfil
                                 </a>

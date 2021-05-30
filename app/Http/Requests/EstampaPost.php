@@ -25,7 +25,7 @@ class EstampaPost extends FormRequest
     {
         return [
             'cliente_id' => 'exists:clientes,id',
-            'categoria_id' => 'required|exists:categorias,id',
+            'categoria_id' => 'nullable|exists:categorias,id',
             'nome' => 'required|max:255',
             'descricao' => 'required',
             'imagem_url' => 'required|mimes:png,jpg,jpeg,bmp|max:8192',

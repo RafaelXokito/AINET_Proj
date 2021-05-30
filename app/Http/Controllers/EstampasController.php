@@ -20,21 +20,46 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class EstampasController extends Controller
 {
-    public function index(User $user = null)
+    public function index(Request $request, User $user = null)
     {
+
+        $nomeSelected = $request->nome ?? '';
+        $descricaoSelected = $request->descricao ?? '';
+        $categoriaSelected = $request->categoria ?? '';
+        $listaCategorias = Categoria::orderBy('nome')->pluck('nome', 'id');
+
         $qry = Estampa::query();
         $id = $user->id ?? '';
         if ($id != '') {
             $qry->where('cliente_id', '=', $user->id);
         }
+        if ($nomeSelected != '') {
+            $qry->where('nome', 'LIKE', '%'.$request->nome.'%');
+        }
+        if ($descricaoSelected != '') {
+            $qry->where('descricao', 'LIKE', '%'.$request->descricao.'%');
+        }
+        if ($categoriaSelected != '') {
+            if ($categoriaSelected == 0) {
+                $qry->whereNull('categoria_id');
+            } else {
+                $qry->where('categoria_id', '=', $categoriaSelected);
+            }
+        }
         $estampas = $qry->paginate(10);
-        return view('estampas.index')->withEstampas($estampas);
+
+        return view('estampas.index')
+            ->withDescricao($descricaoSelected)
+            ->withNome($nomeSelected)
+            ->withCategoria($categoriaSelected)
+            ->withCategorias($listaCategorias)
+            ->withEstampas($estampas);
     }
 
     public function create()
     {
         $estampa = new Estampa;
-        $listaCategorias = Categoria::pluck('nome', 'id');
+        $listaCategorias = Categoria::orderBy('nome')->pluck('nome', 'id');
         return view('estampas.create')
             ->withEstampa($estampa)
             ->withCategorias($listaCategorias);
@@ -42,7 +67,7 @@ class EstampasController extends Controller
 
     public function edit(Estampa $estampa)
     {
-        $listaCategorias = Categoria::pluck('nome', 'id');
+        $listaCategorias = Categoria::orderBy('nome')->pluck('nome', 'id');
         $listaCores = Cores::pluck('nome', 'codigo');
         $cor = Cores::first();
         $precos = Preco::first();
@@ -89,12 +114,11 @@ class EstampasController extends Controller
     {
         $cor = Cores::first();
         $precos = Preco::first();
-        $listaCategorias = Categoria::pluck('nome', 'id');
+        $listaCategorias = Categoria::orderBy('nome')->pluck('nome', 'id');
         $listaCores = Cores::pluck('nome', 'codigo');
         try {
-
             $validatedData = $request->validate([
-                'categoria_id' => 'required|exists:categorias,id',
+                'categoria_id' => 'nullable|exists:categorias,id',
                 'nome' => 'required|max:255',
                 'descricao' => 'required|string',
                 'cor_codigo' => 'exists:cores,codigo',
@@ -171,7 +195,7 @@ class EstampasController extends Controller
                 $estampa->informacao_extra = $validatedData['informacao_extra'];
             }
             $estampa->save();
-            return redirect()->route('estampasUser', Auth::user()) //TODO VAI PARA AS ESTAMPAS DO USER OU PARA A ESTAMPA
+            return redirect()->route('estampasUser', Auth::user())
                 ->with('alert-msg', 'Estampa foi criada com sucesso!')
                 ->with('alert-type', 'success');
 

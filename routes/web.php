@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\EstampasController;
 use App\Http\Controllers\PrecosController;
 use App\Http\Controllers\TshirtsController;
 use App\Http\Controllers\UsersController;
+use App\Models\Categoria;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     //estampas
     Route::get('precos/editar', [PrecosController::class, 'edit'])->name('precos.edit')->middleware('can:edit,App\Models\Preco');
     Route::put('precos/{precos}/update', [PrecosController::class, 'update'])->name('precos.update')->middleware('can:update,App\Models\Preco');
+
     Route::get('estampas/proprias/{user}', [EstampasController::class, 'index'])->name('estampasUser')->middleware('can:viewTshirtsProprias,user');
     Route::get('estampas/criar', [EstampasController::class, 'create'])->name('estampas.create')->middleware('can:create,App\Models\Estampa');
     Route::post('estampas/store', [EstampasController::class, 'store'])->name('estampas.store')->middleware('can:create,App\Models\Estampa');
@@ -42,6 +45,12 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::put('estampas/{estampa}/update', [EstampasController::class, 'update'])->name('estampas.update')->middleware('can:update,estampa');
     Route::get('estampas/{estampa}/editar', [EstampasController::class, 'edit'])->name('estampas.edit')->middleware('can:edit,estampa');
     Route::get('estampas/{estampa}/ver', [EstampasController::class, 'edit'])->name('estampas.view')->middleware('can:view,estampa');
+
+    Route::get('/categorias', [CategoriasController::class, 'index'])->name('categorias')->middleware('can:isStaff,App\Models\User');
+    Route::post('/categorias/store', [CategoriasController::class, 'store'])->name('categorias.store')->middleware('can:store,App\Models\Categoria');
+    Route::get('/categorias/{categoria}/update', [CategoriasController::class, 'update'])->name('categorias.update')->middleware('can:update,categoria');
+    Route::delete('/categorias/{categoria}/delete', [CategoriasController::class, 'delete'])->name('categorias.delete')->middleware('can:delete,categoria');
+    Route::post('/categorias/{categoria}/restore', [CategoriasController::class, 'restore'])->name('categorias.restore'); //->middleware('can:restore,categoria');
 
     //carrinho de compras
     Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho');
@@ -52,7 +61,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::delete('carrinho', [TshirtsController::class, 'destroy'])->name('carrinho.destroy');
 
     // admininstração de users
-    Route::get('users', [UsersController::class, 'admin'])->name('utilizadores')->middleware('can:viewAny,App\Models\User');
+    Route::get('users', [UsersController::class, 'index'])->name('utilizadores')->middleware('can:viewAny,App\Models\User');
     Route::get('users/{user}/edit', [UsersController::class, 'edit'])->name('utilizadores.edit')->middleware('can:edit,user');
     Route::get('users/create', [UsersController::class, 'create'])->name('utilizadores.create')->middleware('can:create,App\Models\User');
     Route::post('users', [UsersController::class, 'store'])->name('utilizadores.store')->middleware('can:create,App\Models\User');

@@ -12,7 +12,7 @@
             @include('estampas.partials.create-edit')
             <div class="form-group text-center">
                 <button type="submit" class="btn btn-success" name="ok">Criar</button>
-                <a href="{{route('estampas.create')}}" class="btn btn-secondary">Cancelar</a>
+                <a href="{{ URL::previous() }}" class="btn btn-secondary">Cancelar</a>
             </div>
         </div>
     </div>
