@@ -22,9 +22,9 @@
     <thead>
         <tr>
             <th>Id da Estampa</th>
-            <th>Cor da T-shirt</th>
             <th>Quantidade</th>
             <th>Tamanho</th>
+            <th>Cor</th>
             <th>Preço uni.</th>
             <th>SubTotal</th>
             <th></th>
@@ -35,12 +35,12 @@
     <tbody>
     @foreach ($carrinho as $row)
     <tr>
+        <td>{{ $row['estampa_id'] }} </td>
         <td>{{ $row['quantidade'] }} </td>
-        <td>{{ $row['cor_codigo'] }} </td>
         <td>{{ $row['tamanho'] }} </td>
-        <td>{{ $row['semestre'] }} </td>
-        <td>{{ $row['abreviatura'] }} </td>
-        <td>{{ $row['nome'] }} </td>
+        <td>{{ $row['cor_codigo'] }} </td>
+        <td>{{ $row['preco_un'] }} </td>
+        <td>{{ $row['subtotal'] }} </td>
         <td>
             <form action="{{route('carrinho.update_tshirt', $row['id'])}}" method="POST">
                 @csrf

@@ -7,10 +7,6 @@
             <input type="number" id="valorDesconto" value="{{Route::currentRouteName()=='estampas.edit' ? $precos->preco_un_proprio_desconto : $precos->preco_un_catalogo_desconto}}" hidden>
             <input type="number" id="valorSemDesconto" value="{{Route::currentRouteName()=='estampas.edit' ? $precos->preco_un_proprio : $precos->preco_un_catalogo}}" hidden>
             <div class="modal-header">
-                <!--<form action="{{route('carrinho.store_tshirt', $tshirt)}}" method="POST">
-                    @csrf
-                    <input type="submit" value="Adicionar ao carrinho">
-                </form>-->
                 <h5 class="modal-title" id="exampleModalLongTitle">
                     <i class="fa fa-shopping-cart"></i> Adicionar ao carrinho</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -24,7 +20,8 @@
                     <hr>
                     <p class="mb-0">Para adicionar ao carrinho clique em "Confirmar".</p>
                 </div>
-                <form action="{{route('estampas')}}" id="formAdicionarAoCarrinho">
+                <form method="POST" action="{{route('carrinho.store_tshirt', ['estampa' => $estampa])}}" id="formAdicionarAoCarrinho">
+                @csrf
                 <div class="row">
                     <div class="form-group col-4">
                         <label for="inputTamanho">Tamanho</label>
@@ -78,7 +75,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" form="formAdicionarAoCarrinho">Confirmar</button>
+                <button type="submit" class="btn btn-primary" form="formAdicionarAoCarrinho">Confirmar</button>
             </div>
         </div>
     </div>

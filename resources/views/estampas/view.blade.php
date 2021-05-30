@@ -22,7 +22,7 @@
                         <img id="colorInputCor" style="width: 16px; height: 16px; background-color: #{{$cor->codigo}}" />
                     </span>
                 </div>
-                <select class="form-control" name="cor_codigo" id="inputCor" data-live-search="true">
+                <select form="formAdicionarAoCarrinho" class="form-control" name="cor_codigo" id="inputCor" data-live-search="true">
                     <!--<option value="" selected>Escolher cor...</option>-->
                     @foreach ($cores as $abr => $nome)
                     <option value={{$abr}} {{$abr == old('cor_codigo', $cor->codigo) ? 'selected' : ''}}>{{$nome}}</option>
@@ -34,7 +34,6 @@
             @enderror
         </div>
     </div>
-
     <div class="row d-flex justify-content-center mt-5">
         <div class="form-group">
             <a href="" class="btn btn-info" data-toggle="modal" data-target="#adicionarAoCarrinhoModal">

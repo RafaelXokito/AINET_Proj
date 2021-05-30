@@ -78,6 +78,7 @@ class EstampasController extends Controller
         $inputRotacao = '0';
         $inputOpacidade = '100';
 
+
         if ($estampa->informacao_extra != null) {
             $result = json_decode($estampa->informacao_extra, true);
 
@@ -85,7 +86,10 @@ class EstampasController extends Controller
             $inputPosicao = $result['inputPosicao'];
             $inputRotacao = $result['inputRotacao'];
             $inputOpacidade = $result['inputOpacidade'];
+
         }
+
+
 
         if ($estampa->cliente_id == null) {
             return view('estampas.view')

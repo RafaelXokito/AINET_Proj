@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estampa;
+use App\Models\Preco;
 use App\Models\Tshirt;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 
 class TshirtsController extends Controller
 {
@@ -15,17 +18,50 @@ class TshirtsController extends Controller
             ->with('carrinho', session('carrinho') ?? []);
     }
 
-    public function store_tshirt(Request $request, Tshirt $tshirt)
+    public function store_tshirt(Request $request, Estampa $estampa)
     {
+        $previusRoute = app('router')->getRoutes(url()->previous())->match(app('request')->create(url()->previous()))->getName();
+
+        $validatedData = $request->validate([
+            'cor_codigo' => 'required|exists:cores,codigo',
+            'tamanho' => 'required|in:XS,S,M,L,XL',
+            'quantidade' => 'required|min:0|numeric',
+        ]);
+
+
+        $preco_un = 0;
+        $preco_subotal = 0;
+        $precos = Preco::get()->first();
+
+        if ($previusRoute == 'estampas.edit') {
+            if ($validatedData['quantidade'] >= $precos->quantidade_desconto) {
+                $preco_un = $precos->preco_un_proprio_desconto;
+            } else {
+                $preco_un = $precos->preco_un_proprio;
+            }
+            $preco_subotal = $preco_un * $validatedData['quantidade'];
+        }
+
+        if ($previusRoute == 'estampas.view') {
+            if ($validatedData['quantidade'] >= $precos->quantidade_desconto) {
+                 $preco_un = $precos->preco_un_catalogo_desconto;
+            } else {
+                 $preco_un = $precos->preco_un_catalogo;
+            }
+            $preco_subotal = $preco_un * $validatedData['quantidade'];
+        }
+
+
         $carrinho = $request->session()->get('carrinho', []);
-        $qtd = ($carrinho[$tshirt->id]['qtd'] ?? 0) + 1;
-        $carrinho[$tshirt->id] = [
-            'estampa_id' => $tshirt->estampa_id,
-            'qtd' => $qtd,
-            'tamanho' => $tshirt->tamanho,
-            'cor_codigo' => $tshirt->cor_codigo,
-            'preco_un' => $tshirt->preco_un,
-            'subtotal' => $tshirt->subtotal,
+        $qtd = ($carrinho[$estampa->id]['qtd'] ?? 0);
+        $carrinho[$estampa->id] = [
+            'id' => $estampa->id,
+            'estampa_id' => $estampa->id,
+            'quantidade' => $qtd+$validatedData['quantidade'],
+            'tamanho' => $validatedData['tamanho'],
+            'cor_codigo' => $validatedData['cor_codigo'],
+            'preco_un' => $preco_un,
+            'subtotal' => $preco_subotal,
         ];
         $request->session()->put('carrinho', $carrinho);
         return back()

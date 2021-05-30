@@ -24,7 +24,7 @@
                                 <img id="colorInputCor" style="width: 16px; height: 16px; background-color: #{{$cor->codigo}}" />
                              </span>
                         </div>
-                        <select class="form-control" name="cor_codigo" id="inputCor">
+                        <select form="formAdicionarAoCarrinho" class="form-control" name="cor_codigo" id="inputCor">
                             <!--<option value="" selected>Escolher cor...</option>-->
                             @foreach ($cores as $abr => $nome)
                             <option value={{$abr}} {{$abr == old('cor_codigo', $cor->codigo) ? 'selected' : ''}}>{{$nome}}</option>
@@ -47,7 +47,7 @@
                             </span>
                         </div>
                     </div>
-                    @error('cor_codigo')
+                    @error('inputOpacidade')
                         <div class="small text-danger">{{$message}}</div>
                     @enderror
                 </div>
@@ -97,7 +97,7 @@
                             </span>
                         </div>
                     </div>
-                    @error('cor_codigo')
+                    @error('inputRotacao')
                         <div class="small text-danger">{{$message}}</div>
                     @enderror
                 </div>

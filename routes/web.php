@@ -65,9 +65,9 @@ Route::middleware('auth')->middleware('verified')->group( function () {
 
     //carrinho de compras
     Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho');
-    Route::post('carrinho/estampas/{estampa}', [TshirtsController::class, 'store_estampa'])->name('carrinho.store_estampa');
-    Route::put('carrinho/estampas/{estampa}', [TshirtsController::class, 'update_estampa'])->name('carrinho.update_estampa');
-    Route::delete('carrinho/estampas/{estampa}', [TshirtsController::class, 'destroy_estampa'])->name('carrinho.destroy_estampa');
+    Route::post('carrinho/{estampa}/store_tshirt', [TshirtsController::class, 'store_tshirt'])->name('carrinho.store_tshirt');
+    Route::put('carrinho/{tshirt}/update_tshirt', [TshirtsController::class, 'update_tshirt'])->name('carrinho.update_tshirt');
+    Route::delete('carrinho/{tshirt}/destroy_tshirt', [TshirtsController::class, 'destroy_tshirt'])->name('carrinho.destroy_tshirt');
     Route::post('carrinho', [TshirtsController::class, 'store'])->name('carrinho.store');
     Route::delete('carrinho', [TshirtsController::class, 'destroy'])->name('carrinho.destroy');
 
