@@ -1,13 +1,7 @@
 @extends('layout')
 @section('title','Carrinho de compras' )
 @section('content')
-<div>
-  <p>Go to <a href="{{ action([App\Http\Controllers\EmailController::class, 'index']) }}">EMail</a> page</p>
-  <p>
-    Go to <a href="{{ action([App\Http\Controllers\PlaygroundController::class, 'index']) }}">Playground</a> page
-  </p>
-  <p>Go to <a href="{{ action([App\Http\Controllers\DisciplinaController::class, 'index']) }}">Disciplinas</a> page</p>
-</div>
+
 <hr>
 <div>
   <p>
@@ -28,12 +22,13 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Quantity</th>
-            <th>Course</th>
-            <th>Year</th>
-            <th>Sem.</th>
-            <th>Abr.</th>
-            <th>Name</th>
+            <th>Foto</th>
+            <th>Nome da Estampa</th>
+            <th>Cor da T-shirt</th>
+            <th>Quantidade</th>
+            <th>Tamanho</th>
+            <th>Preço uni.</th>
+            <th>SubTotal</th>
             <th></th>
             <th></th>
             <th></th>
@@ -42,14 +37,17 @@
     <tbody>
     @foreach ($carrinho as $row)
     <tr>
-        <td>{{ $row['qtd'] }} </td>
-        <td>{{ $row['curso'] }} </td>
-        <td>{{ $row['ano'] }} </td>
+        <td>{{ $row['quantidade'] }} </td>
+        <td>{{ $row['cor_codigo'] }} </td>
+        <td>{{ $row['tamanho'] }} </td>
         <td>{{ $row['semestre'] }} </td>
         <td>{{ $row['abreviatura'] }} </td>
         <td>{{ $row['nome'] }} </td>
         <td>
-            <form action="{{route('carrinho.update_disciplina', $row['id'])}}" method="POST">
+            <img src="{{$estampa->imagem_url ? asset('storage/estampas/' . $estampa->imagem_url) : asset('img/default_img.png') }}" class="card-img-top" alt="..." style="width:40px;height:40px">
+        </td>
+        <td>
+            <form action="{{route('carrinho.update_tshirt', $row['id'])}}" method="POST">
                 @csrf
                 @method('put')
                 <input type="hidden" name="quantidade" value="1">
@@ -74,6 +72,7 @@
         </td>
     </tr>
     @endforeach
+
     </tbody>
 </table>
-
+@endsection

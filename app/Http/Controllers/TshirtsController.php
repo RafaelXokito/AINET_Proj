@@ -31,28 +31,27 @@ class TshirtsController extends Controller
             ->with('alert-type', 'success');
     }
 
-    public function update_disciplina(Request $request, Tshirt $tshirt)
+    public function update_tshirt(Request $request, Tshirt $tshirt)
     {
         $carrinho = $request->session()->get('carrinho', []);
         $qtd = $carrinho[$tshirt->id]['qtd'] ?? 0;
         $qtd += $request->quantidade;
         if ($request->quantidade < 0) {
-            $msg = 'Foram removidas ' . -$request->quantidade . ' inscrições à tshirt "' . $tshirt->nome . '"! Quantidade de inscrições atuais = ' .  $qtd;
+            $msg = 'Foram removidas ' . $request->quantidade . ' tshirts! Quantidade atual = ' .  $qtd;
         } elseif ($request->quantidade > 0) {
-            $msg = 'Foram adicionadas ' . $request->quantidade . ' inscrições à tshirt "' . $tshirt->nome . '"! Quantidade de inscrições atuais = ' .  $qtd;
+            $msg = 'Foram adicionadas ' . $request->quantidade . ' tshirts! Quantidade atual = ' .  $qtd;
         }
         if ($qtd <= 0) {
             unset($carrinho[$tshirt->id]);
-            $msg = 'Foram removidas todas as inscrições à tshirt "' . $tshirt->nome . '"';
+            $msg = 'Foram removidas todas as tshirts escolhidas.';
         } else {
             $carrinho[$tshirt->id] = [
                 'id' => $tshirt->id,
                 'qtd' => $qtd,
-                'abreviatura' => $tshirt->abreviatura,
-                'nome' => $tshirt->nome,
-                'curso' => $tshirt->curso,
-                'ano' => $tshirt->ano,
-                'semestre' => $tshirt->semestre,
+                'cor_codigo' => $tshirt->cor_codigo,
+                'tamanho' => $tshirt->tamanho,
+                'preco_un' => $tshirt->preco_un,
+                'subtotal' => $tshirt->subtotal,
             ];
         }
         $request->session()->put('carrinho', $carrinho);
@@ -61,18 +60,18 @@ class TshirtsController extends Controller
             ->with('alert-type', 'success');
     }
 
-    public function destroy_disciplina(Request $request, Tshirt $tshirt)
+    public function destroy_tshirt(Request $request, Tshirt $tshirt)
     {
         $carrinho = $request->session()->get('carrinho', []);
         if (array_key_exists($tshirt->id, $carrinho)) {
             unset($carrinho[$tshirt->id]);
             $request->session()->put('carrinho', $carrinho);
             return back()
-                ->with('alert-msg', 'Foram removidas todas as inscrições à tshirt "' . $tshirt->nome . '"')
+                ->with('alert-msg', 'Foram removidas as tshirts escolhidas')
                 ->with('alert-type', 'success');
         }
         return back()
-            ->with('alert-msg', 'A tshirt "' . $tshirt->nome . '" já não tinha inscrições no carrinho!')
+            ->with('alert-msg', 'A tshirt já não existia no carrinho!')
             ->with('alert-type', 'warning');
     }
 
@@ -88,7 +87,7 @@ class TshirtsController extends Controller
     {
         $request->session()->forget('carrinho');
         return back()
-            ->with('alert-msg', 'Carrinho foi limpo!')
+            ->with('alert-msg', 'O carrinho foi limpo!')
             ->with('alert-type', 'danger');
     }
 }
