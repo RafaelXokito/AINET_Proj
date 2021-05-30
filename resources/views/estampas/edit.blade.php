@@ -40,7 +40,7 @@
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text  border-0" id="inputOpacidadeValue">
-                                {{old('inputOpacidade', $inputOpacidade) ? : '100'}}
+                                {{old('inputOpacidade', $inputOpacidade) ? : '100'}}%
                              </span>
                             <span class="input-group-text  border-0 rounded-right" id="">
                                 <input type="range" value="{{old('inputOpacidade', $inputOpacidade) ?? '100'}}" class="form-range" id="inputOpacidade" name="inputOpacidade" oninput="inputOpacidadeOnInput(this.value)" onchange="inputOpacidadeChange(this.value)" >

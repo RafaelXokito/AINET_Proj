@@ -108,6 +108,16 @@
                 </li>
                 @endcan
 
+                @can('viewAny', App\Models\Cores::class)
+                <!-- Nav Item -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('cores')}}">
+                        <i class="fas fa-palette"></i>
+                        <span>Cores</span>
+                    </a>
+                </li>
+                @endcan
+
             @endcan
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
