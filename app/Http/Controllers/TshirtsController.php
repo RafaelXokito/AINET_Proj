@@ -65,7 +65,7 @@ class TshirtsController extends Controller
         ];
         $request->session()->put('carrinho', $carrinho);
         return back()
-            ->with('alert-msg', 'Foi adicionada uma tshirt ao carrinho! Quantidade = ' .  $qtd)
+            ->with('alert-msg', 'Foi adicionada uma tshirt ao carrinho! Quantidade = ' .  $validatedData['quantidade'])
             ->with('alert-type', 'success');
     }
 
