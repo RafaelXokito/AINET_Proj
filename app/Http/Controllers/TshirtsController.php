@@ -51,11 +51,11 @@ class TshirtsController extends Controller
             $preco_subotal = $preco_un * $validatedData['quantidade'];
         }
 
-
+        $key = $estampa->id . '#' . $validatedData['tamanho'] . '#' . $validatedData['cor_codigo'];
         $carrinho = $request->session()->get('carrinho', []);
-        $qtd = ($carrinho[$estampa->id]['qtd'] ?? 0);
-        $carrinho[$estampa->id] = [
-            'id' => $estampa->id,
+        $qtd = ($carrinho[$key]['quantidade'] ?? 0);
+        $carrinho[$key] = [
+            'id' => $key,
             'estampa_id' => $estampa->id,
             'quantidade' => $qtd+$validatedData['quantidade'],
             'tamanho' => $validatedData['tamanho'],
