@@ -1,7 +1,6 @@
 @extends('layout')
 @section('title','Carrinho de compras' )
 @section('content')
-
 <hr>
 <div>
   <p>
@@ -22,8 +21,7 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Foto</th>
-            <th>Nome da Estampa</th>
+            <th>Id da Estampa</th>
             <th>Cor da T-shirt</th>
             <th>Quantidade</th>
             <th>Tamanho</th>
@@ -44,9 +42,6 @@
         <td>{{ $row['abreviatura'] }} </td>
         <td>{{ $row['nome'] }} </td>
         <td>
-            <img src="{{$estampa->imagem_url ? asset('storage/estampas/' . $estampa->imagem_url) : asset('img/default_img.png') }}" class="card-img-top" alt="..." style="width:40px;height:40px">
-        </td>
-        <td>
             <form action="{{route('carrinho.update_tshirt', $row['id'])}}" method="POST">
                 @csrf
                 @method('put')
@@ -55,7 +50,7 @@
             </form>
         </td>
         <td>
-            <form action="{{route('carrinho.update_disciplina', $row['id'])}}" method="POST">
+            <form action="{{route('carrinho.update_tshirt', $row['id'])}}" method="POST">
                 @csrf
                 @method('put')
                 <input type="hidden" name="quantidade" value="-1">
@@ -63,16 +58,14 @@
             </form>
         </td>
         <td>
-            <form action="{{route('carrinho.destroy_disciplina', $row['id'])}}" method="POST">
+            <form action="{{route('carrinho.destroy_tshirt', $row['id'])}}" method="POST">
                 @csrf
                 @method('delete')
                 <input type="submit" value="Remove">
             </form>
-
         </td>
     </tr>
     @endforeach
-
     </tbody>
 </table>
 @endsection

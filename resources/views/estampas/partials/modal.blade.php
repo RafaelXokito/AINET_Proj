@@ -7,7 +7,12 @@
             <input type="number" id="valorDesconto" value="{{Route::currentRouteName()=='estampas.edit' ? $precos->preco_un_proprio_desconto : $precos->preco_un_catalogo_desconto}}" hidden>
             <input type="number" id="valorSemDesconto" value="{{Route::currentRouteName()=='estampas.edit' ? $precos->preco_un_proprio : $precos->preco_un_catalogo}}" hidden>
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle"><i class="fa fa-shopping-cart"></i> Adicionar ao carrinho</h5>
+                <!--<form action="{{route('carrinho.store_tshirt', $tshirt)}}" method="POST">
+                    @csrf
+                    <input type="submit" value="Adicionar ao carrinho">
+                </form>-->
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                    <i class="fa fa-shopping-cart"></i> Adicionar ao carrinho</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>

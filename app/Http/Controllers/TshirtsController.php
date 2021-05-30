@@ -20,14 +20,16 @@ class TshirtsController extends Controller
         $carrinho = $request->session()->get('carrinho', []);
         $qtd = ($carrinho[$tshirt->id]['qtd'] ?? 0) + 1;
         $carrinho[$tshirt->id] = [
-            'id' => $tshirt->id,
+            'estampa_id' => $tshirt->estampa_id,
             'qtd' => $qtd,
-            'abreviatura' => $tshirt->abreviatura,
-            'nome' => $tshirt->nome,
+            'tamanho' => $tshirt->tamanho,
+            'cor_codigo' => $tshirt->cor_codigo,
+            'preco_un' => $tshirt->preco_un,
+            'subtotal' => $tshirt->subtotal,
         ];
         $request->session()->put('carrinho', $carrinho);
         return back()
-            ->with('alert-msg', 'Foi adicionada uma inscrição à tshirt "' . $tshirt->nome . '" ao carrinho! Quantidade de inscrições = ' .  $qtd)
+            ->with('alert-msg', 'Foi adicionada uma tshirt ao carrinho! Quantidade = ' .  $qtd)
             ->with('alert-type', 'success');
     }
 
@@ -47,9 +49,10 @@ class TshirtsController extends Controller
         } else {
             $carrinho[$tshirt->id] = [
                 'id' => $tshirt->id,
+                'estampa_id' => $tshirt->estampa_id,
                 'qtd' => $qtd,
-                'cor_codigo' => $tshirt->cor_codigo,
                 'tamanho' => $tshirt->tamanho,
+                'cor_codigo' => $tshirt->cor_codigo,
                 'preco_un' => $tshirt->preco_un,
                 'subtotal' => $tshirt->subtotal,
             ];
