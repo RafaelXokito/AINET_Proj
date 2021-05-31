@@ -62,18 +62,19 @@ class EstampaPolicy
         return false;
     }
 
-    public function delete(User $user, Estampa $estampa)
+    public function delete(User $user)
     {
         return false;
     }
 
-    public function restore(User $user, Estampa $estampa)
+    public function restore(User $user)
     {
-        //
+        return false;
+
     }
 
-    public function forceDelete(User $user, Noticia $noticia)
+    public function forceDelete(User $user)
     {
-        //
+        return false;
     }
 }

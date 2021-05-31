@@ -47,18 +47,20 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::put('estampas/{estampa}/update', [EstampasController::class, 'update'])->name('estampas.update')->middleware('can:update,estampa');
     Route::get('estampas/{estampa}/editar', [EstampasController::class, 'edit'])->name('estampas.edit')->middleware('can:edit,estampa');
     Route::get('estampas/{estampa}/ver', [EstampasController::class, 'edit'])->name('estampas.view')->middleware('can:view,estampa');
+    Route::delete('/estampas/{estampa}/delete', [EstampasController::class, 'delete'])->name('estampas.delete')->middleware('can:delete,estampa');
+    Route::post('/estampas/{id}/restore', [EstampasController::class, 'restore'])->name('estampas.restore'); //não tem middleware pois tem o authorize no controller
 
     //categorias
     Route::get('/categorias', [CategoriasController::class, 'index'])->name('categorias')->middleware('can:isStaff,App\Models\User');
     Route::post('/categorias/store', [CategoriasController::class, 'store'])->name('categorias.store')->middleware('can:store,App\Models\Categoria');
-    Route::get('/categorias/{categoria}/update', [CategoriasController::class, 'update'])->name('categorias.update')->middleware('can:update,categoria');
-    Route::delete('/categorias/{categoria}/delete', [CategoriasController::class, 'delete'])->name('categorias.delete')->middleware('can:delete,categoria');
+    Route::put('/categorias/{categoria}/update', [CategoriasController::class, 'update'])->name('categorias.update')->middleware('can:update,App\Models\Categoria');
+    Route::delete('/categorias/{categoria}/delete', [CategoriasController::class, 'delete'])->name('categorias.delete')->middleware('can:delete,App\Models\Categoria');
     Route::post('/categorias/{id}/restore', [CategoriasController::class, 'restore'])->name('categorias.restore'); //não tem middleware pois tem o authorize no controller
 
     //cores
     Route::get('/cores', [CoresController::class, 'index'])->name('cores')->middleware('can:isStaff,App\Models\User');
     Route::post('/cores/store', [CoresController::class, 'store'])->name('cores.store')->middleware('can:store,App\Models\Cor');
-    Route::post('/cores/{cor}/update', [CoresController::class, 'update'])->name('cores.update')->middleware('can:update,App\Models\Cor');
+    Route::put('/cores/{cor}/update', [CoresController::class, 'update'])->name('cores.update')->middleware('can:update,App\Models\Cor');
     Route::delete('/cores/{cor}/delete', [CoresController::class, 'delete'])->name('cores.delete')->middleware('can:delete,App\Models\Cor');
     Route::post('/cores/{codigo_cor}/restore', [CoresController::class, 'restore'])->name('cores.restore'); //não tem middleware pois tem o authorize no controller
 

@@ -126,11 +126,11 @@ class CoresController extends Controller
         try {
             $cor->restore();
             return redirect()->route('cores')
-                    ->with('alert-msg', 'Cor "' . $cor->nome . '" foi recuperado com sucesso!')
+                    ->with('alert-msg', 'Cor "' . $cor->nome . '" foi recuperada com sucesso!')
                     ->with('alert-type', 'success');
         } catch (\Throwable $th) {
             return redirect()->route('cores')
-                    ->with('alert-msg', 'Não foi possível restaurar o Cor "' . $cor->nome . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-msg', 'Não foi possível restaurar a Cor "' . $cor->nome . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
         }
     }

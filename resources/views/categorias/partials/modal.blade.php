@@ -10,7 +10,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{route('categorias')}}" id="formStoreUpdate"></form>
+                <form action="{{route('categorias.store')}}" id="formStore" method="POST">@csrf</form>
+                <form action="{{route('categorias')}}" id="formUpdate" method="POST">@csrf @method('PUT')</form>
                 <div class="row">
                     <div class="form-group col">
                         <label for="inputNomeModal">Nome</label>

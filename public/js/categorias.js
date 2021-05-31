@@ -1,14 +1,17 @@
 
-var categoriasUrl = $('#formStoreUpdate').attr('action');
+var categoriasUrl = $('#formUpdate').attr('action');
 function alterarOnClick(id, nome) {
-    $('#formStoreUpdate').attr('action', categoriasUrl +'/'+id+'/update');
+    $('#inputNomeModal').attr('form', 'formUpdate');
+    $('#modalCriarBtn').attr('form', 'formUpdate');
+    $('#formUpdate').attr('action', categoriasUrl +'/'+id+'/update');
     $('#modalTitle').html('Alterar Categoria');
     $('#modalCriarBtn').html('Alterar');
     $('#inputNomeModal').val(nome);
 };
 
 function criarOnClick() {
-    $('#formStoreUpdate').attr('action', categoriasUrl +'/store');
+    $('#inputNomeModal').attr('form', 'formStore');
+    $('#modalCriarBtn').attr('form', 'formStore');
     $('#modalTitle').html('Criar Categoria');
     $('#modalCriarBtn').html('Criar');
     $('#inputNomeModal').val('');

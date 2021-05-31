@@ -13,6 +13,13 @@ class CorPolicy
 
     // If user is admin, authorization check always return true
     // Admin user is granted all previleges over "Disciplina" entity
+    public function before($user, $ability)
+    {
+        if ($user->tipo == 'A') {
+            return true;
+        }
+    }
+
     public function viewAny(User $user)
     {
         return true;
@@ -20,54 +27,36 @@ class CorPolicy
 
     public function create(User $user)
     {
-        if ($user->tipo == 'A') {
-            return true;
-        }
         return false;
     }
 
     public function store(User $user)
     {
-        if ($user->tipo == 'A') {
-            return true;
-        }
         return false;
     }
 
     public function edit(User $user)
     {
-        if ($user->tipo == 'A') {
-            return true;
-        }
         return false;
     }
 
     public function update(User $user)
     {
-        if ($user->tipo == 'A') {
-            return true;
-        }
         return false;
     }
 
     public function delete(User $user)
     {
-        if ($user->tipo == 'A') {
-            return true;
-        }
         return false;
     }
 
     public function restore(User $user)
     {
-        if ($user->tipo == 'A') {
-            return true;
-        }
         return false;
     }
 
     public function forceDelete(User $user)
     {
-        //
+        return false;
     }
 }

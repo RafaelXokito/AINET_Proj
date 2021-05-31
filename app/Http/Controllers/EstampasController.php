@@ -23,6 +23,8 @@ class EstampasController extends Controller
         $nomeSelected = $request->nome ?? '';
         $descricaoSelected = $request->descricao ?? '';
         $categoriaSelected = $request->categoria ?? '';
+        $apagadoSelected = $request->apagado ?? '';
+
         $listaCategorias = Categoria::orderBy('nome')->pluck('nome', 'id');
 
         $qry = Estampa::query();
@@ -43,6 +45,11 @@ class EstampasController extends Controller
                 $qry->where('categoria_id', '=', $categoriaSelected);
             }
         }
+        if ($apagadoSelected == 'deleted') {
+            $qry->onlyTrashed();
+        } elseif ($apagadoSelected == 'all') {
+            $qry->withTrashed();
+        }
         $estampas = $qry->paginate(10);
 
         return view('estampas.index')
@@ -50,7 +57,9 @@ class EstampasController extends Controller
             ->withNome($nomeSelected)
             ->withCategoria($categoriaSelected)
             ->withCategorias($listaCategorias)
-            ->withEstampas($estampas);
+            ->withEstampas($estampas)
+            ->withApagado($apagadoSelected);
+
     }
 
     public function create()
@@ -237,6 +246,48 @@ class EstampasController extends Controller
                 ->with('alert-type', 'danger');
         }
     }
+
+    public function delete(Estampa $estampa)
+    {
+        $oldName = $estampa->nome;
+        $oldEstampaID = $estampa->id;
+        try {
+            $estampa->delete();
+            Estampa::destroy($oldEstampaID);
+            return redirect()->route('estampas')
+                ->with('alert-msg', 'Estampa "' . $oldName . '" foi apagado com sucesso!')
+                ->with('alert-type', 'success');
+        } catch (\Throwable $th) {
+            // $th é a exceção lançada pelo sistema - por norma, erro ocorre no servidor BD MySQL
+            // Descomentar a próxima linha para verificar qual a informação que a exceção tem
+
+            if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
+                return redirect()->route('estampas')
+                    ->with('alert-msg', 'Não foi possível apagar o Estampa "' . $oldName . '", porque este user já está em uso!')
+                    ->with('alert-type', 'danger');
+            } else {
+                return redirect()->route('estampas')
+                    ->with('alert-msg', 'Não foi possível apagar o Estampa "' . $oldName . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-type', 'danger');
+            }
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            $estampa = Estampa::withTrashed()->findOrFail($id);
+            $estampa->restore();
+            return redirect()->route('estampas')
+                    ->with('alert-msg', 'Estampa "' . $estampa->nome . '" foi recuperado com sucesso!')
+                    ->with('alert-type', 'success');
+        } catch (\Throwable $th) {
+            return redirect()->route('estampas')
+                    ->with('alert-msg', 'Não foi possível restaurar o Estampa "' . $estampa->nome . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-type', 'danger');
+        }
+    }
+
     public function show(Estampa $estampa)
     {
         return response()->file(storage_path('app\estampas_privadas\\'.$estampa->imagem_url));

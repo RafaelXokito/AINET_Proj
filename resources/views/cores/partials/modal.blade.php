@@ -10,8 +10,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{route('cores')}}" id="formStoreUpdate" method="POST" enctype="multipart/form-data">
-                @csrf
+                <form action="{{route('cores.store')}}" id="formStore" method="POST" enctype="multipart/form-data"> @csrf </form>
+                <form action="{{route('cores')}}" id="formUpdate" method="POST" enctype="multipart/form-data"> @csrf @method('PUT')</form>
                 <div class="row">
                     <div class="col">
                         <label for="inputCodigoModal">Código</label>
@@ -19,7 +19,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="">#</span>
                         </div>
-                        <input type="text" class="form-control" placeholder="Código" form="formStoreUpdate" name="codigo" id="inputCodigoModal" >
+                        <input type="text" class="form-control" placeholder="Código" form="formStoreUpdate" name="codigo" id="inputCodigoModal" value="" >
                         </div>
                         @error('codigo')
                             <div class="small text-danger">{{$message}}</div>
@@ -28,7 +28,7 @@
                     <div class="col">
                         <div class="form-group col">
                             <label for="inputNomeModal">Nome</label>
-                            <input type="text" class="form-control" placeholder="Nome" form="formStoreUpdate" name="nome" id="inputNomeModal" >
+                            <input type="text" class="form-control" placeholder="Nome" form="formStoreUpdate" name="nome" id="inputNomeModal" value="" >
                             @error('nome')
                                 <div class="small text-danger">{{$message}}</div>
                             @enderror
@@ -54,7 +54,6 @@
                         @enderror
                     </div>
                 </div>
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

@@ -82,8 +82,9 @@ class CategoriasController extends Controller
 
     public function restore($id)
     {
+        $categoria = Categoria::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $categoria);
         try {
-            $categoria = Categoria::withTrashed()->findOrFail($id);
             $categoria->restore();
             return redirect()->route('categorias')
                     ->with('alert-msg', 'Categoria "' . $categoria->nome . '" foi recuperado com sucesso!')

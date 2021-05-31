@@ -45,24 +45,28 @@
             <tr>
                 <td>{{$categoria->nome}}</td>
                 <td>
-                    @can('edit', $categoria)
+                    @can('edit', App\Models\Categoria::class)
                         <a href="" data-toggle="modal" onclick="alterarOnClick({{$categoria->id}}, '{{$categoria->nome}}')" data-target="#createOrEditModal" class="btn btn-primary btn-sm" role="button" aria-pressed="true">Alterar</a>
                     @endcan
                 </td>
                 <td>
-                    @can('delete', $categoria)
-                        <form action="{{route('categorias.delete', ['categoria' => $categoria])}}" method="POST">
-                            @csrf
-                            @method("DELETE")
-                            <input type="submit" class="btn btn-danger btn-sm" value="Apagar">
-                        </form>
-                    @endcan
-                    @can('restore', $categoria)
-                        <form action="{{route('categorias.restore', ['id' => $categoria])}}" method="POST">
-                            @csrf
-                            <input type="submit" class="btn btn-success btn-sm" value="Restaurar">
-                        </form>
-                    @endcan
+                    @if (!$categoria->trashed())
+                        @can('delete', App\Models\Categoria::class)
+                            <form action="{{route('categorias.delete', ['categoria' => $categoria])}}" method="POST">
+                                @csrf
+                                @method("DELETE")
+                                <input type="submit" class="btn btn-danger btn-sm" value="Apagar">
+                            </form>
+                        @endcan
+                    @else
+                        @can('restore', App\Models\Categoria::class)
+                            <form action="{{route('categorias.restore', ['id' => $categoria])}}" method="POST">
+                                @csrf
+                                <input type="submit" class="btn btn-success btn-sm" value="Restaurar">
+                            </form>
+                        @endcan
+                    @endif
+
                 </td>
             </tr>
         @endforeach

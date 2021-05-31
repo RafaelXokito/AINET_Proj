@@ -1,10 +1,15 @@
 
-var coresUrl = $('#formStoreUpdate').attr('action');
+var coresUrl = $('#formUpdate').attr('action');
 var tshirtsPath = $('#inputUploadedFotoModal').attr('src');
 
 function alterarOnClick(id, nome) {
+    $('#inputCodigoModal').attr('form', 'formUpdate');
+    $('#inputNomeModal').attr('form', 'formUpdate');
+    $('#inputFotoModal').attr('form', 'formUpdate');
+    $('#modalCriarBtn').attr('form', 'formUpdate');
+
     $('#inputFotoModalLabel').html('Foto Selecionada');
-    $('#formStoreUpdate').attr('action', coresUrl +'/'+id+'/update');
+    $('#formUpdate').attr('action', coresUrl +'/'+id+'/update');
     $('#modalTitle').html('Alterar Cor');
     $('#modalCriarBtn').html('Alterar');
     $('#inputNomeModal').val(nome);
@@ -18,9 +23,13 @@ function alterarOnClick(id, nome) {
 };
 
 function criarOnClick() {
+    $('#inputCodigoModal').attr('form', 'formStore');
+    $('#inputNomeModal').attr('form', 'formStore');
+    $('#inputFotoModal').attr('form', 'formStore');
+    $('#modalCriarBtn').attr('form', 'formStore');
+
     $('#inputFotoModalLabel').html('Selecionar Foto');
     $('#inputUploadedFotoModal').attr('src', tshirtsPath);
-    $('#formStoreUpdate').attr('action', coresUrl +'/store');
     $('#modalTitle').html('Criar Cor');
     $('#modalCriarBtn').html('Criar');
     $('#inputNomeModal').val('');
