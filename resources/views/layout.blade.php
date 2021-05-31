@@ -63,7 +63,7 @@
             <!-- Nav Item -->
             <li class="nav-item {{Route::currentRouteName()=='/'? 'active': ''}}">
                 <a class="nav-link" href="{{url('/')}}">
-                    <i class="fad fa-fw fa-chart-pie"></i>
+                    <i class="fad fa-fw fa-scroll-old"></i>
                     <span>Recibos</span>
                 </a>
             </li>
@@ -85,7 +85,7 @@
                 <!-- Nav Item -->
                 <li class="nav-item {{Route::currentRouteName()=='/'? 'active': ''}}">
                     <a class="nav-link" href="{{url('/')}}">
-                        <i class="fad fa-fw fa-scroll-old"></i>
+                        <i class="fad fa-fw fa-chart-pie"></i>
                         <span>Estatísticas</span>
                     </a>
                 </li>

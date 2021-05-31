@@ -51,7 +51,7 @@
                         <a href="{{route('estampas.edit', ['estampa' => $estampa])}}" class="btn btn-primary">Ver Estampa na t-shirt</a>
                     @endif
                 </div>
-                <div class="col">
+                <div class="col-1">
                     <a href=""></a>
                 </div>
             </div>
