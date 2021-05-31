@@ -51,6 +51,15 @@ document.getElementById('inputPosicao').onchange = function() {
 };
 
 //adicionar ao carrinho
+function adicionarAoCarrinhoClick() {
+    $('#inputCor').attr('form', 'formAdicionarAoCarrinho');
+}
+
+$(function(){ // let all dom elements are loaded
+    $('#adicionarAoCarrinhoModal').on('hide.bs.modal', function (e) {
+        $('#inputCor').attr('form', 'formUpdate');
+    });
+});
 document.getElementById('inputQuantidade').onchange = function () {
 
     if (parseInt(this.value) >= parseInt($('#quantidadeDesconto').val())) {

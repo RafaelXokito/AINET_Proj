@@ -6,13 +6,10 @@ use App\Http\Requests\EstampaPost;
 use App\Mail\SendMail;
 use App\Models\Categoria;
 use App\Models\Cor;
-use App\Models\Cores;
 use Illuminate\Http\Request;
 use App\Models\Estampa;
 use App\Models\Preco;
-use App\Models\Tshirt;
 use App\Models\User;
-use App\Policies\EstampaPolicy;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -68,8 +65,8 @@ class EstampasController extends Controller
     public function edit(Estampa $estampa)
     {
         $listaCategorias = Categoria::orderBy('nome')->pluck('nome', 'id');
-        $listaCores = Cores::pluck('nome', 'codigo');
-        $cor = Cores::first();
+        $listaCores = Cor::pluck('nome', 'codigo');
+        $cor = Cor::first();
         $precos = Preco::first();
 
         $estampa = Estampa::findOrFail($estampa->id);
@@ -82,7 +79,7 @@ class EstampasController extends Controller
         if ($estampa->informacao_extra != null) {
             $result = json_decode($estampa->informacao_extra, true);
 
-            $cor = Cores::where('codigo', $result['cor_codigo'])->get()->first();
+            $cor = Cor::where('codigo', $result['cor_codigo'])->get()->first();
             $inputPosicao = $result['inputPosicao'];
             $inputRotacao = $result['inputRotacao'];
             $inputOpacidade = $result['inputOpacidade'];
@@ -91,7 +88,7 @@ class EstampasController extends Controller
 
 
 
-        if ($estampa->cliente_id == null) {
+        if ($estampa->cliente_id == null && Auth::user()->tipo != 'A') {
             return view('estampas.view')
                 ->withPrecos($precos)
                 ->withInputPosicao($inputPosicao)
@@ -116,10 +113,10 @@ class EstampasController extends Controller
 
     public function update(Request $request, Estampa $estampa)
     {
-        $cor = Cores::first();
+        $cor = Cor::first();
         $precos = Preco::first();
         $listaCategorias = Categoria::orderBy('nome')->pluck('nome', 'id');
-        $listaCores = Cores::pluck('nome', 'codigo');
+        $listaCores = Cor::pluck('nome', 'codigo');
         try {
             $validatedData = $request->validate([
                 'categoria_id' => 'nullable|exists:categorias,id',
@@ -132,15 +129,24 @@ class EstampasController extends Controller
                 'imagem_url' => 'image|max:8192',
             ]);
 
-            $cor = Cores::where('codigo', $validatedData['cor_codigo'])->get()->first();
+            $cor = Cor::where('codigo', $validatedData['cor_codigo'])->get()->first();
             $estampa = Estampa::findOrFail($estampa->id);
 
             $estampa->categoria_id = $validatedData['categoria_id'];
             $estampa->nome = $validatedData['nome'];
             $estampa->descricao = $validatedData['descricao'];
-            if ($request->has('imagem_url')) {
-                Storage::delete('estampas_privadas/'.$estampa->imagem_url);
-                $estampa->imagem_url = basename(Storage::disk('local')->putFileAs('estampas_privadas\\', $validatedData['imagem_url'], $estampa->id . "_" . uniqid() . '.png'));
+
+            if (Auth::user()->tipo != 'A') {
+
+                if ($request->has('imagem_url')) {
+                    Storage::delete('estampas_privadas/'.$estampa->imagem_url);
+                    $estampa->imagem_url = basename(Storage::disk('local')->putFileAs('estampas_privadas\\', $validatedData['imagem_url'], $estampa->id . "_" . uniqid() . '.png'));
+                }
+            } else {
+                if ($request->has('imagem_url')) {
+                    Storage::disk('public')->delete('estampas/'.$estampa->imagem_url);
+                    $estampa->imagem_url = basename(Storage::disk('public')->putFileAs('estampas\\', $validatedData['imagem_url'], $estampa->id . "_" . uniqid() . '.png'));
+                }
             }
             $estampa->informacao_extra = [
                 'cor_codigo' => $validatedData['cor_codigo'],
@@ -188,20 +194,34 @@ class EstampasController extends Controller
         try {
             $validatedData = $request->validated();
             $estampa = new Estampa;
-            $estampa->cliente_id =  Auth::user()->id;
+            if (Auth::user()->tipo == 'C') {
+                $estampa->cliente_id =  Auth::user()->id;
+                if ($request->hasFile('imagem_url')) {
+                    $estampa->imagem_url = basename(Storage::disk('local')->putFileAs('estampas_privadas\\', $validatedData['imagem_url'], $estampa->id . "_" . uniqid() . '.png'));
+                }
+            } else {
+                if ($request->hasFile('imagem_url')) {
+                    $estampa->imagem_url = basename(Storage::disk('public')->putFileAs('estampas\\', $validatedData['imagem_url'], $estampa->id . "_" . uniqid() . '.png'));
+                }
+            }
             $estampa->categoria_id = $validatedData['categoria_id'];
             $estampa->nome = $validatedData['nome'];
             $estampa->descricao = $validatedData['descricao'];
-            if ($request->hasFile('imagem_url')) {
-                $estampa->imagem_url = basename(Storage::disk('local')->putFileAs('estampas_privadas\\', $validatedData['imagem_url'], $estampa->id . "_" . uniqid() . '.png'));
-            }
+
             if ($request->has('informacao_extra')) {
                 $estampa->informacao_extra = $validatedData['informacao_extra'];
             }
             $estampa->save();
-            return redirect()->route('estampasUser', Auth::user())
-                ->with('alert-msg', 'Estampa foi criada com sucesso!')
-                ->with('alert-type', 'success');
+            if (Auth::user()->tipo == 'C') {
+
+                return redirect()->route('estampasUser', Auth::user())
+                    ->with('alert-msg', 'Estampa foi criada com sucesso!')
+                    ->with('alert-type', 'success');
+            } else {
+                return redirect()->route('estampas')
+                    ->with('alert-msg', 'Estampa foi criada com sucesso!')
+                    ->with('alert-type', 'success');
+            }
 
         } catch (\Throwable $th) {
             $data = array(
@@ -241,6 +261,8 @@ class EstampasController extends Controller
             $watermark->resize($width, $height, function ($constraint) {
                 $constraint->aspectRatio();
             });
+            $watermark->resizeCanvas($watermark->width(), $watermark->height(), 'center', false, 'rgba(0, 0, 0, 0)');
+
             $watermark->rotate($rotacao);
             $watermark->opacity($opacidade);
             $img->insert($watermark, $posicao, 0, 100);

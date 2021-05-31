@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Cores;
-use App\Http\Requests\CoresPost;
+use App\Models\Cor;
+use App\Http\Requests\CorPost;
+use Illuminate\Support\Facades\Storage;
 
 class CoresController extends Controller
 {
     public function index(Request $request)
     {
-        $qry = Cores::query();
+        $qry = Cor::query();
 
         $apagadoSelected = $request->apagado ?? '';
         $nomeSelected = $request->nome ?? '';
@@ -36,37 +37,69 @@ class CoresController extends Controller
             ->withCores($listaCores);
     }
 
-    public function store(CoresPost  $request)
+    public function store(CorPost  $request)
     {
+
         $validatedData = $request->validated();
-        $newCor = new Cores;
-        $newCor->nome = $validatedData['nome'];
-        $newCor->save();
-
-        return redirect()->route('cores')
-            ->with('alert-msg', 'A categoria '.$newCor->nome.' foi criada com sucesso!')
-            ->with('alert-type', 'success');
-    }
-
-    public function update(CoresPost  $request, Cores $cor)
-    {
-        $validatedData = $request->validated();
-        $cor = Cores::findOrFail($cor->id);
-        $cor->nome = $validatedData['nome'];
-        $cor->save();
-
-        return redirect()->route('cores')
-            ->with('alert-msg', 'A categoria '.$cor->nome.' foi alterada com sucesso!')
-            ->with('alert-type', 'success');
-    }
-
-    public function delete(Cores $cores)
-    {
-        $oldName = $cores->nome;
-        $oldCorID = $cores->id;
+        $validatedFile = $request->validate(['foto' => 'required']);
         try {
-            $cores->delete();
-            Cores::destroy($oldCorID);
+            $newCor = new Cor;
+            $newCor->codigo = strtolower($validatedData['codigo']);
+            $newCor->nome = $validatedData['nome'];
+            if ($request->has('foto')) {
+                Storage::disk('public')->putFileAs('tshirt_base\\', $validatedFile['foto'], $validatedData['codigo'] . '.jpg');
+            }
+            $newCor->save();
+            return redirect()->route('cores')
+                ->with('alert-msg', 'A cor '.$newCor->nome.' foi criada com sucesso!')
+                ->with('alert-type', 'success');
+        } catch (\Throwable $th) {
+            if ($th->errorInfo[1] == 1062) {
+                return redirect()->route('cores')
+                    ->with('alert-msg', 'A cor '.$newCor->nome.' não foi criada com sucesso! O código da cor deve ser único')
+                    ->with('alert-type', 'danger');
+            }
+            return redirect()->route('cores')
+                ->with('alert-msg', 'A cor '.$newCor->nome.' não foi criada com sucesso! ' . $th->errorInfo[1])
+                ->with('alert-type', 'danger');
+        }
+    }
+
+    public function update(CorPost  $request, Cor $cor)
+    {
+        $validatedData = $request->validated();
+        try {
+
+            $cor = Cor::findOrFail(strtolower($cor->codigo));
+            $cor->codigo = strtolower($validatedData['codigo']);
+            $cor->nome = $validatedData['nome'];
+            if ($request->hasFile('foto')) {
+                Storage::disk('public')->putFileAs('tshirt_base\\', $validatedData['foto'], $validatedData['codigo'] . '.jpg');
+            }
+            $cor->save();
+
+            return redirect()->route('cores')
+                ->with('alert-msg', 'A cor '.$cor->nome.' foi alterada com sucesso!')
+                ->with('alert-type', 'success');
+        } catch (\Throwable $th) {
+            if ($th->errorInfo[1] == 1062) {
+                return redirect()->route('cores')
+                    ->with('alert-msg', 'A cor '.$cor->nome.' não foi alterada com sucesso! O código da cor deve ser único')
+                    ->with('alert-type', 'danger');
+            }
+            return redirect()->route('cores')
+                ->with('alert-msg', 'A cor '.$cor->nome.' não foi alterada com sucesso! ' . $th->errorInfo[1])
+                ->with('alert-type', 'danger');
+        }
+    }
+
+    public function delete(Cor $cor)
+    {
+        $oldName = $cor->nome;
+        $oldCorID = $cor->codigo;
+        try {
+            $cor->delete();
+            Cor::destroy($oldCorID);
             return redirect()->route('cores')
                 ->with('alert-msg', 'Cor "' . $oldName . '" foi apagado com sucesso!')
                 ->with('alert-type', 'success');
@@ -86,10 +119,11 @@ class CoresController extends Controller
         }
     }
 
-    public function restore($id)
+    public function restore($codigo_cor)
     {
+        $cor = Cor::withTrashed()->findOrFail($codigo_cor);
+        $this->authorize('restore', $cor);
         try {
-            $cor = Cores::withTrashed()->findOrFail($id);
             $cor->restore();
             return redirect()->route('cores')
                     ->with('alert-msg', 'Cor "' . $cor->nome . '" foi recuperado com sucesso!')

@@ -41,7 +41,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item -->
-            <li class="nav-item">
+            <li class="nav-item {{Route::currentRouteName()=='estampas'? 'active': ''}}">
                 <a class="nav-link" href="{{route('estampas')}}">
                     <i class="fad fa-fw fa-book-spells"></i>
                     <span>Estampas</span>
@@ -49,17 +49,19 @@
             </li>
 
             @auth
-            <!-- Nav Item -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('estampasUser', ['user' => Auth::user()])}}">
-                    <i class="fad fa-fw fa-book-user"></i>
-                    <span>As minhas Estampas</span>
-                </a>
-            </li>
+                @cannot('isStaff', App\Models\User::class)
+                    <!-- Nav Item -->
+                    <li class="nav-item {{Route::currentRouteName()=='estampasUser'? 'active': ''}}">
+                        <a class="nav-link" href="{{route('estampasUser', ['user' => Auth::user()])}}">
+                            <i class="fad fa-fw fa-book-user"></i>
+                            <span>As minhas Estampas</span>
+                        </a>
+                    </li>
+                @endcannot
             @endauth
 
             <!-- Nav Item -->
-            <li class="nav-item">
+            <li class="nav-item {{Route::currentRouteName()=='/'? 'active': ''}}">
                 <a class="nav-link" href="{{url('/')}}">
                     <i class="fad fa-fw fa-chart-pie"></i>
                     <span>Recibos</span>
@@ -72,7 +74,7 @@
 
                 @can('viewAny', App\Models\User::class)
                 <!-- Nav Item -->
-                <li class="nav-item">
+                <li class="nav-item {{Route::currentRouteName()=='utilizadores'? 'active': ''}}">
                     <a class="nav-link" href="{{route('utilizadores')}}">
                         <i class="fad fa-fw fa-user-astronaut"></i>
                         <span>Gestão de Utilizadores</span>
@@ -81,7 +83,7 @@
                 @endcan
 
                 <!-- Nav Item -->
-                <li class="nav-item">
+                <li class="nav-item {{Route::currentRouteName()=='/'? 'active': ''}}">
                     <a class="nav-link" href="{{url('/')}}">
                         <i class="fad fa-fw fa-scroll-old"></i>
                         <span>Estatísticas</span>
@@ -90,7 +92,7 @@
 
                 @can('edit', App\Models\Preco::class)
                 <!-- Nav Item -->
-                <li class="nav-item">
+                <li class="nav-item {{Route::currentRouteName()=='precos.edit'? 'active': ''}}">
                     <a class="nav-link" href="{{route('precos.edit')}}">
                         <i class="fad fa-fw fa-tags"></i>
                         <span>Preços Tshirts</span>
@@ -100,7 +102,7 @@
 
                 @can('viewAny', App\Models\Categoria::class)
                 <!-- Nav Item -->
-                <li class="nav-item">
+                <li class="nav-item {{Route::currentRouteName()=='categorias'? 'active': ''}}">
                     <a class="nav-link" href="{{route('categorias')}}">
                         <i class="fad fa-boxes"></i>
                         <span>Categorias</span>
@@ -108,9 +110,9 @@
                 </li>
                 @endcan
 
-                @can('viewAny', App\Models\Cores::class)
+                @can('viewAny', App\Models\Cor::class)
                 <!-- Nav Item -->
-                <li class="nav-item">
+                <li class="nav-item {{Route::currentRouteName()=='cores'? 'active': ''}}">
                     <a class="nav-link" href="{{route('cores')}}">
                         <i class="fas fa-palette"></i>
                         <span>Cores</span>
@@ -152,12 +154,14 @@
                     @endif
 
                     @auth
-                    @if (Route::currentRouteName()=='estampas')
-                    <a class="nav-link border-left" href="{{route('estampasUser', ['user' => Auth::user()])}}">
-                        <i class="fad fa-fw fa-book-user"></i>
-                        <span>As minhas Estampas</span>
-                    </a>
-                    @endif
+                        @if (Route::currentRouteName()=='estampas')
+                            @cannot('isStaff', App\Models\User::class)
+                                <a class="nav-link border-left" href="{{route('estampasUser', ['user' => Auth::user()])}}">
+                                    <i class="fad fa-fw fa-book-user"></i>
+                                    <span>As minhas Estampas</span>
+                                </a>
+                            @endcannot
+                        @endif
                     @endauth
 
                     <ul class="navbar-nav ml-auto">

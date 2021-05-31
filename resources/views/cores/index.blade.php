@@ -56,19 +56,22 @@
                     @endcan
                 </td>
                 <td>
-                    @can('delete', $cor)
-                        <form action="{{route('cores.delete', ['cor_codigo' => $cor->codigo])}}" method="POST">
+                    @if (!$cor->trashed())
+                        @can('delete', $cor)
+                        <form action="{{route('cores.delete', ['cor' => $cor])}}" method="POST">
                             @csrf
                             @method("DELETE")
                             <input type="submit" class="btn btn-danger btn-sm" value="Apagar">
                         </form>
-                    @endcan
-                    @can('restore', $cor)
-                        <form action="{{route('cores.restore', ['cor_codigo' => $cor->codigo])}}" method="POST">
+                        @endcan
+                    @else
+                        @can('restore', $cor)
+                        <form action="{{route('cores.restore', ['codigo_cor' => $cor->codigo])}}" method="POST">
                             @csrf
                             <input type="submit" class="btn btn-success btn-sm" value="Restaurar">
                         </form>
-                    @endcan
+                        @endcan
+                    @endif
                 </td>
             </tr>
         @endforeach

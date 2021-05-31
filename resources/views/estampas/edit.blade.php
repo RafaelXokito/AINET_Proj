@@ -5,7 +5,7 @@
 <br>
 <hr>
 <br>
-<form method="POST" action="{{route('estampas.update', ['estampa' => $estampa])}}" class="form-group" enctype="multipart/form-data">
+<form method="POST" action="{{route('estampas.update', ['estampa' => $estampa])}}" id="formUpdate" class="form-group" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="row">
@@ -24,7 +24,7 @@
                                 <img id="colorInputCor" style="width: 16px; height: 16px; background-color: #{{$cor->codigo}}" />
                              </span>
                         </div>
-                        <select form="formAdicionarAoCarrinho" class="form-control" name="cor_codigo" id="inputCor">
+                        <select form="formUpdate" class="form-control" name="cor_codigo" id="inputCor">
                             <!--<option value="" selected>Escolher cor...</option>-->
                             @foreach ($cores as $abr => $nome)
                             <option value={{$abr}} {{$abr == old('cor_codigo', $cor->codigo) ? 'selected' : ''}}>{{$nome}}</option>
@@ -110,11 +110,14 @@
     </div>
     <div class="row d-flex justify-content-center mt-5">
         <div class="form-group">
-            <button type="submit" class="btn btn-success" name="ok">Guardar</button>
-            <a href="" class="btn btn-info" data-toggle="modal" data-target="#adicionarAoCarrinhoModal">
-                <i class="fa fa-shopping-cart"></i>
-                Adicionar ao carrinho
-            </a>
+            <button type="submit" form="formUpdate" class="btn btn-success" name="ok">Guardar</button>
+            @cannot('isStaff', App\Models\User::class)
+                <a href="" onclick="adicionarAoCarrinhoClick()" class="btn btn-info" data-toggle="modal" data-target="#adicionarAoCarrinhoModal">
+                    <i class="fa fa-shopping-cart"></i>
+                    Adicionar ao carrinho
+                </a>
+            @endcannot
+
             <a href="{{route('estampas.edit', ['estampa' => $estampa])}}" class="btn btn-secondary">Cancelar</a>
         </div>
     </div>

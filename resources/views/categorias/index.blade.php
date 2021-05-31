@@ -58,7 +58,7 @@
                         </form>
                     @endcan
                     @can('restore', $categoria)
-                        <form action="{{route('categorias.restore', ['categoria' => $categoria])}}" method="POST">
+                        <form action="{{route('categorias.restore', ['id' => $categoria])}}" method="POST">
                             @csrf
                             <input type="submit" class="btn btn-success btn-sm" value="Restaurar">
                         </form>

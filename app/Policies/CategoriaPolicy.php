@@ -51,7 +51,7 @@ class CategoriaPolicy
 
     public function delete(User $user, Categoria $categoria)
     {
-        if ($user->tipo == 'A' && $categoria->deleted_at == null) {
+        if ($user->tipo == 'A' && Categoria::find($categoria->id)) {
             return true;
         }
         return false;
@@ -59,9 +59,10 @@ class CategoriaPolicy
 
     public function restore(User $user, Categoria $categoria)
     {
-        if ($user->tipo == 'A' && $categoria->deleted_at != null) {
+        if ($user->tipo == 'A' && Categoria::onlyTrashed()->find($categoria->id)) {
             return true;
         }
+        return false;
     }
 
     public function forceDelete(User $user, Categoria $categoria)

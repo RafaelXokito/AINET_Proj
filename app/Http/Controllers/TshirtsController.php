@@ -33,31 +33,35 @@ class TshirtsController extends Controller
         $preco_subotal = 0;
         $precos = Preco::get()->first();
 
+
+
+
+        $key = $estampa->id . '#' . $validatedData['tamanho'] . '#' . $validatedData['cor_codigo'];
+        $carrinho = $request->session()->get('carrinho', []);
+        $qtd = ($carrinho[$key]['quantidade'] ?? 0) + $validatedData['quantidade'];
+
         if ($previusRoute == 'estampas.edit') {
-            if ($validatedData['quantidade'] >= $precos->quantidade_desconto) {
+            if ($qtd >= $precos->quantidade_desconto) {
                 $preco_un = $precos->preco_un_proprio_desconto;
             } else {
                 $preco_un = $precos->preco_un_proprio;
             }
-            $preco_subotal = $preco_un * $validatedData['quantidade'];
+            $preco_subotal = $preco_un * $qtd;
         }
 
         if ($previusRoute == 'estampas.view') {
-            if ($validatedData['quantidade'] >= $precos->quantidade_desconto) {
+            if ($qtd >= $precos->quantidade_desconto) {
                  $preco_un = $precos->preco_un_catalogo_desconto;
             } else {
                  $preco_un = $precos->preco_un_catalogo;
             }
-            $preco_subotal = $preco_un * $validatedData['quantidade'];
+            $preco_subotal = $preco_un * $qtd;
         }
 
-        $key = $estampa->id . '#' . $validatedData['tamanho'] . '#' . $validatedData['cor_codigo'];
-        $carrinho = $request->session()->get('carrinho', []);
-        $qtd = ($carrinho[$key]['quantidade'] ?? 0);
         $carrinho[$key] = [
             'id' => $key,
             'estampa_id' => $estampa->id,
-            'quantidade' => $qtd+$validatedData['quantidade'],
+            'quantidade' => $qtd,
             'tamanho' => $validatedData['tamanho'],
             'cor_codigo' => $validatedData['cor_codigo'],
             'preco_un' => $preco_un,

@@ -10,5 +10,5 @@ class Categoria extends Model
     use HasFactory;
     use SoftDeletes;
     public $timestamps = false;
-    protected $fillable = [ 'id', 'nome'];
+    protected $fillable = ['nome'];
 }

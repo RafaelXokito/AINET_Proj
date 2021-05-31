@@ -53,15 +53,14 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::post('/categorias/store', [CategoriasController::class, 'store'])->name('categorias.store')->middleware('can:store,App\Models\Categoria');
     Route::get('/categorias/{categoria}/update', [CategoriasController::class, 'update'])->name('categorias.update')->middleware('can:update,categoria');
     Route::delete('/categorias/{categoria}/delete', [CategoriasController::class, 'delete'])->name('categorias.delete')->middleware('can:delete,categoria');
-    Route::post('/categorias/{categoria}/restore', [CategoriasController::class, 'restore'])->name('categorias.restore'); //->middleware('can:restore,categoria');
+    Route::post('/categorias/{id}/restore', [CategoriasController::class, 'restore'])->name('categorias.restore'); //não tem middleware pois tem o authorize no controller
 
     //cores
     Route::get('/cores', [CoresController::class, 'index'])->name('cores')->middleware('can:isStaff,App\Models\User');
     Route::post('/cores/store', [CoresController::class, 'store'])->name('cores.store')->middleware('can:store,App\Models\Cor');
-    Route::get('/cores/{cores}/update', [CoresController::class, 'update'])->name('cores.update'); //->middleware('can:update,cor');
-    Route::delete('/cores/{cor_codigo}/delete', [CoresController::class, 'delete'])->name('cores.delete'); //->middleware('can:delete,cor');
-    Route::post('/cores/{cor_codigo}/restore', [CoresController::class, 'restore'])->name('cores.restore'); //->middleware('can:restore,cor');
-
+    Route::post('/cores/{cor}/update', [CoresController::class, 'update'])->name('cores.update')->middleware('can:update,App\Models\Cor');
+    Route::delete('/cores/{cor}/delete', [CoresController::class, 'delete'])->name('cores.delete')->middleware('can:delete,App\Models\Cor');
+    Route::post('/cores/{codigo_cor}/restore', [CoresController::class, 'restore'])->name('cores.restore'); //não tem middleware pois tem o authorize no controller
 
     //carrinho de compras
     Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho');

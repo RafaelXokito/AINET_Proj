@@ -10,7 +10,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{route('cores')}}" id="formStoreUpdate"></form>
+                <form action="{{route('cores')}}" id="formStoreUpdate" method="POST" enctype="multipart/form-data">
+                @csrf
                 <div class="row">
                     <div class="col">
                         <label for="inputCodigoModal">Código</label>
@@ -38,21 +39,22 @@
                 <!--TODO aparecer ou desaparecer esta div se há ou não imagem selecionada-->
                 <div class="row mb-5 d-none" id="imageSelected">
                     <div class="col text-center">
-                        <img class="img-fluid" style="max-height: 300px" id="inputUploadedFotoModal" src="">
+                        <img class="img-fluid" style="max-height: 300px" id="inputUploadedFotoModal" src="{{'storage\tshirt_base\\'}}">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <label for="inputFotoModal">T-Shirt</label>
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="foto" id="inputFotoModal">
-                            <label class="custom-file-label" for="inputFotoModal">Choose file</label>
+                            <input type="file" class="custom-file-input" form="formStoreUpdate" name="foto" id="inputFotoModal">
+                            <label class="custom-file-label" for="inputFotoModal" id="inputFotoModalLabel">Choose file</label>
                         </div>
                         @error('foto')
                             <div class="small text-danger">{{$message}}</div>
                         @enderror
                     </div>
                 </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
