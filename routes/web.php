@@ -66,12 +66,12 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::post('/cores/{codigo_cor}/restore', [CoresController::class, 'restore'])->name('cores.restore'); //não tem middleware pois tem o authorize no controller
 
     //carrinho de compras
-    Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho');
-    Route::post('carrinho/{estampa}/store_tshirt', [TshirtsController::class, 'store_tshirt'])->name('carrinho.store_tshirt');
-    Route::put('carrinho/{tshirt}/update_tshirt', [TshirtsController::class, 'update_tshirt'])->name('carrinho.update_tshirt');
-    Route::delete('carrinho/{tshirt}/destroy_tshirt', [TshirtsController::class, 'destroy_tshirt'])->name('carrinho.destroy_tshirt');
-    Route::post('carrinho', [TshirtsController::class, 'store'])->name('carrinho.store');
-    Route::delete('carrinho', [TshirtsController::class, 'destroy'])->name('carrinho.destroy');
+    Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho')->middleware('cannot:isStaff,App\Models\User');
+    Route::post('carrinho/{estampa}/store_tshirt', [TshirtsController::class, 'store_tshirt'])->name('carrinho.store_tshirt')->middleware('cannot:isStaff,App\Models\User');
+    Route::put('carrinho/{tshirt}/update_tshirt', [TshirtsController::class, 'update_tshirt'])->name('carrinho.update_tshirt')->middleware('cannot:isStaff,App\Models\User');
+    Route::delete('carrinho/{tshirt}/destroy_tshirt', [TshirtsController::class, 'destroy_tshirt'])->name('carrinho.destroy_tshirt')->middleware('cannot:isStaff,App\Models\User');
+    Route::post('carrinho', [TshirtsController::class, 'store'])->name('carrinho.store')->middleware('cannot:isStaff,App\Models\User');
+    Route::delete('carrinho', [TshirtsController::class, 'destroy'])->name('carrinho.destroy')->middleware('cannot:isStaff,App\Models\User');
 
     // admininstração de users
     Route::get('users', [UsersController::class, 'index'])->name('utilizadores')->middleware('can:viewAny,App\Models\User');
