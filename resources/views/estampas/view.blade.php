@@ -37,10 +37,12 @@
     </div>
     <div class="row d-flex justify-content-center mt-5">
         <div class="form-group">
-            <a href="" class="btn btn-info" data-toggle="modal" data-target="#adicionarAoCarrinhoModal">
-                <i class="fa fa-shopping-cart"></i>
-                Adicionar ao carrinho
-            </a>
+            @cannot('isStaff', App\Models\User::class)
+                <a href="" class="btn btn-info" data-toggle="modal" data-target="#adicionarAoCarrinhoModal">
+                    <i class="fa fa-shopping-cart"></i>
+                    Adicionar ao carrinho
+                </a>
+            @endcannot
             <a href="{{route('estampas')}}" class="btn btn-secondary">Voltar</a>
         </div>
     </div>

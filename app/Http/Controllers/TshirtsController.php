@@ -124,6 +124,8 @@ class TshirtsController extends Controller
             'Place code to store the shopping cart / transform the cart into a sale',
             $request->session()->get('carrinho')
         );
+
+
     }
 
     public function destroy(Request $request)
