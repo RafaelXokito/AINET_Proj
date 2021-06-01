@@ -173,13 +173,13 @@
                             <a class="nav-link" href="{{route('register')}}">{{ __('Register') }}</a>
                         </li>
                         @else
-
-                        <button id="carrinho" class="btn btn-link rounded-circle mr-3">
-                            <a href="{{route('carrinho')}}">
-                                <i class="fa fa-shopping-cart"></i>
-                            </a>
-
-                        </button>
+                        @can('isClient', App\Models\User::class)
+                            <button id="carrinho" class="btn btn-link rounded-circle mr-3">
+                                <a href="{{route('carrinho')}}">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </a>
+                            </button>
+                        @endcan
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
