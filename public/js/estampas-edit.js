@@ -9,19 +9,28 @@ document.getElementById('inputFoto').onchange = function () {
 
 document.getElementById('inputCor').onchange = function() {
     document.getElementById('colorInputCor').style.backgroundColor = '#'+this.value;
-    $("#previewImage").attr('src', estampasUrl + '/'+ $('#estampa_id').val() +'/'+this.value+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/preview');
+    $("#previewImage").attr('src', estampasUrl + '/'+ $('#estampa_id').val() +'/'+this.value+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/'+$('#inputZoom').val()+'/preview');
 };
 
 function inputOpacidadeChange(newValue) {
-    $("#previewImage").attr('src',estampasUrl+ '/'+ $('#estampa_id').val() +'/'+$('#inputCor').val()+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/preview');
+    $("#previewImage").attr('src',estampasUrl+ '/'+ $('#estampa_id').val() +'/'+$('#inputCor').val()+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/'+$('#inputZoom').val()+'/preview');
 }
 
 function inputOpacidadeOnInput(newValue) {
     $('#inputOpacidadeValue').html(newValue);
 }
 
+function inputZoomChange(newValue) {
+    $("#previewImage").attr('src',estampasUrl+ '/'+ $('#estampa_id').val() +'/'+$('#inputCor').val()+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/'+$('#inputZoom').val()+'/preview');
+}
+
+function inputZoomOnInput(newValue) {
+    $('#inputZoomValue').html(newValue);
+}
+
+
 function inputRotacaoChange(newValue) {
-    $("#previewImage").attr('src',estampasUrl+ '/'+ $('#estampa_id').val() +'/'+$('#inputCor').val()+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/preview');
+    $("#previewImage").attr('src',estampasUrl+ '/'+ $('#estampa_id').val() +'/'+$('#inputCor').val()+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/'+$('#inputZoom').val()+'/preview');
 }
 
 function inputRotacaoOnInput(newValue) {
@@ -46,7 +55,7 @@ document.getElementById('inputPosicao').onchange = function() {
             $('#inputPosicaoIcon').addClass('bi-align-bottom');
             break;
     }
-    $("#previewImage").attr('src',estampasUrl+ '/'+ $('#estampa_id').val() +'/'+$('#inputCor').val()+'/'+this.value+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/preview');
+    $("#previewImage").attr('src',estampasUrl+ '/'+ $('#estampa_id').val() +'/'+$('#inputCor').val()+'/'+this.value+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/'+$('#inputZoom').val()+'/preview');
 
 };
 

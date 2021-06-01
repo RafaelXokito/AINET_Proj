@@ -62,13 +62,22 @@
                         @endcan
                     </td>
                     <td>
+                        @if (!$user->trashed())
                         @can('delete', $user)
-                            <form action="{{route('utilizadores.destroy', ['user' => $user])}}" method="POST">
-                                @csrf
-                                @method("DELETE")
-                                <input type="submit" class="btn btn-danger btn-sm" value="Apagar">
-                            </form>
+                        <form action="{{route('utilizadores.destroy', ['user' => $user])}}" method="POST">
+                            @csrf
+                            @method("DELETE")
+                            <input type="submit" class="btn btn-danger btn-sm" value="Apagar">
+                        </form>
                         @endcan
+                    @else
+                        @can('restore', $user)
+                        <form action="{{route('utilizadores.restore', ['id' => $user->id])}}" method="POST">
+                            @csrf
+                            <input type="submit" class="btn btn-success btn-sm" value="Restaurar">
+                        </form>
+                        @endcan
+                    @endif
                     </td>
                 </tr>
             @endforeach

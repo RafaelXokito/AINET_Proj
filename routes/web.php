@@ -43,12 +43,13 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::get('estampas/criar', [EstampasController::class, 'create'])->name('estampas.create')->middleware('can:create,App\Models\Estampa');
     Route::post('estampas/store', [EstampasController::class, 'store'])->name('estampas.store')->middleware('can:create,App\Models\Estampa');
     Route::get('estampas/{estampa}/show', [EstampasController::class, 'show'])->name('estampas.show')->middleware('can:view,estampa');
-    Route::get('estampas/{estampa}/{cor}/{posicao}/{rotacao}/{opacidade}/preview', [EstampasController::class, 'preview'])->name('estampas.preview')->middleware('can:view,estampa');
+    Route::get('estampas/{estampa}/{cor}/{posicao}/{rotacao}/{opacidade}/{zoom}/preview', [EstampasController::class, 'preview'])->name('estampas.preview')->middleware('can:view,estampa');
     Route::put('estampas/{estampa}/update', [EstampasController::class, 'update'])->name('estampas.update')->middleware('can:update,estampa');
     Route::get('estampas/{estampa}/editar', [EstampasController::class, 'edit'])->name('estampas.edit')->middleware('can:edit,estampa');
     Route::get('estampas/{estampa}/ver', [EstampasController::class, 'edit'])->name('estampas.view')->middleware('can:view,estampa');
     Route::delete('/estampas/{estampa}/delete', [EstampasController::class, 'delete'])->name('estampas.delete')->middleware('can:delete,estampa');
     Route::post('/estampas/{id}/restore', [EstampasController::class, 'restore'])->name('estampas.restore'); //não tem middleware pois tem o authorize no controller
+    Route::post('/estampas/{id}/forceDelete', [EstampasController::class, 'forceDelete'])->name('estampas.forceDelete'); //não tem middleware pois tem o authorize no controller
 
     //categorias
     Route::get('/categorias', [CategoriasController::class, 'index'])->name('categorias')->middleware('can:isStaff,App\Models\User');
@@ -80,6 +81,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::put('users/{user}', [UsersController::class, 'update'])->name('utilizadores.update')->middleware('can:update,user');
     Route::delete('users/{user}', [UsersController::class, 'destroy'])->name('utilizadores.destroy')->middleware('can:delete,user');
     Route::delete('users/{user}/foto', [UsersController::class, 'destroy_foto'])->name('utilizadores.foto.destroy')->middleware('can:update,user');
+    Route::post('/users/{id}/restore', [UsersController::class, 'restore'])->name('utilizadores.restore'); //não tem middleware pois tem o authorize no controller
 
 });
 

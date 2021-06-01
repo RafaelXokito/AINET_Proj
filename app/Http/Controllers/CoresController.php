@@ -68,20 +68,24 @@ class CoresController extends Controller
     public function update(CorPost  $request, Cor $cor)
     {
         $validatedData = $request->validated();
+        $cor = Cor::findOrFail(strtolower($cor->codigo));
         try {
-
-            $cor = Cor::findOrFail(strtolower($cor->codigo));
             $cor->codigo = strtolower($validatedData['codigo']);
             $cor->nome = $validatedData['nome'];
             if ($request->hasFile('foto')) {
-                Storage::disk('public')->putFileAs('tshirt_base\\', $validatedData['foto'], $validatedData['codigo'] . '.jpg');
+                Storage::disk('public')->delete('tshirt_base\\'.$cor->getOriginal('codigo').'.jpg');
+                Storage::disk('public')->putFileAs('tshirt_base\\', $validatedData['foto'], strtolower($validatedData['codigo']) . '.jpg');
+            } else {
+                Storage::disk('public')->move('tshirt_base\\'.$cor->getOriginal('codigo').'.jpg', 'tshirt_base\\'.strtolower($validatedData['codigo']).'.jpg');
             }
+
             $cor->save();
 
             return redirect()->route('cores')
                 ->with('alert-msg', 'A cor '.$cor->nome.' foi alterada com sucesso!')
                 ->with('alert-type', 'success');
         } catch (\Throwable $th) {
+            dd($th);
             if ($th->errorInfo[1] == 1062) {
                 return redirect()->route('cores')
                     ->with('alert-msg', 'A cor '.$cor->nome.' não foi alterada com sucesso! O código da cor deve ser único')
@@ -106,7 +110,6 @@ class CoresController extends Controller
         } catch (\Throwable $th) {
             // $th é a exceção lançada pelo sistema - por norma, erro ocorre no servidor BD MySQL
             // Descomentar a próxima linha para verificar qual a informação que a exceção tem
-
             if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
                 return redirect()->route('cores')
                     ->with('alert-msg', 'Não foi possível apagar a Cor "' . $oldName . '", porque este user já está em uso!')

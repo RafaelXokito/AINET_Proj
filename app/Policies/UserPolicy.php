@@ -129,6 +129,9 @@ class UserPolicy
 
     public function forceDelete(User $user, User $user2)
     {
-        //
+        if ($user->tipo == 'A') {
+            return true;
+        }
+        return false;
     }
 }

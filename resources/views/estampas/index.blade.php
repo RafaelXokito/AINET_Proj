@@ -82,6 +82,14 @@
                             </div>
                         </form>
                     @endcan
+                    @can('forceDelete', App\Models\Estampa::class)
+                        <form action="{{route('estampas.forceDelete', ['id' => $estampa->id])}}" method="POST" id="forceDeleteForm{{$estampa->id}}">
+                            @csrf
+                            <div class="col-2 pl-0">
+                                <button type="button" class="btn btn-outline-danger" onclick="forceDeleteClicked({{$estampa->id}}, '{{$estampa->nome}}')" data-toggle="modal" data-target="#forceDeleteModal"><i class="fas fa-ban"></i></button>
+                            </div>
+                        </form>
+                    @endcan
                 @endif
 
             </div>
@@ -92,5 +100,35 @@
 <div class="d-flex justify-content-center">
     {!! $estampas->withQueryString()->links("pagination::bootstrap-4") !!}
 </div>
+
+@can('forceDelete', App\Models\Estampa::class)
+    <!-- Modal -->
+    <div class="modal fade" id="forceDeleteModal" tabindex="-1" role="dialog" aria-labelledby="forceDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="forceDeleteModalLabel">Apagar permanentemente</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    Tem a certeza que quer apagar permanentemente a estampa <span id="estampaNomeModal"></span>?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="" id="estampaBtnSubmitModal" class="btn btn-danger">Apagar</button>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script src="{{asset('js/estampas.js')}}"></script>
+
+@endcan
+
 @endif
 @endsection

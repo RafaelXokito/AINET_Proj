@@ -14,7 +14,7 @@ class PrecoPost extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return true;
     }
 
     /**

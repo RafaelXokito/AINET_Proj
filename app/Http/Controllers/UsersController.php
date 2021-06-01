@@ -93,6 +93,8 @@ class UsersController extends Controller
         $oldUserID = $user->id;
         $oldUrlFoto = $user->foto_url;
         try {
+            $user->foto_url = null;
+            $user->save();
             $user->delete();
             User::destroy($oldUserID);
             Storage::delete('public/fotos/' . $oldUrlFoto);
@@ -122,6 +124,22 @@ class UsersController extends Controller
         return redirect()->route('gestorUtilizadores.edit', ['user' => $user])
             ->with('alert-msg', 'Foto do user "' . $user->name . '" foi removida!')
             ->with('alert-type', 'success');
+    }
+
+    public function restore($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $user);
+        try {
+            $user->restore();
+            return redirect()->route('utilizadores')
+                    ->with('alert-msg', 'Utilizador "' . $user->name . '" foi recuperado com sucesso!')
+                    ->with('alert-type', 'success');
+        } catch (\Throwable $th) {
+            return redirect()->route('utilizadores')
+                    ->with('alert-msg', 'Não foi possível restaurar o Utilizador "' . $user->name . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-type', 'danger');
+        }
     }
 
 }

@@ -16,30 +16,27 @@
             </div>
             @include('estampas.partials.create-edit')
             <div class="row">
-                <div class="form-group col">
-                    <label for="inputCor">Cor</label>
+                <div class="col-6">
+                    <label for="inputZoom">Zoom</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text  border-0" id="">
-                                <img id="colorInputCor" style="width: 16px; height: 16px; background-color: #{{$cor->codigo}}" />
+                            <span class="input-group-text  border-0" style="width: 50px" id="inputZoomValue">
+                                {{old('inputZoom', $inputZoom) ? : '0'}}
                              </span>
+                            <span class="input-group-text  border-0 rounded-right" id="">
+                                <input type="range" value="{{old('inputZoom', $inputZoom) ?? '0'}}" min="-3" max="3" step="0.1" class="form-range" id="inputZoom" name="inputZoom" oninput="inputZoomOnInput(this.value)" onchange="inputZoomChange(this.value)" >
+                            </span>
                         </div>
-                        <select form="formUpdate" class="form-control" name="cor_codigo" id="inputCor">
-                            <!--<option value="" selected>Escolher cor...</option>-->
-                            @foreach ($cores as $abr => $nome)
-                            <option value={{$abr}} {{$abr == old('cor_codigo', $cor->codigo) ? 'selected' : ''}}>{{$nome}}</option>
-                            @endforeach
-                        </select>
                     </div>
-                    @error('cor_codigo')
+                    @error('inputZoom')
                         <div class="small text-danger">{{$message}}</div>
                     @enderror
                 </div>
-                <div class="form-group col-6">
+                <div class="col-6">
                     <label for="inputOpacidade">Opacidade</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text  border-0" id="inputOpacidadeValue">
+                            <span class="input-group-text  border-0" style="width: 80px" id="inputOpacidadeValue">
                                 {{old('inputOpacidade', $inputOpacidade) ? : '100'}}%
                              </span>
                             <span class="input-group-text  border-0 rounded-right" id="">

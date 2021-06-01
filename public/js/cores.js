@@ -53,3 +53,7 @@ document.getElementById('inputFotoModal').addEventListener('change', function ()
     };
 }, false)
 
+document.getElementById('inputFotoModal').onchange = function () {
+    document.getElementById('inputFotoModalLabel').textContent = this.files.item(0).name;
+    document.getElementById('inputFotoModalLabel').value = this.files.item(0).name;
+};
