@@ -327,8 +327,8 @@ class EstampasController extends Controller
             $img = Image::make(public_path('storage\tshirt_base\\'). $cor.'.jpg');
 
 
-            $width = 220; // your max width
-            $height = 220; // your max heigh
+            $width = 210; // your max width
+            $height = 210; // your max heigh
 
             if ($estampa->cliente_id == null) {
                 $watermark = Image::make(public_path('storage\estampas\\').$estampa->imagem_url);
@@ -340,14 +340,14 @@ class EstampasController extends Controller
                 $width = intval(($width/2) * ($zoom+1));
                 $height = intval(($height/2) * ($zoom+1));
 
-                $width > 220 ? $width=220 : false;
-                $height > 220 ? $height=220 : false;
+                $width > 210 ? $width=210 : false;
+                $height > 210 ? $height=210 : false;
             } elseif ($zoom < 0) {
                 $width = intval(($width/2) / (($zoom-1)*-1));
                 $height = intval(($height/2) / (($zoom-1)*-1));
 
-                $width > 220 ? $width=220 : false;
-                $height > 220 ? $height=220 : false;
+                $width > 210 ? $width=210 : false;
+                $height > 210 ? $height=210 : false;
             }
 
             $watermark->height() > $img->width() ? $width=null : $height=null;
