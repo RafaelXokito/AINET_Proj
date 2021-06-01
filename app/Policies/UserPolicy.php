@@ -72,6 +72,14 @@ class UserPolicy
         return false;
     }
 
+    public function isClient(User $user)
+    {
+        if ($user->tipo == 'C') {
+            return true;
+        }
+        return false;
+    }
+
     public function isStaff(User $user)
     {
         if ($user->tipo == 'A' || $user->tipo == 'F') {
