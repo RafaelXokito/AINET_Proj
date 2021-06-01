@@ -12,6 +12,7 @@
         <input id="inputPosicao" value="{{$inputPosicao}}" hidden>
         <input id="inputRotacao" value="{{$inputRotacao}}" hidden>
         <input id="inputOpacidade" value="{{$inputOpacidade}}" hidden>
+        <input id="inputZoom" value="{{$inputZoom}}" hidden>
     </div>
     <div class="row text-center d-flex justify-content-center mt-3">
         <div class="form-group col-4">

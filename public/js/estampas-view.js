@@ -1,9 +1,9 @@
 
-var estampasUrl = $('#formPreview').attr('action');
+var estampasUrl = $('#formPreview').val();
 
 document.getElementById('inputCor').onchange = function() {
     document.getElementById('colorInputCor').style.backgroundColor = '#'+this.value;
-    $("#previewImage").attr('src',estampasUrl+ '/'+ $('#estampa_id').val() +'/'+this.value+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/preview');
+    $("#previewImage").attr('src',estampasUrl+ '/'+ $('#estampa_id').val() +'/'+this.value+'/'+$('#inputPosicao').val()+'/'+$('#inputRotacao').val()+'/'+$('#inputOpacidade').val()+'/'+$('#inputZoom').val()+'/preview');
 };
 
 //adicionar ao carrinho
