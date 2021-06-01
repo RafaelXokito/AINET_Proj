@@ -328,7 +328,8 @@ class EstampasController extends Controller
 
 
             $width = 220; // your max width
-            $height = 220; // your max height
+            $height = 220; // your max heigh
+
             if ($estampa->cliente_id == null) {
                 $watermark = Image::make(public_path('storage\estampas\\').$estampa->imagem_url);
             } else {
