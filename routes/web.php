@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\CoresController;
+use App\Http\Controllers\EncomendasController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,11 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 
+Route::get('estampas/{estampa}/ver', [EstampasController::class, 'edit'])->name('estampas.view'); //a proteção para as estampas próprias é feita no controllador
+Route::get('estampas/{estampa}/{cor}/{posicao}/{rotacao}/{opacidade}/{zoom}/preview', [EstampasController::class, 'preview'])->name('estampas.preview'); //a proteção para as estampas próprias é feita no controllador
+Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho'); //a proteção para que os staffs não poderem "ter" carrinho é feita no controllador
+Route::post('carrinho/{estampa}/store_tshirt', [TshirtsController::class, 'store_tshirt'])->name('carrinho.store_tshirt'); //a proteção para que os staffs não poderem "ter" carrinho é feita no controllador
+
 Route::middleware('auth')->middleware('verified')->group( function () {
 
     //preços
@@ -43,10 +49,8 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::get('estampas/criar', [EstampasController::class, 'create'])->name('estampas.create')->middleware('can:create,App\Models\Estampa');
     Route::post('estampas/store', [EstampasController::class, 'store'])->name('estampas.store')->middleware('can:create,App\Models\Estampa');
     Route::get('estampas/{estampa}/show', [EstampasController::class, 'show'])->name('estampas.show')->middleware('can:view,estampa');
-    Route::get('estampas/{estampa}/{cor}/{posicao}/{rotacao}/{opacidade}/{zoom}/preview', [EstampasController::class, 'preview'])->name('estampas.preview')->middleware('can:view,estampa');
     Route::put('estampas/{estampa}/update', [EstampasController::class, 'update'])->name('estampas.update')->middleware('can:update,estampa');
     Route::get('estampas/{estampa}/editar', [EstampasController::class, 'edit'])->name('estampas.edit')->middleware('can:edit,estampa');
-    Route::get('estampas/{estampa}/ver', [EstampasController::class, 'edit'])->name('estampas.view')->middleware('can:view,estampa');
     Route::delete('/estampas/{estampa}/delete', [EstampasController::class, 'delete'])->name('estampas.delete')->middleware('can:delete,estampa');
     Route::post('/estampas/{id}/restore', [EstampasController::class, 'restore'])->name('estampas.restore'); //não tem middleware pois tem o authorize no controller
     Route::post('/estampas/{id}/forceDelete', [EstampasController::class, 'forceDelete'])->name('estampas.forceDelete'); //não tem middleware pois tem o authorize no controller
@@ -58,6 +62,13 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::delete('/categorias/{categoria}/delete', [CategoriasController::class, 'delete'])->name('categorias.delete')->middleware('can:delete,App\Models\Categoria');
     Route::post('/categorias/{id}/restore', [CategoriasController::class, 'restore'])->name('categorias.restore'); //não tem middleware pois tem o authorize no controller
 
+    //Encomendas
+    Route::get('/encomendas', [EncomendasController::class, 'index'])->name('encomendas')->middleware('can:isStaff,App\Models\User');
+    Route::post('/encomendas/store', [EncomendasController::class, 'store'])->name('encomendas.store')->middleware('can:store,App\Models\Categoria');
+    Route::put('/encomendas/{categoria}/update', [EncomendasController::class, 'update'])->name('encomendas.update')->middleware('can:update,App\Models\Categoria');
+    Route::delete('/encomendas/{categoria}/delete', [EncomendasController::class, 'delete'])->name('encomendas.delete')->middleware('can:delete,App\Models\Categoria');
+    Route::post('/encomendas/{id}/restore', [EncomendasController::class, 'restore'])->name('encomendas.restore'); //não tem middleware pois tem o authorize no controller
+
     //cores
     Route::get('/cores', [CoresController::class, 'index'])->name('cores')->middleware('can:isStaff,App\Models\User');
     Route::post('/cores/store', [CoresController::class, 'store'])->name('cores.store')->middleware('can:store,App\Models\Cor');
@@ -66,8 +77,6 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::post('/cores/{codigo_cor}/restore', [CoresController::class, 'restore'])->name('cores.restore'); //não tem middleware pois tem o authorize no controller
 
     //carrinho de compras
-    Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho')->middleware('can:isClient,App\Models\User');
-    Route::post('carrinho/{estampa}/store_tshirt', [TshirtsController::class, 'store_tshirt'])->name('carrinho.store_tshirt')->middleware('can:isClient,App\Models\User');
     Route::put('carrinho/{tshirt}/update_tshirt', [TshirtsController::class, 'update_tshirt'])->name('carrinho.update_tshirt')->middleware('can:isClient,App\Models\User');
     Route::delete('carrinho/{tshirt}/destroy_tshirt', [TshirtsController::class, 'destroy_tshirt'])->name('carrinho.destroy_tshirt')->middleware('can:isClient,App\Models\User');
     Route::post('carrinho', [TshirtsController::class, 'store'])->name('carrinho.store')->middleware('can:isClient,App\Models\User');

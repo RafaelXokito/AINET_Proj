@@ -96,9 +96,9 @@ class EstampasController extends Controller
             $inputZoom = $result['inputZoom'];
         }
 
+        $tipo = Auth::user()->tipo ?? 'Anonimo';
 
-
-        if ($estampa->cliente_id == null && Auth::user()->tipo != 'A') {
+        if ($estampa->cliente_id == null && $tipo != 'A') {
             return view('estampas.view')
                 ->withPrecos($precos)
                 ->withInputZoom($inputZoom)
@@ -110,6 +110,7 @@ class EstampasController extends Controller
                 ->withEstampa($estampa)
                 ->withCategorias($listaCategorias);
         } else {
+            $this->authorize('view', $estampa);
             return view('estampas.edit')
                 ->withPrecos($precos)
                 ->withInputZoom($inputZoom)

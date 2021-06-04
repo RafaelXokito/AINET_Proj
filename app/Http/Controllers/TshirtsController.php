@@ -7,12 +7,17 @@ use App\Models\Preco;
 use App\Models\Tshirt;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
 
 class TshirtsController extends Controller
 {
     //Carrinho de Compras
     public function carrinho(Request $request)
     {
+        if (!Auth::guest()) {
+            $this->authorize('isNotStaff', App\Models\User::class);
+        }
+
         return view('pages.carrinho')
             ->with('pageTitle', 'Carrinho de compras')
             ->with('carrinho', session('carrinho') ?? []);
@@ -20,6 +25,9 @@ class TshirtsController extends Controller
 
     public function store_tshirt(Request $request, Estampa $estampa)
     {
+        if (!Auth::guest()) {
+            $this->authorize('isNotStaff', App\Models\User::class);
+        }
         $previusRoute = app('router')->getRoutes(url()->previous())->match(app('request')->create(url()->previous()))->getName();
 
         $validatedData = $request->validate([
@@ -28,13 +36,9 @@ class TshirtsController extends Controller
             'quantidade' => 'required|min:0|numeric',
         ]);
 
-
         $preco_un = 0;
         $preco_subotal = 0;
         $precos = Preco::get()->first();
-
-
-
 
         $key = $estampa->id . '#' . $validatedData['tamanho'] . '#' . $validatedData['cor_codigo'];
         $carrinho = $request->session()->get('carrinho', []);

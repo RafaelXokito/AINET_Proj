@@ -88,6 +88,14 @@ class UserPolicy
         return false;
     }
 
+    public function isNotStaff(User $user)
+    {
+        if ($user->tipo == 'A' || $user->tipo == 'F') {
+            return false;
+        }
+        return true;
+    }
+
     public function create(User $user)
     {
         if ($user->tipo == 'A') {

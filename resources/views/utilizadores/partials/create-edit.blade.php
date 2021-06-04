@@ -5,13 +5,17 @@
         <div class="small text-danger">{{$message}}</div>
     @enderror
 </div>
-<div class="form-group">
-    <label for="inputEmail">Email</label>
-    <input type="text" class="form-control" name="email" id="inputEmail" value="{{old('email', $user->email)}}" >
-    @error('email')
-        <div class="small text-danger">{{$message}}</div>
-    @enderror
-</div>
+@if (Route::currentRouteName()!='utilizadores.edit')
+    <div class="form-group">
+        <label for="inputEmail">Email</label>
+        <input type="text" class="form-control" name="email" id="inputEmail" value="{{old('email', $user->email)}}" >
+        @error('email')
+            <div class="small text-danger">{{$message}}</div>
+        @enderror
+    </div>
+@endif
+
+@can('isAdmin', App\Models\User::class)
 <div class="form-group">
     <div class="form-check form-check-inline">
         <input type="hidden" name="bloqueado" value="0">
@@ -24,6 +28,7 @@
         <div class="small text-danger">{{$message}}</div>
     @enderror
 </div>
+
 <div class="form-group">
     <div>Tipo de User</div>
     <div class="form-check form-check-inline">
@@ -36,6 +41,8 @@
         <div class="small text-danger">{{$message}}</div>
     @enderror
 </div>
+
+@endcan
 <div class="form-group">
     <label for="inputFoto">Upload da foto</label>
     <input type="file" class="form-control" name="foto" id="inputFoto">

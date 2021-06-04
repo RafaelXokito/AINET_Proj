@@ -60,13 +60,18 @@
                 @endcannot
             @endauth
 
+            @auth
+
+            <hr class="sidebar-divider d-none d-md-block">
+
             <!-- Nav Item -->
-            <li class="nav-item {{Route::currentRouteName()=='/'? 'active': ''}}">
-                <a class="nav-link" href="{{url('/')}}">
+            <li class="nav-item {{Route::currentRouteName()=='encomendas'? 'active': ''}}">
+                <a class="nav-link" href="{{route('encomendas')}}">
                     <i class="fad fa-fw fa-scroll-old"></i>
                     <span>Recibos</span>
                 </a>
             </li>
+            @endauth
 
             <!-- Divider STAFF -->
             @can('isStaff', App\Models\User::class)
@@ -145,8 +150,7 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-                    @if (Route::currentRouteName()=='estampas' || Route::currentRouteName()=='estampasUser')
-
+                    @if ((Route::currentRouteName()=='estampas' || Route::currentRouteName()=='estampasUser') && Auth::user()->tipo != 'F' )
                         <a class="nav-link" href="{{route('estampas.create')}}">
                             <i class="fal fa-fw fa-wand-magic"></i>
                             <span>Criar estampa</span>
@@ -166,6 +170,11 @@
 
                     <ul class="navbar-nav ml-auto">
                         @guest
+                        <button id="carrinho" class="btn btn-link rounded-circle mr-3">
+                            <a href="{{route('carrinho')}}">
+                                <i class="fa fa-shopping-cart"></i>
+                            </a>
+                        </button>
                         <li class="nav-item">
                             <a class="nav-link" href="{{route('login')}}">{{ __('Login') }}</a>
                         </li>
