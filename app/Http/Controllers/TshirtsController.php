@@ -244,17 +244,6 @@ class TshirtsController extends Controller
             $encomenda->preco_total = $preco_total;
             $encomenda->save(); //Atualizamos então o preço total da encomenda.
 
-            //
-            $data = array(
-                'name'      =>  env('APP_NAME', 'fallback_app_name').' - Fatura Simplificada',
-                'message'   =>  'fatura',
-                'tshirts'   =>  Tshirt::where('estampa_id', '=', $encomenda->id)->get(),
-                'encomenda' =>  $encomenda
-            );
-
-            Mail::to(Auth::user()->email)->send(new SendMail($data));
-            //
-
             $request->session()->forget('carrinho');
 
             DB::commit();
@@ -262,7 +251,7 @@ class TshirtsController extends Controller
             $data = array(
                 'name'      =>  env('APP_NAME', 'fallback_app_name').' - Fatura Simplificada',
                 'message'   =>  'fatura',
-                'tshirts'   =>  Tshirt::where('estampa_id', '=', $encomenda->id)->get(),
+                'tshirts'   =>  Tshirt::where('encomenda_id', '=', $encomenda->id)->get(),
                 'encomenda' =>  $encomenda
             );
 
@@ -274,7 +263,6 @@ class TshirtsController extends Controller
                 ->with('alert-type', 'success');
 
         } catch (\Throwable $th) {
-            //throw $th;
             DB::rollBack();
 
             $data = array(
