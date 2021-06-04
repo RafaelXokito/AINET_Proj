@@ -28,13 +28,13 @@ function alterarCarrinhoLoadRow(key) {
     $('#inputQuantidade').val($('#quantidade'+key).attr('data-qtd'));
     $('#inputQuantidade').attr('data-key', key);
     if (parseInt($('#quantidade'+key).attr('data-qtd')) >= parseInt($('#quantidadeDesconto').val())) {
-        if ($('#precoUn'+key) > 0) {
+        if ($('#title'+key).attr('data-client') > 0) {
             $('#inputPrecoUni').val($('#valorPropDesconto').val());
         } else {
             $('#inputPrecoUni').val($('#valorPubDesconto').val());
         }
     } else {
-        if ($('#precoUn'+key) > 0) {
+        if ($('#title'+key).attr('data-client') > 0) {
             $('#inputPrecoUni').val($('#valorPropSemDesconto').val());
         } else {
             $('#inputPrecoUni').val($('#valorPubSemDesconto').val());

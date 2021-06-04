@@ -37,7 +37,8 @@ class EncomendaPost extends FormRequest
                         $fail('A referência de pagamento tem de ter um email válido.');
                     }
                 }
-            ]
+            ],
+            'notas' => 'required|string'
         ];
     }
 }

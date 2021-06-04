@@ -69,15 +69,19 @@
                             </th>
                             <th scope="row" class="border-0 align-middle">
                             <div class="p-2">
-                                <div class="ml-3 d-inline-block align-middle">
-                                <h5 class="mb-0"> <a href="" id="{{$row['key']}}" data-toggle="modal" data-target=".bd-example-modal-lg" class="text-dark d-inline-block align-middle">{{$row['estampa']->nome}}</a></h5>
+                                <div class="ml-3 d-inline-block align-middle" id="title{{$i}}" data-client="{{$row['estampa']->cliente_id}}">
+                                    @if ($row['estampa']->cliente_id == null)
+                                        <h5 class="mb-0"> <a href="{{route('estampas.view', ['estampa' => $row['estampa']])}}" id="{{$row['key']}}" class="text-dark d-inline-block align-middle">{{$row['estampa']->nome}}</a></h5>
+                                    @else
+                                        <h5 class="mb-0"> <a href="{{route('estampas.edit', ['estampa' => $row['estampa']])}}" id="{{$row['key']}}" class="text-dark d-inline-block align-middle">{{$row['estampa']->nome}}</a></h5>
+                                    @endif
                                 </div>
                             </div>
                             </th>
                             <td class="border-0 align-middle"><div class="p-2" onclick="alterarCarrinhoLoadRow({{$i}})"><a id="quantidade{{$i}}" href="" data-qtd="{{ $row['quantidade'] }}" class="text-dark d-inline-block align-middle" data-toggle="modal" data-target=".bd-example-modal-lg"><strong>{{ $row['quantidade'] }}</strong> <i class="fas fa-caret-down"></i></a></div></td>
                             <td class="border-0 align-middle"><div class="p-2" onclick="alterarCarrinhoLoadRow({{$i}})"><a id="tamanho{{$i}}" href="" data-size="{{ $row['tamanho'] }}" class="text-dark d-inline-block align-middle" data-toggle="modal" data-target=".bd-example-modal-lg"><strong>{{ $row['tamanho'] }}</strong> <i class="fas fa-caret-down"></i></a></div></td>
                             <td class="border-0 align-middle"><div class="p-2" onclick="alterarCarrinhoLoadRow({{$i}})"><a id="cor{{$i}}" href="" data-color="{{ $row['cor_codigo'] }}" class="text-dark d-inline-block align-middle" data-toggle="modal" data-target=".bd-example-modal-lg"><strong><img id="colorInputCor{{$i}}" style="width: 16px; height: 16px; background-color: #{{ $row['cor_codigo'] }}" /></strong> <i class="fas fa-caret-down"></i></a></div></td>
-                            <td class="border-0 align-middle"><div class="p-2" id="precoUn{{$i}}" data-precoUn="{{$row['estampa']->cliente_id}}"><strong>{{ number_format($row['preco_un'],2) }}€</strong></div></td>
+                            <td class="border-0 align-middle"><div class="p-2" id="precoUn{{$i}}"><strong>{{ number_format($row['preco_un'],2) }}€</strong></div></td>
                             <td class="border-0 align-middle"><div class="p-2"><strong><span class="subtotal" >{{ number_format($row['subtotal'], 2) }}</span>€</strong></div></td>
                             <td class="border-0 align-middle">
                                 <form action="{{route('carrinho.update_tshirt', ['key' => $row['key']])}}" method="POST" id="formUpdateCarrinho{{$i}}">
@@ -109,24 +113,23 @@
             <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Informação da encomenda</div>
             <div class="p-4">
                 <div class="input-group mb-4 border rounded-pill p-2">
-                    <input type="text" placeholder="NIF" name="nif" aria-describedby="button-addon3" class="form-control border-0">
+                    <input type="text" placeholder="NIF" name="nif" value="{{old('nif', $cliente->nif ?? '')}}" aria-describedby="button-addon3" class="form-control border-0">
                 </div>
                 @error('nif')
                     <div class="small text-danger">{{$message}}</div>
                 @enderror
                 <div class="input-group mb-4 border rounded-pill p-2">
-                    <input type="text" placeholder="Morada" name="endereco" aria-describedby="button-addon3" class="form-control border-0">
+                    <input type="text" placeholder="Morada" name="endereco" value="{{old('endereco', $cliente->endereco ?? '')}}" aria-describedby="button-addon3" class="form-control border-0">
                     @error('endereco')
                         <div class="small text-danger">{{$message}}</div>
                     @enderror
                 </div>
                 <div class="input-group mb-4 border rounded-pill p-2">
-
                     <select name="tipo_pagamento" id="tipo_pagamento" class="form-control border-0 selectpicker">
                         <option value="vazio" selected>Método Pagamento</option>
-                        <option value="VISA" aria-describedby="button-addon3"  class="form-control border-0">VISA</option>
-                        <option value="MC" aria-describedby="button-addon3" class="form-control border-0">MC</option>
-                        <option value="PAYPAL" aria-describedby="button-addon3" class="form-control border-0">PAYPAL</option>
+                        <option value="VISA" {{"VISA" == old('tipo_pagamento', $cliente->tipo_pagamento ?? '') ? 'selected' : ''}} aria-describedby="button-addon3"  class="form-control border-0">VISA</option>
+                        <option value="MC" {{"MC" == old('tipo_pagamento', $cliente->tipo_pagamento ?? '') ? 'selected' : ''}} aria-describedby="button-addon3" class="form-control border-0">MC</option>
+                        <option value="PAYPAL" {{"PAYPAL" == old('tipo_pagamento', $cliente->tipo_pagamento ?? '') ? 'selected' : ''}} aria-describedby="button-addon3" class="form-control border-0">PAYPAL</option>
                     </select>
 
                     @error('tipo_pagamento')
@@ -134,7 +137,7 @@
                     @enderror
                 </div>
                 <div class="input-group mb-4 border rounded-pill p-2" id="ref_pagamento_div">
-                    <input id="ref_pagamento" name="ref_pagamento" type="text" placeholder="Referencia do pagamento" aria-describedby="button-addon3" class="form-control border-0">
+                    <input id="ref_pagamento" name="ref_pagamento" value="{{old('ref_pagamento', $cliente->ref_pagamento ?? '')}}" type="text" placeholder="Referencia do pagamento" aria-describedby="button-addon3" class="form-control border-0">
                 </div>
                 @error('ref_pagamento')
                     <div class="small text-danger">{{$message}}</div>
