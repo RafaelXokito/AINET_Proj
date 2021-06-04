@@ -2,18 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cor;
+use App\Models\Encomenda;
 use App\Models\Estampa;
 use App\Models\Preco;
 use App\Models\Tshirt;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TshirtsController extends Controller
 {
     //Carrinho de Compras
     public function carrinho(Request $request)
     {
-        return view('pages.carrinho')
+        $informacoes_extra = [];
+        foreach ($request->session()->get('carrinho') ?? [] as $key => $value) {
+            if ($value['estampa']->informacao_extra == null) {
+                continue;
+            }
+            $json = json_decode($value['estampa']->informacao_extra);
+            $informacoes_extra[$key]['inputZoom'] = $json->inputZoom;
+            $informacoes_extra[$key]['cor_codigo'] = $json->cor_codigo;
+            $informacoes_extra[$key]['inputPosicao'] = $json->inputPosicao;
+            $informacoes_extra[$key]['inputRotacao'] = $json->inputRotacao;
+            $informacoes_extra[$key]['inputOpacidade'] = $json->inputOpacidade;
+        }
+
+        return view('carrinho.index')
+            ->withInformacoesextra($informacoes_extra)
             ->with('pageTitle', 'Carrinho de compras')
             ->with('carrinho', session('carrinho') ?? []);
     }
@@ -33,10 +51,12 @@ class TshirtsController extends Controller
         $preco_subotal = 0;
         $precos = Preco::get()->first();
 
-
-
-
-        $key = $estampa->id . '#' . $validatedData['tamanho'] . '#' . $validatedData['cor_codigo'];
+        $result = json_decode($estampa->informacao_extra);
+        if ($result != null) { //Há tshirts que não têm info extra então para prevenir
+            $key = $estampa->id . '.' . $validatedData['tamanho'] . '.' . $validatedData['cor_codigo'] . '.' . $result->inputZoom . '.' . $result->inputPosicao . '.' . $result->inputRotacao . '.' . $result->inputOpacidade;
+        } else {
+            $key = $estampa->id . '.' . $validatedData['tamanho'] . '.' . $validatedData['cor_codigo'];
+        }
         $carrinho = $request->session()->get('carrinho', []);
         $qtd = ($carrinho[$key]['quantidade'] ?? 0) + $validatedData['quantidade'];
 
@@ -60,7 +80,7 @@ class TshirtsController extends Controller
 
         $carrinho[$key] = [
             'id' => $key,
-            'estampa_id' => $estampa->id,
+            'estampa' => $estampa,
             'quantidade' => $qtd,
             'tamanho' => $validatedData['tamanho'],
             'cor_codigo' => $validatedData['cor_codigo'],
@@ -89,7 +109,7 @@ class TshirtsController extends Controller
         } else {
             $carrinho[$tshirt->id] = [
                 'id' => $tshirt->id,
-                'estampa_id' => $tshirt->estampa_id,
+                'estampa' => $tshirt->estampa,
                 'qtd' => $qtd,
                 'tamanho' => $tshirt->tamanho,
                 'cor_codigo' => $tshirt->cor_codigo,
@@ -103,11 +123,11 @@ class TshirtsController extends Controller
             ->with('alert-type', 'success');
     }
 
-    public function destroy_tshirt(Request $request, Tshirt $tshirt)
+    public function destroy_tshirt(Request $request, $key)
     {
         $carrinho = $request->session()->get('carrinho', []);
-        if (array_key_exists($tshirt->id, $carrinho)) {
-            unset($carrinho[$tshirt->id]);
+        if (array_key_exists($key, $carrinho)) {
+            unset($carrinho[$key]);
             $request->session()->put('carrinho', $carrinho);
             return back()
                 ->with('alert-msg', 'Foram removidas as tshirts escolhidas')
@@ -120,10 +140,52 @@ class TshirtsController extends Controller
 
     public function store(Request $request)
     {
-        dd(
-            'Place code to store the shopping cart / transform the cart into a sale',
-            $request->session()->get('carrinho')
-        );
+        try {
+            dd($request->session()->get('carrinho'));
+
+            DB::beginTransaction();
+
+            $encomenda = new Encomenda;
+            $encomenda->estado = 'pendente';
+            $encomenda->cliente_id = Auth::user()->id;
+            $encomenda->data = now();
+            //dados do pagamento TODO
+            $encomenda->save();
+
+            foreach ($request->session()->get('carrinho') as $key => $value) {
+                dd($key, $value);
+                $tshirt = new Tshirt;
+                $tshirt->encomenda_id = $encomenda->id;
+                $tshirt->estampa_id = $value->estampa_id;
+                $tshirt->cor_codigo = $value->cor_codigo;
+                $tshirt->tamanho = $value->tamanho;
+                $tshirt->quantidade = $value->quantidade;
+                $tshirt->preco_un = $value->preco_un;
+                $tshirt->subtotal = $value->subtotal;
+                $tshirt->save();
+            }
+
+            DB::commit();
+
+            $data = array(
+                'name'      =>  env('APP_NAME', 'fallback_app_name').' - Fatura Simplificada',
+                'message'   =>   'Fatura <Mensagem>'
+            );
+
+            Mail::to(Auth::user()->email)->send(new SendMail($data));
+
+            return back()
+                ->with('alert-msg', 'A sua compra foi efetuada! Verifique a fatura no seu Email')
+                ->with('alert-type', 'success');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return back()
+                ->with('alert-msg', 'Não conseguimos concluir a sua compra!')
+                ->with('alert-type', 'danger');
+        }
+
 
 
     }

@@ -69,7 +69,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho')->middleware('can:isClient,App\Models\User');
     Route::post('carrinho/{estampa}/store_tshirt', [TshirtsController::class, 'store_tshirt'])->name('carrinho.store_tshirt')->middleware('can:isClient,App\Models\User');
     Route::put('carrinho/{tshirt}/update_tshirt', [TshirtsController::class, 'update_tshirt'])->name('carrinho.update_tshirt')->middleware('can:isClient,App\Models\User');
-    Route::delete('carrinho/{tshirt}/destroy_tshirt', [TshirtsController::class, 'destroy_tshirt'])->name('carrinho.destroy_tshirt')->middleware('can:isClient,App\Models\User');
+    Route::delete('carrinho/{key}/destroy_tshirt', [TshirtsController::class, 'destroy_tshirt'])->name('carrinho.destroy_tshirt')->middleware('can:isClient,App\Models\User');
     Route::post('carrinho', [TshirtsController::class, 'store'])->name('carrinho.store')->middleware('can:isClient,App\Models\User');
     Route::delete('carrinho', [TshirtsController::class, 'destroy'])->name('carrinho.destroy')->middleware('can:isClient,App\Models\User');
 
