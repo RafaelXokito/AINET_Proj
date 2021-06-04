@@ -15,11 +15,17 @@
     <div class="col-9">
         <form method="GET" action="{{route('encomendas')}}" class="form-group">
             <div class="input-group">
-                <select id="inputEstado" name="inputEstado">
-                    <option value="pendente">Pendente</option>
-                    <option value="paga">Paga</option>
-                    <option value="fechada">Fechada</option>
-                    <option value="anulada">Anulada</option>
+                <input type="date" class="form-control" value="{{Carbon\Carbon::today()->format('Y-m-d')}}">
+                <div class="input-group-addon">até</div>
+                <input type="date" class="form-control" value="{{Carbon\Carbon::today()->format('Y-m-d')}}">
+
+                <input class="form-control" id="nome" type="text" placeholder="Nome">
+                <select class="custom-select" name="estado" id="estado" aria-label="estado">
+                    <option value="" {{'' == $estado ? 'selected' : ''}}>Todos os estados</option>
+                    <option value="pendente" {{"pendente" == $estado ? 'selected' : 'pendente'}}>Pendente</option>
+                    <option value="paga" {{"paga" == $estado ? 'selected' : 'paga'}}>Paga</option>
+                    <option value="fechada" {{"fechada" == $estado ? 'selected' : 'fechada'}}>Fechada</option>
+                    <option value="anulada" {{"anulada" == $estado ? 'selected' : 'anulada'}}>Anulada</option>
                 </select>
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="submit">Filtrar</button>
@@ -32,18 +38,21 @@
     <thead>
         <tr>
             <th>Nome</th>
-            <th></th>
-            <th></th>
-            <th></th>
+            <th>Numero Encomenda</th>
+            <th>Estado</th>
+            <th>Data de Criação</th>
         </tr>
     </thead>
     <tbody>
         @foreach($encomendas as $encomenda)
             <tr>
                 <td>{{$encomenda->cliente->user->name}}</td>
+                <td>{{$encomenda->id}}</td>
+                <td>{{$encomenda->estado}}</td>
+                <td>{{$encomenda->data}}</td>
                 <td>
-                    @can('edit', App\Models\Encomenda::class)
-                        <a href="" data-toggle="modal" onclick="alterarOnClick({{$encomenda->id}}, '{{$encomenda->nome}}')" data-target="#createOrEditModal" class="btn btn-primary btn-sm" role="button" aria-pressed="true">Alterar</a>
+                    @can('update', App\Models\Encomenda::class)
+                        <a href="" data-toggle="modal" onclick="alterarOnClick({{$encomenda->id}}, '{{$encomenda->estado}}')" data-target="#createOrEditModal" class="btn btn-primary btn-sm" role="button" aria-pressed="true">Alterar Estado</a>
                     @endcan
                 </td>
             </tr>
@@ -53,7 +62,6 @@
 <div class="d-flex justify-content-center">
 {!! $encomendas->withQueryString()->links("pagination::bootstrap-4") !!}
 </div>
-
 
 <script src="{{asset('js/encomendas.js')}}"></script>
 @endsection

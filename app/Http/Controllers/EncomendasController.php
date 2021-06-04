@@ -35,15 +35,15 @@ class EncomendasController extends Controller
             ->with('alert-type', 'success');
     }
 
-    public function update(EncomendaPost  $request, Encomenda $categoria)
+    public function update(EncomendaPost  $request, Encomenda $encomenda)
     {
         $validatedData = $request->validated();
-        $categoria = Encomenda::findOrFail($categoria->id);
-        $categoria->nome = $validatedData['nome'];
-        $categoria->save();
+        $encomenda = Encomenda::findOrFail($encomenda->id);
+        $encomenda->estado = $validatedData['estado'];
+        $encomenda->save();
 
         return redirect()->route('encomendas')
-            ->with('alert-msg', 'A categoria '.$categoria->nome.' foi alterada com sucesso!')
+            ->with('alert-msg', 'O estado da escomenda foi alterado com sucesso!! O estado atual é '. $encomenda->estado)
             ->with('alert-type', 'success');
     }
 
@@ -88,4 +88,6 @@ class EncomendasController extends Controller
                     ->with('alert-type', 'danger');
         }
     }
+
+
 }

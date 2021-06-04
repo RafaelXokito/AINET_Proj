@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Encomenda;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -25,32 +26,38 @@ class EncomendaPolicy
         return false;
     }
 
-    public function view(User $user, Noticia $noticia)
+    public function view(User $user, Encomenda $encomenda)
     {
         return false;
     }
 
     public function create(User $user)
     {
+        if ($user->tipo == 'C') {
+            return true;
+        }
         return false;
     }
 
-    public function update(User $user, Noticia $noticia)
+    public function update(User $user, Encomenda $encomenda)
+    {
+        if ($user->tipo == 'A' || $user->tipo == 'F') {
+            return true;
+        }
+        return false;
+    }
+
+    public function delete(User $user, Encomenda $encomenda)
     {
         return false;
     }
 
-    public function delete(User $user, Noticia $noticia)
-    {
-        return false;
-    }
-
-    public function restore(User $user, Noticia $noticia)
+    public function restore(User $user, Encomenda $encomenda)
     {
         //
     }
 
-    public function forceDelete(User $user, Noticia $noticia)
+    public function forceDelete(User $user, Encomenda $encomenda)
     {
         //
     }

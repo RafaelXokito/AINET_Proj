@@ -88,7 +88,7 @@
                 @endcan
 
                 <!-- Nav Item -->
-                <li class="nav-item {{Route::currentRouteName()=='/'? 'active': ''}}">
+                <li class="nav-item {{Route::currentRouteName()=='estatisticas'? 'active': ''}}">
                     <a class="nav-link" href="{{url('/')}}">
                         <i class="fad fa-fw fa-chart-pie"></i>
                         <span>Estatísticas</span>
