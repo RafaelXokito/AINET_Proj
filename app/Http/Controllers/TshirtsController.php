@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class TshirtsController extends Controller
 {
@@ -34,10 +35,12 @@ class TshirtsController extends Controller
 
         $listaCores = Cor::orderBy('nome')->pluck('nome', 'codigo');
         $precos = Preco::first();
+        $cliente = Auth::user() ?? [];
 
         return view('carrinho.index')
             ->withInformacoesextra($informacoes_extra)
             ->withCores($listaCores)
+            ->withCliente($cliente)
             ->withPrecos($precos)
             ->with('pageTitle', 'Carrinho de compras')
             ->with('carrinho', session('carrinho') ?? []);
@@ -190,46 +193,81 @@ class TshirtsController extends Controller
     public function store(EncomendaPost $request)
     {
         try {
-            dd($request);
 
 
             $validatedData = $request->validated();
 
-            dd($request);
 
             DB::beginTransaction();
 
             $encomenda = new Encomenda;
+
             $encomenda->estado = 'pendente';
             $encomenda->cliente_id = Auth::user()->id;
             $encomenda->data = now();
             $encomenda->nif = $validatedData['nif'];
             $encomenda->endereco = $validatedData['endereco'];
+            $encomenda->notas = $validatedData['notas'];
             $encomenda->tipo_pagamento = $validatedData['tipo_pagamento'];
             $encomenda->ref_pagamento = $validatedData['ref_pagamento'];
+
+
+            $preco_total = 0;
+            $encomenda->preco_total = $preco_total; //É atualizado depois de percorrermos as tshirts e somarmos. Prevenido com transições pela base de dados
+
             $encomenda->save();
 
+            $precos = Preco::first();
+
             foreach ($request->session()->get('carrinho') as $key => $value) {
-                dd($key, $value);
                 $tshirt = new Tshirt;
+
                 $tshirt->encomenda_id = $encomenda->id;
-                $tshirt->estampa_id = $value->estampa_id;
-                $tshirt->cor_codigo = $value->cor_codigo;
-                $tshirt->tamanho = $value->tamanho;
-                $tshirt->quantidade = $value->quantidade;
-                $tshirt->preco_un = $value->preco_un;
-                $tshirt->subtotal = $value->subtotal;
+                $tshirt->estampa_id = $value['estampa']->id;
+                $tshirt->cor_codigo = $value['cor_codigo'];
+                $tshirt->tamanho = $value['tamanho'];
+                $tshirt->quantidade = $value['quantidade'];
+
+                if ($tshirt->quantidade >= $precos->quantidade_desconto) {
+                    $tshirt->preco_un = ($value['estampa']->cliente_id == null) ? $precos->preco_un_catalogo_desconto : $precos->preco_un_proprio_desconto;
+                } else {
+                    $tshirt->preco_un = ($value['estampa']->cliente_id == null) ? $precos->preco_un_catalogo : $precos->preco_un_proprio;
+                }
+
+                $tshirt->subtotal = $tshirt->preco_un * $value['quantidade'];
+                $preco_total += $tshirt->subtotal;
+
                 $tshirt->save();
+
             }
+
+            $encomenda->preco_total = $preco_total;
+            $encomenda->save(); //Atualizamos então o preço total da encomenda.
+
+            //
+            $data = array(
+                'name'      =>  env('APP_NAME', 'fallback_app_name').' - Fatura Simplificada',
+                'message'   =>  'fatura',
+                'tshirts'   =>  Tshirt::where('estampa_id', '=', $encomenda->id)->get(),
+                'encomenda' =>  $encomenda
+            );
+
+            Mail::to(Auth::user()->email)->send(new SendMail($data));
+            //
+
+            $request->session()->forget('carrinho');
 
             DB::commit();
 
             $data = array(
                 'name'      =>  env('APP_NAME', 'fallback_app_name').' - Fatura Simplificada',
-                'message'   =>   'Fatura <Mensagem>'
+                'message'   =>  'fatura',
+                'tshirts'   =>  Tshirt::where('estampa_id', '=', $encomenda->id)->get(),
+                'encomenda' =>  $encomenda
             );
 
             Mail::to(Auth::user()->email)->send(new SendMail($data));
+
 
             return back()
                 ->with('alert-msg', 'A sua compra foi efetuada! Verifique a fatura no seu Email')
@@ -238,6 +276,14 @@ class TshirtsController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
+
+            $data = array(
+                'name'      =>  env('APP_NAME', 'fallback_app_name').' - TshirtController (store)',
+                'message'   =>   $th->getMessage()
+            );
+
+            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->send(new SendMail($data));
+
             return back()
                 ->with('alert-msg', 'Não conseguimos concluir a sua compra!')
                 ->with('alert-type', 'danger');

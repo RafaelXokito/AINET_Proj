@@ -28,6 +28,10 @@ class SendMail extends Mailable
      */
     public function build()
     {
+        //Fatura build
+        if ($this->data['message'] == 'fatura') {
+            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'fallback_DEVELOPER_MAIL_USERNAME'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('pages.dynamic_email_template')->with('data', $this->data);
+        }
         return $this->from(env('DEVELOPER_MAIL_USERNAME', 'fallback_DEVELOPER_MAIL_USERNAME'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('pages.dynamic_email_template')->with('data', $this->data);
     }
 }
