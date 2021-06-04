@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserPost;
+use App\Models\Cliente;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -95,6 +96,9 @@ class UsersController extends Controller
         try {
             $user->foto_url = null;
             $user->save();
+            if($user->tipo == 'C'){
+                Cliente::find($user->id)->delete();
+            }
             $user->delete();
             User::destroy($oldUserID);
             Storage::delete('public/fotos/' . $oldUrlFoto);

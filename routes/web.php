@@ -40,6 +40,9 @@ Route::post('carrinho/{estampa}/store_tshirt', [TshirtsController::class, 'store
 
 Route::middleware('auth')->middleware('verified')->group( function () {
 
+    //estatisticas
+    Route::get('estatisticas', [UsersController::class, 'index'])->name('estatisticas')->middleware('can:viewAny,user');
+
     //preços
     Route::get('precos/editar', [PrecosController::class, 'edit'])->name('precos.edit')->middleware('can:edit,App\Models\Preco');
     Route::put('precos/{precos}/update', [PrecosController::class, 'update'])->name('precos.update')->middleware('can:update,App\Models\Preco');
@@ -64,9 +67,9 @@ Route::middleware('auth')->middleware('verified')->group( function () {
 
     //Encomendas
     Route::get('/encomendas', [EncomendasController::class, 'index'])->name('encomendas')->middleware('can:isStaff,App\Models\User');
-    Route::post('/encomendas/store', [EncomendasController::class, 'store'])->name('encomendas.store')->middleware('can:store,App\Models\Categoria');
-    Route::put('/encomendas/{categoria}/update', [EncomendasController::class, 'update'])->name('encomendas.update')->middleware('can:update,App\Models\Categoria');
-    Route::delete('/encomendas/{categoria}/delete', [EncomendasController::class, 'delete'])->name('encomendas.delete')->middleware('can:delete,App\Models\Categoria');
+    Route::post('/encomendas/store', [EncomendasController::class, 'store'])->name('encomendas.store')->middleware('can:store,App\Models\Encomenda');
+    Route::put('/encomendas/{encomenda}/update', [EncomendasController::class, 'update'])->name('encomendas.update')->middleware('can:update,App\Models\Encomenda');
+    Route::delete('/encomendas/{encomenda}/delete', [EncomendasController::class, 'delete'])->name('encomendas.delete')->middleware('can:delete,App\Models\Encomenda');
     Route::post('/encomendas/{id}/restore', [EncomendasController::class, 'restore'])->name('encomendas.restore'); //não tem middleware pois tem o authorize no controller
 
     //cores
