@@ -13,6 +13,11 @@
         </div>
     </div>
 </form>
+<input type="number" id="quantidadeDesconto" value="{{$precos->quantidade_desconto}}" hidden>
+<input type="number" id="valorPropDesconto" value="{{$precos->preco_un_proprio_desconto}}" hidden>
+<input type="number" id="valorPubDesconto" value="{{$precos->preco_un_catalogo_desconto}}" hidden>
+<input type="number" id="valorPropSemDesconto" value="{{$precos->preco_un_proprio}}" hidden>
+<input type="number" id="valorPubSemDesconto" value="{{$precos->preco_un_catalogo}}" hidden>
 <div class="px-4 px-lg-0">
     <div class="pb-5">
       <div class="container">
@@ -59,27 +64,32 @@
 
                             <th scope="row" class="border-0">
                                 <div class="p-2">
-                                <img id="previewImage{{$i}}" width="70" class="img-fluid rounded shadow-sm" src="{{route('estampas.preview', ['estampa' => $row['estampa'], 'cor' => $row['cor_codigo'], 'posicao' => $informacoesextra[$row['id']]['inputPosicao'] ?? 'top', 'rotacao' => $informacoesextra[$row['id']]['inputRotacao'] ?? '0', 'opacidade' => $informacoesextra[$row['id']]['inputOpacidade'] ?? '100', 'zoom' => $informacoesextra[$row['id']]['inputZoom'] ?? '0']) }}">
+                                <img id="previewImage{{$i}}" width="70" class="img-fluid rounded shadow-sm" src="{{route('estampas.preview', ['estampa' => $row['estampa'], 'cor' => $row['cor_codigo'], 'posicao' => $informacoesextra[$row['key']]['inputPosicao'] ?? 'top', 'rotacao' => $informacoesextra[$row['key']]['inputRotacao'] ?? '0', 'opacidade' => $informacoesextra[$row['key']]['inputOpacidade'] ?? '100', 'zoom' => $informacoesextra[$row['key']]['inputZoom'] ?? '0']) }}">
                                 </div>
                             </th>
                             <th scope="row" class="border-0 align-middle">
                             <div class="p-2">
                                 <div class="ml-3 d-inline-block align-middle">
-                                <h5 class="mb-0"> <a href="" id="{{$row['id']}}" data-toggle="modal" data-target=".bd-example-modal-lg" class="text-dark d-inline-block align-middle">{{$row['estampa']->nome}}</a></h5>
+                                <h5 class="mb-0"> <a href="" id="{{$row['key']}}" data-toggle="modal" data-target=".bd-example-modal-lg" class="text-dark d-inline-block align-middle">{{$row['estampa']->nome}}</a></h5>
                                 </div>
                             </div>
                             </th>
-                            <td class="border-0 align-middle"><div class="p-2" onclick="alterarCarrinhoLoadRow({{$i}})"><a id="quantidade{{$i}}" href="" class="text-dark d-inline-block align-middle" data-toggle="modal" data-target=".bd-example-modal-lg"><strong>{{ $row['quantidade'] }}</strong> <i class="fas fa-caret-down"></i></a></div></td>
-                            <td class="border-0 align-middle"><div class="p-2"><a id="tamanho{{$i}}" href="" class="text-dark d-inline-block align-middle" data-toggle="modal" data-target=".bd-example-modal-lg"><strong>{{ $row['tamanho'] }}</strong> <i class="fas fa-caret-down"></i></a></div></td>
-                            <td class="border-0 align-middle"><div class="p-2"><a id="cor{{$i}}" href="" class="text-dark d-inline-block align-middle" data-toggle="modal" data-target=".bd-example-modal-lg"><strong><img id="colorInputCor" style="width: 16px; height: 16px; background-color: #{{ $row['cor_codigo'] }}" /></strong> <i class="fas fa-caret-down"></i></a></div></td>
-                            <td class="border-0 align-middle"><div class="p-2"><strong>{{ number_format($row['preco_un'],2) }}€</strong></div></td>
+                            <td class="border-0 align-middle"><div class="p-2" onclick="alterarCarrinhoLoadRow({{$i}})"><a id="quantidade{{$i}}" href="" data-qtd="{{ $row['quantidade'] }}" class="text-dark d-inline-block align-middle" data-toggle="modal" data-target=".bd-example-modal-lg"><strong>{{ $row['quantidade'] }}</strong> <i class="fas fa-caret-down"></i></a></div></td>
+                            <td class="border-0 align-middle"><div class="p-2" onclick="alterarCarrinhoLoadRow({{$i}})"><a id="tamanho{{$i}}" href="" data-size="{{ $row['tamanho'] }}" class="text-dark d-inline-block align-middle" data-toggle="modal" data-target=".bd-example-modal-lg"><strong>{{ $row['tamanho'] }}</strong> <i class="fas fa-caret-down"></i></a></div></td>
+                            <td class="border-0 align-middle"><div class="p-2" onclick="alterarCarrinhoLoadRow({{$i}})"><a id="cor{{$i}}" href="" data-color="{{ $row['cor_codigo'] }}" class="text-dark d-inline-block align-middle" data-toggle="modal" data-target=".bd-example-modal-lg"><strong><img id="colorInputCor{{$i}}" style="width: 16px; height: 16px; background-color: #{{ $row['cor_codigo'] }}" /></strong> <i class="fas fa-caret-down"></i></a></div></td>
+                            <td class="border-0 align-middle"><div class="p-2" id="precoUn{{$i}}" data-precoUn="{{$row['estampa']->cliente_id}}"><strong>{{ number_format($row['preco_un'],2) }}€</strong></div></td>
                             <td class="border-0 align-middle"><div class="p-2"><strong><span class="subtotal" >{{ number_format($row['subtotal'], 2) }}</span>€</strong></div></td>
                             <td class="border-0 align-middle">
-                                <form action="{{route('carrinho.destroy_tshirt', $row['id'])}}" method="POST">
+                                <form action="{{route('carrinho.update_tshirt', ['key' => $row['key']])}}" method="POST" id="formUpdateCarrinho{{$i}}">
+                                    @csrf
+                                    @method('put')
+                                </form>
+                                <form action="{{route('carrinho.destroy_tshirt', $row['key'])}}" method="POST">
                                     @csrf
                                     @method('delete')
                                     <button type="submit" class="btn text-dark"><i class="fa fa-trash"></i></button>
                                 </form>
+                                <button type="button" onclick="alterarCarrinhoLoadRow({{$i}})" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn text-dark"><i class="fas fa-edit"></i></button>
                             </td>
                         </tr>
                         @php
@@ -100,10 +110,10 @@
             <div class="p-4">
                 <div class="input-group mb-4 border rounded-pill p-2">
                     <input type="text" placeholder="NIF" name="nif" aria-describedby="button-addon3" class="form-control border-0">
-                    @error('nif')
-                        <div class="small text-danger">{{$message}}</div>
-                    @enderror
                 </div>
+                @error('nif')
+                    <div class="small text-danger">{{$message}}</div>
+                @enderror
                 <div class="input-group mb-4 border rounded-pill p-2">
                     <input type="text" placeholder="Morada" name="endereco" aria-describedby="button-addon3" class="form-control border-0">
                     @error('endereco')
@@ -147,7 +157,7 @@
                 <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Total</strong>
                   <h5 class="font-weight-bold"><span id="totalOrder"></span>€</h5>
                 </li>
-              </ul><a href="" class="btn btn-dark rounded-pill py-2 btn-block">Continuar com a compra</a>
+              </ul><button href="" type="submit" class="btn btn-dark rounded-pill py-2 btn-block">Continuar com a compra</button>
             </div>
           </div>
         </div>
@@ -182,7 +192,7 @@
         <td>{{ $row['preco_un'] }} </td>
         <td>{{ $row['subtotal'] }} </td>
         <td>
-            <form action="{{route('carrinho.update_tshirt', $row['id'])}}" method="POST">
+            <form action="{{route('carrinho.update_tshirt', $row['key'])}}" method="POST">
                 @csrf
                 @method('put')
                 <input type="hidden" name="quantidade" value="1">
@@ -190,7 +200,7 @@
             </form>
         </td>
         <td>
-            <form action="{{route('carrinho.update_tshirt', $row['id'])}}" method="POST">
+            <form action="{{route('carrinho.update_tshirt', $row['key'])}}" method="POST">
                 @csrf
                 @method('put')
                 <input type="hidden" name="quantidade" value="-1">
@@ -198,7 +208,7 @@
             </form>
         </td>
         <td>
-            <form action="{{route('carrinho.destroy_tshirt', $row['id'])}}" method="POST">
+            <form action="{{route('carrinho.destroy_tshirt', $row['key'])}}" method="POST">
                 @csrf
                 @method('delete')
                 <input type="submit" value="Remove">

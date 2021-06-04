@@ -150,12 +150,23 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-                    @if ((Route::currentRouteName()=='estampas' || Route::currentRouteName()=='estampasUser') && Auth::user()->tipo != 'F' )
+                    @guest
+                    @if ( (Route::currentRouteName()=='estampas' || Route::currentRouteName()=='estampasUser') )
                         <a class="nav-link" href="{{route('estampas.create')}}">
                             <i class="fal fa-fw fa-wand-magic"></i>
                             <span>Criar estampa</span>
                         </a>
                     @endif
+                    @endguest
+                    @auth
+                    @if ( (Route::currentRouteName()=='estampas' || Route::currentRouteName()=='estampasUser') && Auth::user()->tipo != 'F' )
+                        <a class="nav-link" href="{{route('estampas.create')}}">
+                            <i class="fal fa-fw fa-wand-magic"></i>
+                            <span>Criar estampa</span>
+                        </a>
+                    @endif
+                    @endauth
+
 
                     @auth
                         @if (Route::currentRouteName()=='estampas')
