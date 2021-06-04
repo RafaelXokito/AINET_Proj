@@ -263,6 +263,7 @@ class TshirtsController extends Controller
                 ->with('alert-type', 'success');
 
         } catch (\Throwable $th) {
+
             DB::rollBack();
 
             $data = array(
