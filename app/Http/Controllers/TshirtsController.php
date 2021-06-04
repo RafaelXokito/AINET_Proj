@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EncomendaPost;
+use App\Mail\SendMail;
 use App\Models\Cor;
 use App\Models\Encomenda;
 use App\Models\Estampa;
@@ -30,8 +32,13 @@ class TshirtsController extends Controller
             $informacoes_extra[$key]['inputOpacidade'] = $json->inputOpacidade;
         }
 
+        $listaCores = Cor::orderBy('nome')->pluck('nome', 'codigo');
+        $precos = Preco::first();
+
         return view('carrinho.index')
             ->withInformacoesextra($informacoes_extra)
+            ->withCores($listaCores)
+            ->withPrecos($precos)
             ->with('pageTitle', 'Carrinho de compras')
             ->with('carrinho', session('carrinho') ?? []);
     }
@@ -53,12 +60,7 @@ class TshirtsController extends Controller
         $preco_subotal = 0;
         $precos = Preco::get()->first();
 
-        $result = json_decode($estampa->informacao_extra);
-        if ($result != null) { //Há tshirts que não têm info extra então para prevenir
-            $key = $estampa->id . '.' . $validatedData['tamanho'] . '.' . $validatedData['cor_codigo'] . '.' . $result->inputZoom . '.' . $result->inputPosicao . '.' . $result->inputRotacao . '.' . $result->inputOpacidade;
-        } else {
-            $key = $estampa->id . '.' . $validatedData['tamanho'] . '.' . $validatedData['cor_codigo'];
-        }
+        $key = $estampa->id . '.' . $validatedData['tamanho'] . '.' . $validatedData['cor_codigo'];
         $carrinho = $request->session()->get('carrinho', []);
         $qtd = ($carrinho[$key]['quantidade'] ?? 0) + $validatedData['quantidade'];
 
@@ -81,7 +83,7 @@ class TshirtsController extends Controller
         }
 
         $carrinho[$key] = [
-            'id' => $key,
+            'key' => $key,
             'estampa' => $estampa,
             'quantidade' => $qtd,
             'tamanho' => $validatedData['tamanho'],
@@ -95,28 +97,73 @@ class TshirtsController extends Controller
             ->with('alert-type', 'success');
     }
 
-    public function update_tshirt(Request $request, Tshirt $tshirt)
+    public function update_tshirt(Request $request, $key)
     {
         $carrinho = $request->session()->get('carrinho', []);
-        $qtd = $carrinho[$tshirt->id]['qtd'] ?? 0;
-        $qtd += $request->quantidade;
-        if ($request->quantidade < 0) {
-            $msg = 'Foram removidas ' . $request->quantidade . ' tshirts! Quantidade atual = ' .  $qtd;
-        } elseif ($request->quantidade > 0) {
-            $msg = 'Foram adicionadas ' . $request->quantidade . ' tshirts! Quantidade atual = ' .  $qtd;
+
+        $validatedData = $request->validate([
+            'cor_codigo' => 'required|exists:cores,codigo',
+            'tamanho' => 'required|in:XS,S,M,L,XL',
+            'quantidade' => 'required|min:0|numeric',
+        ]);
+
+        $estampa = Estampa::findOrFail($carrinho[$key]['estampa']->id);
+
+        $msg = '';
+        $qtd = $carrinho[$key]['quantidade'] - $validatedData['quantidade'];
+        if ($qtd > 0) {
+            $msg = 'Foram removidas ' . $qtd . ' tshirts! Quantidade atual = ' .  $validatedData['quantidade'];
+        } elseif ($qtd < 0) {
+            $msg = 'Foram adicionadas ' . $qtd*(-1) . ' tshirts! Quantidade atual = ' .  $validatedData['quantidade'];
         }
+
+        $preco_un = 0;
+        $preco_subotal = 0;
+        $precos = Preco::get()->first();
+
+        $qtd = $validatedData['quantidade'];
+        if ($estampa->cliente_id) {
+            if ($qtd >= $precos->quantidade_desconto) {
+                $preco_un = $precos->preco_un_proprio_desconto;
+            } else {
+                $preco_un = $precos->preco_un_proprio;
+            }
+            $preco_subotal = $preco_un * $qtd;
+        } else {
+            if ($qtd >= $precos->quantidade_desconto) {
+                 $preco_un = $precos->preco_un_catalogo_desconto;
+            } else {
+                 $preco_un = $precos->preco_un_catalogo;
+            }
+            $preco_subotal = $preco_un * $qtd;
+        }
+
+        if ($validatedData['cor_codigo'] != $carrinho[$key]['cor_codigo']) {
+            $msg = $msg.'A cor da tshirt foi alterada.';
+        }
+
         if ($qtd <= 0) {
-            unset($carrinho[$tshirt->id]);
+            unset($carrinho[$key]);
             $msg = 'Foram removidas todas as tshirts escolhidas.';
         } else {
-            $carrinho[$tshirt->id] = [
-                'id' => $tshirt->id,
-                'estampa' => $tshirt->estampa,
-                'qtd' => $qtd,
-                'tamanho' => $tshirt->tamanho,
-                'cor_codigo' => $tshirt->cor_codigo,
-                'preco_un' => $tshirt->preco_un,
-                'subtotal' => $tshirt->subtotal,
+            $Newkey = $estampa->id . '.' . $validatedData['tamanho'] . '.' . $validatedData['cor_codigo'];
+
+            if ($key != $Newkey) {
+                if (array_key_exists($key, $carrinho)) {
+                    unset($carrinho[$key]);
+                    $request->session()->put('carrinho', $carrinho);
+                }
+                $key = $Newkey;
+            }
+
+            $carrinho[$key] = [
+                'key' => $key,
+                'estampa' => $estampa,
+                'quantidade' => $qtd,
+                'tamanho' => $validatedData['tamanho'],
+                'cor_codigo' => $validatedData['cor_codigo'],
+                'preco_un' => $preco_un,
+                'subtotal' => $preco_subotal,
             ];
         }
         $request->session()->put('carrinho', $carrinho);
@@ -140,10 +187,15 @@ class TshirtsController extends Controller
             ->with('alert-type', 'warning');
     }
 
-    public function store(Request $request)
+    public function store(EncomendaPost $request)
     {
         try {
-            dd($request->session()->get('carrinho'));
+            dd($request);
+
+
+            $validatedData = $request->validated();
+
+            dd($request);
 
             DB::beginTransaction();
 
@@ -151,7 +203,10 @@ class TshirtsController extends Controller
             $encomenda->estado = 'pendente';
             $encomenda->cliente_id = Auth::user()->id;
             $encomenda->data = now();
-            //dados do pagamento TODO
+            $encomenda->nif = $validatedData['nif'];
+            $encomenda->endereco = $validatedData['endereco'];
+            $encomenda->tipo_pagamento = $validatedData['tipo_pagamento'];
+            $encomenda->ref_pagamento = $validatedData['ref_pagamento'];
             $encomenda->save();
 
             foreach ($request->session()->get('carrinho') as $key => $value) {

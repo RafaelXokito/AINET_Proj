@@ -25,7 +25,7 @@ class CorPost extends FormRequest
     {
         return [
             'codigo' => array('required',
-                              'regex:/^((?:[0-9a-f]{2}){2,4}|#[0-9a-f]{3}|(?:rgba?|hsla?)\((?:\d+%?(?:deg|rad|grad|turn)?(?:,|\s)+){2,3}[\s\/]*[\d\.]+%?\))$/i'),
+                              'regex:/^((?:[0-9a-f]{2}){2,4}|[0-9a-f]{3}|(?:rgba?|hsla?)\((?:\d+%?(?:deg|rad|grad|turn)?(?:,|\s)+){2,3}[\s\/]*[\d\.]+%?\))$/i'),
             'nome' => 'required|max:255|string',
             'foto' => 'mimes:jpeg,jpg,png|max:8192'
         ];

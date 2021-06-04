@@ -74,7 +74,7 @@ class EstampasController extends Controller
     public function edit(Estampa $estampa)
     {
         $listaCategorias = Categoria::orderBy('nome')->pluck('nome', 'id');
-        $listaCores = Cor::pluck('nome', 'codigo');
+        $listaCores = Cor::orderBy('nome')->pluck('nome', 'codigo');
         $cor = Cor::first();
         $precos = Preco::first();
 
@@ -129,7 +129,7 @@ class EstampasController extends Controller
         $cor = Cor::first();
         $precos = Preco::first();
         $listaCategorias = Categoria::orderBy('nome')->pluck('nome', 'id');
-        $listaCores = Cor::pluck('nome', 'codigo');
+        $listaCores = Cor::orderBy('nome')->pluck('nome', 'codigo');
         $validatedData = $request->validate([
             'categoria_id' => 'nullable|exists:categorias,id',
             'nome' => 'required|max:255',

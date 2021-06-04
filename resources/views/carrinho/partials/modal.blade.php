@@ -1,4 +1,5 @@
 
+
     <div class="modal fade bd-example-modal-lg" id="alterarCarrinhoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -11,11 +12,34 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-4">
-                            <img id="previewImageModal" width="" class="img-fluid rounded shadow-sm" src="{{route('estampas.preview', ['estampa' => $row['estampa'], 'cor' => $row['cor_codigo'], 'posicao' => $informacoesextra[$row['id']]['inputPosicao'] ?? 'top', 'rotacao' => $informacoesextra[$row['id']]['inputRotacao'] ?? '0', 'opacidade' => $informacoesextra[$row['id']]['inputOpacidade'] ?? '100', 'zoom' => $informacoesextra[$row['id']]['inputZoom'] ?? '0']) }}">
+                            <input value="{{route('estampas')}}" id="formPreview" hidden>
+                            <img id="previewImageModal" width="" class="img-fluid rounded shadow-sm" src="">
                         </div>
                         <div class="col d-flex align-items-center">
                         <form method="POST" action="" id="formAlterarCarrinho">
                             @csrf
+                            @method('PUT')
+                            <div class="row d-flex justify-content-center mt-5 text-center">
+                                <div class="form-group col-6">
+                                    <label for="inputCorModal">Cor da t-shirt</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text  border-0" id="">
+                                                <img id="colorinputCorModal" style="width: 16px; height: 16px; background-color: #" />
+                                            </span>
+                                        </div>
+                                        <select class="form-control" name="cor_codigo" id="inputCorModal">
+                                            <!--<option value="" selected>Escolher cor...</option>-->
+                                            @foreach ($cores as $abr => $nome)
+                                            <option value={{$abr}} >{{$nome}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    @error('cor_codigo')
+                                        <div class="small text-danger">{{$message}}</div>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="form-group col-4">
                                     <label for="inputTamanho">Tamanho</label>
@@ -45,7 +69,7 @@
                                             <div class="input-group-prepend">
                                             <div class="input-group-text">Preço Uni.</div>
                                             </div>
-                                            <input type="number" class="form-control" id="inputPrecoUni" value="">
+                                            <input type="number" class="form-control" id="inputPrecoUni" value="0.00">
                                             <div class="input-group-append">
                                                 <div class="input-group-text">€</div>
                                             </div>
