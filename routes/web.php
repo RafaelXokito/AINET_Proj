@@ -41,7 +41,7 @@ Route::post('carrinho/{estampa}/store_tshirt', [TshirtsController::class, 'store
 Route::middleware('auth')->middleware('verified')->group( function () {
 
     //estatisticas
-    Route::get('estatisticas', [UsersController::class, 'index'])->name('estatisticas')->middleware('can:viewAny,user');
+    Route::get('estatisticas', [PageController::class, 'indexEstatisticas'])->name('estatisticas');
 
     //preços
     Route::get('precos/editar', [PrecosController::class, 'edit'])->name('precos.edit')->middleware('can:edit,App\Models\Preco');
@@ -85,7 +85,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::post('carrinho', [TshirtsController::class, 'store'])->name('carrinho.store')->middleware('can:isClient,App\Models\User');
     Route::delete('carrinho', [TshirtsController::class, 'destroy'])->name('carrinho.destroy')->middleware('can:isClient,App\Models\User');
 
-    // admininstração de users
+    //gestão de users
     Route::get('users', [UsersController::class, 'index'])->name('utilizadores')->middleware('can:viewAny,App\Models\User');
     Route::get('users/{user}/edit', [UsersController::class, 'edit'])->name('utilizadores.edit')->middleware('can:edit,user');
     Route::get('users/create', [UsersController::class, 'create'])->name('utilizadores.create')->middleware('can:create,App\Models\User');

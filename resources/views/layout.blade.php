@@ -61,14 +61,13 @@
             @endauth
 
             @auth
-
+            <!-- Divider Encomendas -->
             <hr class="sidebar-divider d-none d-md-block">
-
             <!-- Nav Item -->
             <li class="nav-item {{Route::currentRouteName()=='encomendas'? 'active': ''}}">
                 <a class="nav-link" href="{{route('encomendas')}}">
                     <i class="fad fa-fw fa-scroll-old"></i>
-                    <span>Recibos</span>
+                    <span>Encomendas</span>
                 </a>
             </li>
             @endauth
@@ -89,7 +88,7 @@
 
                 <!-- Nav Item -->
                 <li class="nav-item {{Route::currentRouteName()=='estatisticas'? 'active': ''}}">
-                    <a class="nav-link" href="{{url('/')}}">
+                    <a class="nav-link" href="{{url('estatisticas')}}">
                         <i class="fad fa-fw fa-chart-pie"></i>
                         <span>Estatísticas</span>
                     </a>

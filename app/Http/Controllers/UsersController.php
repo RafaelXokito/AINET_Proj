@@ -30,7 +30,7 @@ class UsersController extends Controller
         }
 
         $users = $qry->paginate(10);
-        //dd($users);
+
         return view('utilizadores.index')
             ->withUsers($users)
             ->withApagado($apagado)
@@ -39,26 +39,75 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
+        $cliente = null;
+        if($user->tipo == 'C')
+        {
+            $cliente = Cliente::find($user->id);
+        }
         return view('utilizadores.edit')
+            ->withCliente($cliente)
             ->withUser($user);
     }
 
-    public function update(UserPost $request, User $user)
+    public function update(Request $request, User $user)
     {
-        $validated_data = $request->validated();
-        $user->email = $validated_data['email'];
+        $cliente = null;
+        $validated_data = $request->validate([
+            'name' => 'required|string',
+            'foto' => 'nullable|image|max:8192'
+        ]);
         $user->name = $validated_data['name'];
-        $user->tipo = $validated_data['tipo'];
-        $user->bloqueado = $validated_data['bloqueado'];
+        if($user->tipo == 'C')
+        {
+            $validated_data = $request->validate([
+                'nif' => 'required|digits:9',
+                'endereco' => 'required',
+                'tipo_pagamento' => 'required|in:VISA,MC,PAYPAL',
+                'ref_pagamento' =>  'required'/*[
+                    'required',
+                    function ($attribute, $value, $fail) {
+                        if (($this->tipo_pagamento != 'PAYPAL') && (strlen($value) != 16)) {
+                            $fail('A referência de pagamento tem de conter 16 digitos.');
+                        } else if (($this->tipo_pagamento == 'PAYPAL') && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                            $fail('A referência de pagamento tem de ter um email válido.');
+                        }
+                    }
+                ]*///PERGUNTAR AO PROFESSOR.
+            ]);
+
+            $cliente = Cliente::find($user->id);
+            $cliente->nif = $validated_data['nif'];
+            $cliente->endereco = $validated_data['endereco'];
+            $cliente->tipo_pagamento = $validated_data['tipo_pagamento'];
+            $cliente->ref_pagamento = $validated_data['ref_pagamento'];
+            $cliente->save();
+        }
+        if($user->tipo == 'F' || $user->tipo == 'A')
+        {
+            $validated_data = $request->validate([
+                'bloqueado' =>    'required|in:0,1',
+                'tipo' =>         'required|in:F,A',
+            ]);
+            $user->tipo = $validated_data['tipo'];
+            $user->bloqueado = $validated_data['bloqueado'];
+        }
         if ($request->hasFile('foto')) {
             Storage::delete('public/fotos/' . $user->foto_url);
             $path = $request->foto->store('public/fotos');
             $user->foto_url = basename($path);
         }
         $user->save();
+        if($user->tipo == 'F' || $user->tipo == 'A')
         return redirect()->route('utilizadores')
-            ->with('alert-msg', 'User "' . $user->name . '" foi alterado com sucesso!')
+            ->with('alert-msg', 'Utilizador "' . $user->name . '" alterado com sucesso!')
             ->with('alert-type', 'success');
+        else
+        return redirect()->route('utilizadores.edit', $user)
+            ->with('alert-msg', 'Utilizador "' . $user->name . '" alterado com sucesso!')
+            ->with('alert-type', 'success')
+            ->withCliente($cliente)
+            ->withUser($user);
+
     }
 
     public function create()
@@ -84,7 +133,7 @@ class UsersController extends Controller
         }
         $newUser->save();
         return redirect()->route('utilizadores')
-            ->with('alert-msg', 'Utilizador "' . $validated_data['name'] . '" foi criado com sucesso!')
+            ->with('alert-msg', 'Utilizador "' . $validated_data['name'] . '" criado com sucesso!')
             ->with('alert-type', 'success');
     }
 
@@ -103,7 +152,7 @@ class UsersController extends Controller
             User::destroy($oldUserID);
             Storage::delete('public/fotos/' . $oldUrlFoto);
             return redirect()->route('utilizadores')
-                ->with('alert-msg', 'User "' . $oldName . '" foi apagado com sucesso!')
+                ->with('alert-msg', 'Utilizador "' . $oldName . '" apagado com sucesso!')
                 ->with('alert-type', 'success');
         } catch (\Throwable $th) {
             // $th é a exceção lançada pelo sistema - por norma, erro ocorre no servidor BD MySQL
@@ -111,11 +160,11 @@ class UsersController extends Controller
 
             if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
                 return redirect()->route('utilizadores')
-                    ->with('alert-msg', 'Não foi possível apagar o User "' . $oldName . '", porque este user já está em uso!')
+                    ->with('alert-msg', 'Não foi possível apagar o Utilizador "' . $oldName . '", porque este user está em uso!')
                     ->with('alert-type', 'danger');
             } else {
                 return redirect()->route('utilizadores')
-                    ->with('alert-msg', 'Não foi possível apagar o User "' . $oldName . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-msg', 'Não foi possível apagar o Utilizador "' . $oldName . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
             }
         }

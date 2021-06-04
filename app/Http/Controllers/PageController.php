@@ -10,4 +10,9 @@ class PageController extends Controller
     {
         return view('layout');
     }
+
+    public function indexEstatisticas()
+    {
+        return view('estatisticas.index');
+    }
 }
