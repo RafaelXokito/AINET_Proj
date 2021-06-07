@@ -58,8 +58,7 @@ class UpdateUserPost extends FormRequest
             if (Auth::user()->tipo == 'A' && !isset($this['tipo']) ) {
                 $validator->errors()->add('tipo', 'O campo tipo é obrigatório!');
             }
-
-            if (Auth::user()->tipo == 'A' && !isset($this['bloqueado']) ){
+            if (Auth::user()->tipo == 'A' && !isset($this['bloqueado']) ) {
                 $validator->errors()->add('bloqueado', 'O campo bloquado é obrigatório!');
             }
         });

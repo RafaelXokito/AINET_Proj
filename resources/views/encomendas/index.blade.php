@@ -45,10 +45,10 @@
     </thead>
     <tbody>
         @foreach($encomendas as $encomenda)
-            <tr>
+            <tr {{$encomenda->estado == 'pendente' ? 'class=table-warning' : ''}} {{$encomenda->estado == 'paga' ? 'class=table-primary' : ''}} {{$encomenda->estado == 'fechada' ? 'class=table-success' : ''}} {{$encomenda->estado == 'anulada' ? 'class=table-danger' : ''}} >
                 <td>{{$encomenda->cliente->user->name}}</td>
                 <td>{{$encomenda->id}}</td>
-                <td>{{$encomenda->estado}}</td>
+                <td>{{strtoupper($encomenda->estado)}}</td>
                 <td>{{$encomenda->data}}</td>
                 <td>
                     @can('update', App\Models\Encomenda::class)
