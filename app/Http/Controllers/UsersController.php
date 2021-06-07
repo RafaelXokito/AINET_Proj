@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserPost;
 use App\Http\Requests\UserPost;
 use App\Models\Cliente;
 use App\Models\User;
@@ -49,32 +50,12 @@ class UsersController extends Controller
             ->withUser($user);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserPost $request, User $user)
     {
         $cliente = null;
-        $validated_data = $request->validate([
-            'name' => 'required|string',
-            'foto' => 'nullable|image|max:8192'
-        ]);
+        $validated_data = $request->validated();
         $user->name = $validated_data['name'];
-        if($user->tipo == 'C')
-        {
-            $validated_data = $request->validate([
-                'nif' => 'required|digits:9',
-                'endereco' => 'required',
-                'tipo_pagamento' => 'required|in:VISA,MC,PAYPAL',
-                'ref_pagamento' =>  'required'/*[
-                    'required',
-                    function ($attribute, $value, $fail) {
-                        if (($this->tipo_pagamento != 'PAYPAL') && (strlen($value) != 16)) {
-                            $fail('A referência de pagamento tem de conter 16 digitos.');
-                        } else if (($this->tipo_pagamento == 'PAYPAL') && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                            $fail('A referência de pagamento tem de ter um email válido.');
-                        }
-                    }
-                ]*///PERGUNTAR AO PROFESSOR.
-            ]);
-
+        if ($user->tipo == 'C') {
             $cliente = Cliente::find($user->id);
             $cliente->nif = $validated_data['nif'];
             $cliente->endereco = $validated_data['endereco'];
@@ -82,11 +63,10 @@ class UsersController extends Controller
             $cliente->ref_pagamento = $validated_data['ref_pagamento'];
             $cliente->save();
         }
-        if($user->tipo == 'F' || $user->tipo == 'A')
-        {
+        if ($user->tipo == 'F' || $user->tipo == 'A') {
             $validated_data = $request->validate([
-                'bloqueado' =>    'required|in:0,1',
-                'tipo' =>         'required|in:F,A',
+                'bloqueado' =>    'required',
+                'tipo' =>         'required',
             ]);
             $user->tipo = $validated_data['tipo'];
             $user->bloqueado = $validated_data['bloqueado'];
@@ -97,7 +77,7 @@ class UsersController extends Controller
             $user->foto_url = basename($path);
         }
         $user->save();
-        if($user->tipo == 'F' || $user->tipo == 'A')
+        if ($user->tipo == 'F' || $user->tipo == 'A')
         return redirect()->route('utilizadores')
             ->with('alert-msg', 'Utilizador "' . $user->name . '" alterado com sucesso!')
             ->with('alert-type', 'success');

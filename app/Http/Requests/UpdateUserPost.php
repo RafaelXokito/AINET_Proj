@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class ClientePost extends FormRequest
+class UpdateUserPost extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,7 @@ class ClientePost extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,6 +25,10 @@ class ClientePost extends FormRequest
     public function rules()
     {
         return [
+            'name' =>         'required',
+            'foto' =>         'nullable|image|max:8192',   // Máximum size = 8Mb
+            'bloqueado' => 'nullable|in:0,1',
+            'tipo' => 'nullable|in:F,A',
             'nif' => 'nullable|digits:9',
             'endereco' => 'nullable',
             'tipo_pagamento' => 'nullable|in:VISA,MC,PAYPAL',
@@ -36,7 +41,27 @@ class ClientePost extends FormRequest
                         $fail('A referência de pagamento tem de ter um email válido.');
                     }
                 }
-            ],
+            ]
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     *
+     * @param  \Illuminate\Validation\Validator $validator
+     *
+     * @return void
+     */
+    public function withValidator( $validator )
+    {
+        $validator->after(function ($validator) {
+            if (Auth::user()->tipo == 'A' && !isset($this['tipo']) ) {
+                $validator->errors()->add('tipo', 'O campo tipo é obrigatório!');
+            }
+
+            if (Auth::user()->tipo == 'A' && !isset($this['bloqueado']) ){
+                $validator->errors()->add('bloqueado', 'O campo bloquado é obrigatório!');
+            }
+        });
     }
 }

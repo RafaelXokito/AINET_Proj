@@ -31,7 +31,7 @@ class EncomendaPost extends FormRequest
             'ref_pagamento' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    if (($this->tipo_pagamento != 'PAYPAL') && (strlen($value) != 16)) {
+                    if (($this->tipo_pagamento != 'PAYPAL') && (! preg_match('/[^0-9]/', $value) && strlen((string) $value) == 16)) {
                         $fail('A referência de pagamento tem de conter 16 digitos.');
                     } else if (($this->tipo_pagamento == 'PAYPAL') && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
                         $fail('A referência de pagamento tem de ter um email válido.');
