@@ -7,11 +7,6 @@
 <br>
 
 <div class="row mb-3">
-    <div class="col-3">
-        @can('create', App\Models\Encomenda::class)
-            <a href="" onclick="criarOnClick()" class="btn btn-success" role="button" data-toggle="modal" data-target="#createOrEditModal" aria-pressed="true">Nova Encomenda</a>
-        @endcan
-    </div>
     <div class="col-9">
         <form method="GET" action="{{route('encomendas')}}" class="form-group">
             <div class="input-group">
