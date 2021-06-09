@@ -1,3 +1,5 @@
+@can('isAdmin', App\Models\User::class)
+
 <div class="row">
     <div class="form-group col-6">
         <label for="inputCategoria">Categoria</label>
@@ -12,6 +14,8 @@
         @enderror
     </div>
 </div>
+
+@endcan
 <div class="row">
     <div class="form-group col">
         <label for="inputNome">Nome</label>

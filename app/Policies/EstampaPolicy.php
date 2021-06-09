@@ -16,9 +16,7 @@ class EstampaPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        if ($user->tipo == 'A') {
-            return true;
-        }
+        //
     }
 
 
@@ -64,17 +62,25 @@ class EstampaPolicy
 
     public function delete(User $user)
     {
+        if ($user->tipo == 'A') {
+            return true;
+        }
         return false;
     }
 
     public function restore(User $user)
     {
+        if ($user->tipo == 'A') {
+            return true;
+        }
         return false;
-
     }
 
     public function forceDelete(User $user)
     {
+        if ($user->tipo == 'A') {
+            return true;
+        }
         return false;
     }
 }

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EncomendaPost;
+use App\Http\Requests\UpdateEstadoEncomendaPost;
 use App\Models\Encomenda;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EncomendasController extends Controller
 {
@@ -13,13 +15,40 @@ class EncomendasController extends Controller
         $qry = Encomenda::query();
 
         $estadoSelected = $request->estado ?? '';
+        $nomeSelected = $request->nome ?? '';
+        $dataInicial = $request->dataInicial ?? '';
+        $dataFinal = $request->dataFinal ?? '';
+
 
         if ($estadoSelected != '') {
-            $qry->where('estado', '=', $request->estado);
+            $qry->where('encomendas.estado', '=', $estadoSelected);
         }
+        if ($nomeSelected != '') {
+            $qry->join('users', 'users.id', '=', 'encomendas.cliente_id');
+            $qry->where('users.name', 'like', '%'.$nomeSelected.'%');
+        }
+
+        if ($dataInicial != '' && $dataFinal != '') {
+            $qry->whereBetween('encomendas.data', [$dataInicial, $dataFinal]);
+        }
+
+        if (Auth::user()->tipo == 'F') {
+            $qry->whereIn('encomendas.estado', ['pendente' ,'paga']);
+        }
+        if (Auth::user()->tipo == 'C') {
+            $qry->where('encomendas.cliente_id', '=', Auth::user()->id);
+        }
+
+        $qry->orderBy('encomendas.data', 'desc');
+        $qry->orderBy('encomendas.estado', 'asc');
+        $qry->orderBy('encomendas.id', 'desc');
+
         $listaEncomendas = $qry->orderBy('estado')->paginate(10);
         return view('encomendas.index')
+            ->withDataInicial($dataInicial)
+            ->withDataFinal($dataFinal)
             ->withEstado($estadoSelected)
+            ->withNome($nomeSelected)
             ->withEncomendas($listaEncomendas);
     }
 
@@ -35,7 +64,7 @@ class EncomendasController extends Controller
             ->with('alert-type', 'success');
     }
 
-    public function update(EncomendaPost  $request, Encomenda $encomenda)
+    public function updateEstado(UpdateEstadoEncomendaPost  $request, Encomenda $encomenda)
     {
         $validatedData = $request->validated();
         $encomenda = Encomenda::findOrFail($encomenda->id);
@@ -46,6 +75,8 @@ class EncomendasController extends Controller
             ->with('alert-msg', 'O estado da escomenda foi alterado com sucesso!! O estado atual é '. $encomenda->estado)
             ->with('alert-type', 'success');
     }
+
+
 
     public function delete(Encomenda $categoria)
     {

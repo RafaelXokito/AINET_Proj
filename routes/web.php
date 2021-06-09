@@ -66,9 +66,9 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::post('/categorias/{id}/restore', [CategoriasController::class, 'restore'])->name('categorias.restore'); //não tem middleware pois tem o authorize no controller
 
     //Encomendas
-    Route::get('/encomendas', [EncomendasController::class, 'index'])->name('encomendas')->middleware('can:isStaff,App\Models\User');
+    Route::get('/encomendas', [EncomendasController::class, 'index'])->name('encomendas');
     Route::post('/encomendas/store', [EncomendasController::class, 'store'])->name('encomendas.store')->middleware('can:store,App\Models\Encomenda');
-    Route::put('/encomendas/{encomenda}/update', [EncomendasController::class, 'update'])->name('encomendas.update')->middleware('can:update,App\Models\Encomenda');
+    Route::put('/encomendas/{encomenda}/update', [EncomendasController::class, 'updateEstado'])->name('encomendas.updateEstado')->middleware('can:update,App\Models\Encomenda');
     Route::delete('/encomendas/{encomenda}/delete', [EncomendasController::class, 'delete'])->name('encomendas.delete')->middleware('can:delete,App\Models\Encomenda');
     Route::post('/encomendas/{id}/restore', [EncomendasController::class, 'restore'])->name('encomendas.restore'); //não tem middleware pois tem o authorize no controller
 

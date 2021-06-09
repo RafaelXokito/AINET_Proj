@@ -15,4 +15,9 @@ class Encomenda extends Model
         return $this->belongsTo(Cliente::class, 'cliente_id', 'id')->withTrashed();
     }
 
+    public function tshirts()
+    {
+        return $this->hasMany(Tshirt::class, 'encomenda_id', 'id');
+    }
+
 }

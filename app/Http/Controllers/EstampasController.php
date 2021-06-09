@@ -218,11 +218,11 @@ class EstampasController extends Controller
                     $estampa->imagem_url = basename(Storage::disk('local')->putFileAs('estampas_privadas\\', $validatedData['imagem_url'], $estampa->id . "_" . uniqid() . '.png'));
                 }
             } else {
+                $estampa->categoria_id = $validatedData['categoria_id'];
                 if ($request->hasFile('imagem_url')) {
                     $estampa->imagem_url = basename(Storage::disk('public')->putFileAs('estampas\\', $validatedData['imagem_url'], $estampa->id . "_" . uniqid() . '.png'));
                 }
             }
-            $estampa->categoria_id = $validatedData['categoria_id'];
             $estampa->nome = $validatedData['nome'];
             $estampa->descricao = $validatedData['descricao'];
 

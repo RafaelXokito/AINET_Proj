@@ -103,9 +103,8 @@ class UsersController extends Controller
         $newUser = new User;
         $newUser->email = $validated_data['email'];
         $newUser->name = $validated_data['name'];
-        $newUser->admin = $validated_data['admin'];
         $newUser->tipo = $validated_data['tipo'];
-        $newUser->genero = $validated_data['bloqueado'];
+        $newUser->bloqueado = $validated_data['bloqueado'];
         $newUser->password = Hash::make('123');
         if ($request->hasFile('foto')) {
             $path = $request->foto->store('public/fotos');

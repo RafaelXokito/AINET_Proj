@@ -28,6 +28,9 @@ class EncomendaPolicy
 
     public function view(User $user, Encomenda $encomenda)
     {
+        if (($user->tipo == 'C' && $encomenda->cliente->user->id == $user->id) || $user->tipo == 'F') {
+            return true;
+        }
         return false;
     }
 
@@ -39,7 +42,7 @@ class EncomendaPolicy
         return false;
     }
 
-    public function update(User $user, Encomenda $encomenda)
+    public function update(User $user)
     {
         if ($user->tipo == 'A' || $user->tipo == 'F') {
             return true;
