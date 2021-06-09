@@ -10,3 +10,5 @@ function alterarOnClick(id, estado) {
     $('#modalCriarBtn').html('Alterar');
     $('#inputNomeModal').val(estado);
 };
+
+

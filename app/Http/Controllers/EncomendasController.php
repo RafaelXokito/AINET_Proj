@@ -19,6 +19,7 @@ class EncomendasController extends Controller
         $dataInicial = $request->dataInicial ?? '';
         $dataFinal = $request->dataFinal ?? '';
 
+        $qry->select('encomendas.*');
 
         if ($estadoSelected != '') {
             $qry->where('encomendas.estado', '=', $estadoSelected);

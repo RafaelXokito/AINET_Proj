@@ -207,18 +207,21 @@
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                @can('edit', Auth::user())
                                 <a class="dropdown-item" href="{{route('utilizadores.edit', ['user' => Auth::user()])}}">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Perfil
                                 </a>
-                                @cannot('isStaff', App\Models\User::class)
                                 <div class="dropdown-divider"></div>
+                                @endcan
+
+                                @cannot('isStaff', App\Models\User::class)
                                 <a class="dropdown-item" href="#">
                                     <i class="fas fa-clipboard-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Histórico de encomendas
                                 </a>
-                                @endcannot
                                 <div class="dropdown-divider"></div>
+                                @endcannot
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout

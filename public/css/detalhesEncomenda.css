@@ -1,0 +1,68 @@
+.line{
+    border-bottom: 1px solid black;
+    padding-bottom: 20px;
+    width: 100%;
+    left: 15px;
+    position: relative;
+}
+.stepText1{
+  text-align: left;
+  left: -15px;
+}
+.stepText2{ text-align: center; }
+.stepText3{
+  text-align: right;
+  right: -15px;
+}
+.step{
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  background: white;
+  border-radius: 100px;
+  margin-top: 30px;
+  transition: 0.4s;
+}
+.step1{
+  margin-top: -10px;
+  float: left;
+}
+.step2{
+  margin: 0 auto;
+  margin-top: -10px;
+}
+.step3{
+  float: right;
+  margin-top: -10px;
+}
+.activeStep{
+  background: black;
+}
+
+
+
+
+
+/* not important */
+body{
+  font-weight: bold;
+}
+.autoCenter{
+  margin: 50px auto;
+  width: 345px;
+  box-sizing: border-box;
+}
+#prev, #next{
+  background: #333;
+  color: white;
+  padding: 10px 0;
+  display: inline-block;
+  width: 150px;
+  text-align: center;
+  margin: 10px;
+cursor: pointer;
+  transition: 0.3s;
+}
+#prev:hover, #next:hover{
+  background: #1d1d1d;
+}

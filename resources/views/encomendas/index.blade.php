@@ -10,9 +10,9 @@
     <div class="col-9">
         <form method="GET" action="{{route('encomendas')}}" class="form-group">
             <div class="input-group">
-                <input type="date" class="form-control" name="dataInicial" value="{{$dataInicial ?? Carbon\Carbon::today()->format('Y-m-d')}}">
+                <input type="date" class="form-control" name="dataInicial" value="{{$dataInicial ?? ''}}">
                 <div class="input-group-prepend"><span class="input-group-text align-middle">até</span></div>
-                <input type="date" class="form-control" name="dataFinal" value="{{$dataFinal ?? Carbon\Carbon::today()->format('Y-m-d')}}">
+                <input type="date" class="form-control" name="dataFinal" value="{{$dataFinal ?? ''}}">
                 <input class="form-control" id="nome" name="nome" type="text" value="{{$nome ?? ''}}" placeholder="Nome Cliente">
                 <select class="custom-select" name="estado" id="estado" aria-label="estado">
                     <option value="" {{'' == $estado ? 'selected' : ''}}>Todos os estados</option>
@@ -48,8 +48,8 @@
                     <td>{{strtoupper($encomenda->estado)}}</td>
                     <td>{{$encomenda->data}}</td>
                     <td>
-                        @can('update', App\Models\Encomenda::class)
-                            <a href="" data-toggle="modal" data-target="#alterarEstadoEncomendaModal{{$encomenda->id}}" class="btn btn-primary btn-sm" role="button" aria-pressed="true">Alterar Estado</a>
+                        @can('view', $encomenda)
+                            <a href="" data-toggle="modal" data-target="#alterarEstadoEncomendaModal{{$encomenda->id}}" class="btn btn-primary btn-sm" role="button" aria-pressed="true">{{Auth::user()->tipo == 'C' ? 'Ver' : 'Alterar'}} Estado</a>
                             @include('encomendas.partials.modal')
                         @endcan
                     </td>

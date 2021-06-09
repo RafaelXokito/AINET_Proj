@@ -1,4 +1,6 @@
 <!-- Modal -->
+<link href="{{asset('css/detalhesEncomenda.css')}}" rel="stylesheet">
+
 <div class="modal fade" id="alterarEstadoEncomendaModal{{$encomenda->id}}" tabindex="-1" role="dialog" aria-labelledby="alterarEstadoEncomendaModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
@@ -46,7 +48,24 @@
                             <i class="fad fa-lock"></i>
                             </label>
                         @endcan
+
                     </div>
+
+                    <div class="container">
+                    <div class="row line">
+                        <div class="col-xs-4 stepText1">Step 1</div>
+                        <div class="col-xs-4 stepText2">Step 2</div>
+                        <div class="col-xs-4 stepText3">Step 3</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4"><div class="step step1 activeStep" style="margin-left: 0%"></div></div>
+                        <div class="col-xs-4"><div class="step step2" style="margin-left: 50%"></div></div>
+                        <div class="col-xs-4"><div class="step step3" style="margin-left: 100%"></div></div>
+                    </div>
+                    </div>
+
+
+
                 </div>
             @can('update', App\Models\Encomenda::class)
                 <div class="modal-footer">
