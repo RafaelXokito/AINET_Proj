@@ -6,13 +6,14 @@
     <div class="col">
         <form method="GET" action="{{Route::currentRouteName()=='estampas' ? route('estampas') : route('estampasUser', ['user' => Auth::user()]) }}" class="form-group">
             <div class="input-group">
-                @can('isAdmin', App\Models\User::class)
+                @if (Auth::user()->tipo == 'A' || Auth::user()->tipo == 'C')
                     <select class="form-control col-3" name="apagado">
                         <option value="notDeleted" {{'notDeleted' == $apagado ? 'selected' : 'notDeleted'}} class="dropdown-item">Estampas Disponíveis</option>
                         <option value="all" {{'all' == $apagado ? 'selected' : 'all'}} class="dropdown-item">Todas as Estampas</option>
                         <option value="deleted" {{'deleted' == $apagado ? 'selected' : 'deleted'}} class="dropdown-item">Estampas Apagadas</option>
                     </select>
-                @endcan
+                @endif
+                @if (Route::currentRouteName()=='estampas')
                 <select class="form-control col-3" name="categoria" id="inputCategoria">
                     <option value="" selected>Todas as categorias...</option>
                     <option value="0" {{$categoria == '0' ? 'selected' : ''}}>Sem categoria</option>
@@ -20,6 +21,7 @@
                     <option value={{$abr}} {{$abr == $categoria ? 'selected' : ''}}>{{$nomeCategoria}}</option>
                     @endforeach
                 </select>
+                @endif
                 <input id="inputNome" name="nome" class="form-control col-2" placeholder="Nome" value="{{$nome}}">
                 <input id="inputDescricao" name="descricao" class="form-control col-3" placeholder="Descrição" value="{{$descricao}}">
                 <div class="input-group-append">
@@ -64,7 +66,7 @@
                     @endif
                 </div>
                 @if (!$estampa->trashed())
-                    @can('delete', App\Models\Estampa::class)
+                    @can('delete', $estampa)
                         <form action="{{route('estampas.delete', ['estampa' => $estampa])}}" method="POST">
                             @csrf
                             @method("DELETE")
@@ -74,7 +76,7 @@
                         </form>
                     @endcan
                 @else
-                    @can('restore', App\Models\Estampa::class)
+                    @can('restore', $estampa)
                         <form action="{{route('estampas.restore', ['id' => $estampa->id])}}" method="POST">
                             @csrf
                             <div class="col-2 pl-0">
@@ -82,7 +84,7 @@
                             </div>
                         </form>
                     @endcan
-                    @can('forceDelete', App\Models\Estampa::class)
+                    @can('forceDelete', $estampa)
                         <form action="{{route('estampas.forceDelete', ['id' => $estampa->id])}}" method="POST" id="forceDeleteForm{{$estampa->id}}">
                             @csrf
                             <div class="col-2 pl-0">
@@ -101,7 +103,7 @@
     {!! $estampas->withQueryString()->links("pagination::bootstrap-4") !!}
 </div>
 
-@can('forceDelete', App\Models\Estampa::class)
+@can('forceDelete', $estampa)
     <!-- Modal -->
     <div class="modal fade" id="forceDeleteModal" tabindex="-1" role="dialog" aria-labelledby="forceDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

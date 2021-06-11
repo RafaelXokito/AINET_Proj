@@ -43,7 +43,7 @@ class PrecosController extends Controller
                 'message'   =>   $th->getMessage()
             );
 
-            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->send(new SendMail($data));
+            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->queue(new SendMail($data));
             return redirect()->route('precos.edit')
                 ->withPrecos($precos)
                 ->with('alert-msg', 'Página de preços NÃO alterada com sucesso!')

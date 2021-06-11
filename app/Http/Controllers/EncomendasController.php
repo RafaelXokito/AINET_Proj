@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EncomendaPost;
 use App\Http\Requests\UpdateEstadoEncomendaPost;
+use App\Jobs\GenerateInvoiceJob;
+use App\Jobs\SendEmailJob;
+use App\Mail\SendMail;
 use App\Models\Encomenda;
+use App\Models\Estampa;
+use App\Models\Tshirt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\File as File;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class EncomendasController extends Controller
 {
@@ -40,6 +50,8 @@ class EncomendasController extends Controller
             $qry->where('encomendas.cliente_id', '=', Auth::user()->id);
         }
 
+
+
         $qry->orderBy('encomendas.data', 'desc');
         $qry->orderBy('encomendas.estado', 'asc');
         $qry->orderBy('encomendas.id', 'desc');
@@ -61,16 +73,58 @@ class EncomendasController extends Controller
         $newEncomenda->save();
 
         return redirect()->route('encomendas')
-            ->with('alert-msg', 'A categoria '.$newEncomenda->nome.' foi criada com sucesso!')
+            ->with('alert-msg', 'A encomenda '.$newEncomenda->nome.' foi criada com sucesso!')
             ->with('alert-type', 'success');
     }
 
     public function updateEstado(UpdateEstadoEncomendaPost  $request, Encomenda $encomenda)
     {
+
         $validatedData = $request->validated();
         $encomenda = Encomenda::findOrFail($encomenda->id);
-        $encomenda->estado = $validatedData['estado'];
-        $encomenda->save();
+
+        if ($validatedData['estado'] != 'pendente' && $encomenda->estado != $validatedData['estado']) {
+
+            $encomenda->estado = $validatedData['estado'];
+            $encomenda->save();
+
+            $data = array(
+                'name'      =>  env('APP_NAME', 'fallback_app_name').' - Fatura Simplificada',
+                'message'   =>  '',
+                'tshirts'   =>  Tshirt::where('encomenda_id', '=', $encomenda->id)->get(),
+                'encomenda' =>  $encomenda
+            );
+
+            switch ($encomenda->estado) {
+                case 'paga':
+                    $data['message'] = 'encomenda_paga';
+                    break;
+                case 'fechada':
+                    $data['message'] = 'encomenda_fechada';
+                    break;
+                case 'anulada':
+                    $data['message'] = 'encomenda_anulada';
+                    break;
+                default:
+                    break;
+            }
+
+            $newMail = new SendMail($data);
+            $newMail->to($encomenda->cliente->user->email);
+            GenerateInvoiceJob::withChain([
+                new SendEmailJob($data),
+
+            ])->dispatch($data);
+            //GenerateInvoiceJob::dispatch($data);
+            //dispatch(new \App\Jobs\GenerateInvoiceJob($data));
+            //Mail::to($encomenda->cliente->user->email)->queue(new SendMail($data));
+
+        } else {
+            return redirect()->route('encomendas')
+                ->with('alert-msg', 'O estado da escomenda não pode voltar a ser pendente!! O estado atual é '. $encomenda->estado)
+                ->with('alert-type', 'danger');
+        }
+
 
         return redirect()->route('encomendas')
             ->with('alert-msg', 'O estado da escomenda foi alterado com sucesso!! O estado atual é '. $encomenda->estado)
@@ -79,12 +133,17 @@ class EncomendasController extends Controller
 
 
 
-    public function delete(Encomenda $categoria)
+    public function viewPdf(Encomenda $encomenda)
     {
-        $oldName = $categoria->nome;
-        $oldEncomendaID = $categoria->id;
+        return response()->file(storage_path('app\pdf_recibos\recibo_'.$encomenda->id.'.pdf'));
+    }
+
+    public function delete(Encomenda $encomenda)
+    {
+        $oldName = $encomenda->nome;
+        $oldEncomendaID = $encomenda->id;
         try {
-            $categoria->delete();
+            $encomenda->delete();
             Encomenda::destroy($oldEncomendaID);
             return redirect()->route('encomendas')
                 ->with('alert-msg', 'Encomenda "' . $oldName . '" foi apagado com sucesso!')
@@ -107,16 +166,16 @@ class EncomendasController extends Controller
 
     public function restore($id)
     {
-        $categoria = Encomenda::withTrashed()->findOrFail($id);
-        $this->authorize('restore', $categoria);
+        $encomenda = Encomenda::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $encomenda);
         try {
-            $categoria->restore();
+            $encomenda->restore();
             return redirect()->route('encomendas')
-                    ->with('alert-msg', 'Encomenda "' . $categoria->nome . '" foi recuperado com sucesso!')
+                    ->with('alert-msg', 'Encomenda "' . $encomenda->nome . '" foi recuperado com sucesso!')
                     ->with('alert-type', 'success');
         } catch (\Throwable $th) {
             return redirect()->route('encomendas')
-                    ->with('alert-msg', 'Não foi possível restaurar o Encomenda "' . $categoria->nome . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-msg', 'Não foi possível restaurar o Encomenda "' . $encomenda->nome . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
         }
     }

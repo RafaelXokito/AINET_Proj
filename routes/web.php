@@ -37,6 +37,7 @@ Route::get('estampas/{estampa}/ver', [EstampasController::class, 'edit'])->name(
 Route::get('estampas/{estampa}/{cor}/{posicao}/{rotacao}/{opacidade}/{zoom}/preview', [EstampasController::class, 'preview'])->name('estampas.preview'); //a proteção para as estampas próprias é feita no controllador
 Route::get('carrinho', [TshirtsController::class, 'carrinho'])->name('carrinho'); //a proteção para que os staffs não poderem "ter" carrinho é feita no controllador
 Route::post('carrinho/{estampa}/store_tshirt', [TshirtsController::class, 'store_tshirt'])->name('carrinho.store_tshirt'); //a proteção para que os staffs não poderem "ter" carrinho é feita no controllador
+Route::put('carrinho/{key}/update_tshirt', [TshirtsController::class, 'update_tshirt'])->name('carrinho.update_tshirt');
 
 Route::middleware('auth')->middleware('verified')->group( function () {
 
@@ -69,6 +70,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::get('/encomendas', [EncomendasController::class, 'index'])->name('encomendas');
     Route::post('/encomendas/store', [EncomendasController::class, 'store'])->name('encomendas.store')->middleware('can:store,App\Models\Encomenda');
     Route::put('/encomendas/{encomenda}/update', [EncomendasController::class, 'updateEstado'])->name('encomendas.updateEstado')->middleware('can:update,App\Models\Encomenda');
+    Route::get('/encomendas/{encomenda}/viewPdf', [EncomendasController::class, 'viewPdf'])->name('encomendas.viewPdf')->middleware('can:viewPdf,encomenda');
     Route::delete('/encomendas/{encomenda}/delete', [EncomendasController::class, 'delete'])->name('encomendas.delete')->middleware('can:delete,App\Models\Encomenda');
     Route::post('/encomendas/{id}/restore', [EncomendasController::class, 'restore'])->name('encomendas.restore'); //não tem middleware pois tem o authorize no controller
 
@@ -80,7 +82,6 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::post('/cores/{codigo_cor}/restore', [CoresController::class, 'restore'])->name('cores.restore'); //não tem middleware pois tem o authorize no controller
 
     //carrinho de compras
-    Route::put('carrinho/{key}/update_tshirt', [TshirtsController::class, 'update_tshirt'])->name('carrinho.update_tshirt')->middleware('can:isClient,App\Models\User');
     Route::delete('carrinho/{key}/destroy_tshirt', [TshirtsController::class, 'destroy_tshirt'])->name('carrinho.destroy_tshirt')->middleware('can:isClient,App\Models\User');
     Route::post('carrinho', [TshirtsController::class, 'store'])->name('carrinho.store')->middleware('can:isClient,App\Models\User');
     Route::delete('carrinho', [TshirtsController::class, 'destroy'])->name('carrinho.destroy')->middleware('can:isClient,App\Models\User');
@@ -91,6 +92,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::get('users/create', [UsersController::class, 'create'])->name('utilizadores.create')->middleware('can:create,App\Models\User');
     Route::post('users', [UsersController::class, 'store'])->name('utilizadores.store')->middleware('can:create,App\Models\User');
     Route::put('users/{user}', [UsersController::class, 'update'])->name('utilizadores.update')->middleware('can:update,user');
+    Route::put('users/{user}/bloquear', [UsersController::class, 'updateBloquear'])->name('utilizadores.updateBloquear')->middleware('can:updateBloquear,user');
     Route::delete('users/{user}', [UsersController::class, 'destroy'])->name('utilizadores.destroy')->middleware('can:delete,user');
     Route::delete('users/{user}/foto', [UsersController::class, 'destroy_foto'])->name('utilizadores.foto.destroy')->middleware('can:update,user');
     Route::post('/users/{id}/restore', [UsersController::class, 'restore'])->name('utilizadores.restore'); //não tem middleware pois tem o authorize no controller

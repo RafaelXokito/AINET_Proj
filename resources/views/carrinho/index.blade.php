@@ -113,13 +113,13 @@
             <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Informação da encomenda</div>
             <div class="p-4">
                 <div class="input-group mb-4 border rounded-pill p-2">
-                    <input type="text" placeholder="NIF" name="nif" value="{{old('nif', $cliente->nif ?? '')}}" aria-describedby="button-addon3" class="form-control border-0">
+                    <input type="text" placeholder="NIF" name="nif" value="{{old('nif', $user->cliente->nif ?? '')}}" aria-describedby="button-addon3" class="form-control border-0">
                 </div>
                 @error('nif')
                     <div class="small text-danger">{{$message}}</div>
                 @enderror
                 <div class="input-group mb-4 border rounded-pill p-2">
-                    <input type="text" placeholder="Morada" name="endereco" value="{{old('endereco', $cliente->endereco ?? '')}}" aria-describedby="button-addon3" class="form-control border-0">
+                    <input type="text" placeholder="Morada" name="endereco" value="{{old('endereco', $user->cliente->endereco ?? '')}}" aria-describedby="button-addon3" class="form-control border-0">
                     @error('endereco')
                         <div class="small text-danger">{{$message}}</div>
                     @enderror
@@ -127,9 +127,9 @@
                 <div class="input-group mb-4 border rounded-pill p-2">
                     <select name="tipo_pagamento" id="tipo_pagamento" class="form-control border-0 selectpicker">
                         <option value="vazio" selected>Método Pagamento</option>
-                        <option value="VISA" {{"VISA" == old('tipo_pagamento', $cliente->tipo_pagamento ?? '') ? 'selected' : ''}} aria-describedby="button-addon3"  class="form-control border-0">VISA</option>
-                        <option value="MC" {{"MC" == old('tipo_pagamento', $cliente->tipo_pagamento ?? '') ? 'selected' : ''}} aria-describedby="button-addon3" class="form-control border-0">MC</option>
-                        <option value="PAYPAL" {{"PAYPAL" == old('tipo_pagamento', $cliente->tipo_pagamento ?? '') ? 'selected' : ''}} aria-describedby="button-addon3" class="form-control border-0">PAYPAL</option>
+                        <option value="VISA" {{"VISA" == old('tipo_pagamento', $user->cliente->tipo_pagamento ?? '') ? 'selected' : ''}} aria-describedby="button-addon3"  class="form-control border-0">VISA</option>
+                        <option value="MC" {{"MC" == old('tipo_pagamento', $user->cliente->tipo_pagamento ?? '') ? 'selected' : ''}} aria-describedby="button-addon3" class="form-control border-0">MC</option>
+                        <option value="PAYPAL" {{"PAYPAL" == old('tipo_pagamento', $user->cliente->tipo_pagamento ?? '') ? 'selected' : ''}} aria-describedby="button-addon3" class="form-control border-0">PAYPAL</option>
                     </select>
 
                     @error('tipo_pagamento')
@@ -137,7 +137,7 @@
                     @enderror
                 </div>
                 <div class="input-group mb-4 border rounded-pill p-2" id="ref_pagamento_div">
-                    <input id="ref_pagamento" name="ref_pagamento" value="{{old('ref_pagamento', $cliente->ref_pagamento ?? '')}}" type="text" placeholder="Referencia do pagamento" aria-describedby="button-addon3" class="form-control border-0">
+                    <input id="ref_pagamento" name="ref_pagamento" value="{{old('ref_pagamento', $user->cliente->ref_pagamento ?? '')}}" type="text" placeholder="Referencia do pagamento" aria-describedby="button-addon3" class="form-control border-0">
                 </div>
                 @error('ref_pagamento')
                     <div class="small text-danger">{{$message}}</div>

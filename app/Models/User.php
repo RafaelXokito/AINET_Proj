@@ -45,4 +45,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function cliente()
+    {
+        return $this->hasOne(Cliente::class, 'id', 'id')->withTrashed();
+    }
 }

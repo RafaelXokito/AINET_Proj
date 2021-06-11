@@ -60,6 +60,13 @@
                         @can('edit', $user)
                             <a href="{{route('utilizadores.edit', ['user' => $user])}}" class="btn btn-primary btn-sm" role="button" aria-pressed="true">Alterar</a>
                         @endcan
+                        @if ($user->tipo == 'C')
+                            <form method="POST" action="{{route('utilizadores.updateBloquear', ['user' => $user]) }}" class="form-group" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="btn btn-warning btn-sm" role="button" aria-pressed="true">{{$user->bloqueado == 0 ? 'Bloquear' : 'Desbloquear'}}</button>
+                            </form>
+                        @endif
                     </td>
                     <td>
                         @if (!$user->trashed())

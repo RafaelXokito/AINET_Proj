@@ -87,7 +87,15 @@ class UsersController extends Controller
             ->with('alert-type', 'success')
             ->withCliente($cliente)
             ->withUser($user);
+    }
 
+    public function updateBloquear(Request $request, User $user)
+    {
+        $user->bloqueado = $user->bloqueado == 1 ? 0 : 1;
+        $user->save();
+        return redirect()->route('utilizadores')
+            ->with('alert-msg', 'Utilizador "' . $user->name . '" alterado com sucesso!')
+            ->with('alert-type', 'success');
     }
 
     public function create()
@@ -153,7 +161,7 @@ class UsersController extends Controller
         Storage::delete('public/fotos/' . $user->foto_url);
         $user->foto_url = null;
         $user->save();
-        return redirect()->route('gestorUtilizadores.edit', ['user' => $user])
+        return redirect()->route('utilizadores.edit', ['user' => $user])
             ->with('alert-msg', 'Foto do user "' . $user->name . '" foi removida!')
             ->with('alert-type', 'success');
     }

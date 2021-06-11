@@ -60,25 +60,25 @@ class EstampaPolicy
         return false;
     }
 
-    public function delete(User $user)
+    public function delete(User $user, $estampa)
     {
-        if ($user->tipo == 'A') {
+        if ($user->tipo == 'A' || $user->id == $estampa->cliente_id) {
             return true;
         }
         return false;
     }
 
-    public function restore(User $user)
+    public function restore(User $user, $estampa)
     {
-        if ($user->tipo == 'A') {
+        if ($user->tipo == 'A' || $user->id == $estampa->cliente_id) {
             return true;
         }
         return false;
     }
 
-    public function forceDelete(User $user)
+    public function forceDelete(User $user, $estampa)
     {
-        if ($user->tipo == 'A') {
+        if ($user->tipo == 'A' || $user->id == $estampa->cliente_id) {
             return true;
         }
         return false;

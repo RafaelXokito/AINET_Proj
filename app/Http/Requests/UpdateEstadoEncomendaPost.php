@@ -28,9 +28,9 @@ class UpdateEstadoEncomendaPost extends FormRequest
         return [
             'estado' => [
                 'required',
-                'in:pendente,paga,fechado,anulado',
+                'in:pendente,paga,fechada,anulada',
                 function ($attribute, $value, $fail) {
-                    if ((Auth ::user()->tipo != 'A') && ($value == 'anulado')) {
+                    if ((Auth ::user()->tipo != 'A') && ($value == 'anulada')) {
                         $fail('O estado da encomenda tem de ser "Pendente" ou "Paga" ou "Fechado".');
                     }
                 }

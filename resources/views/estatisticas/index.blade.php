@@ -3,6 +3,10 @@
 @section('content')
 <html>
   <head>
+      <!-- Charting library -->
+<script src="https://unpkg.com/chart.js@2.9.3/dist/Chart.min.js"></script>
+<!-- Chartisan -->
+<script src="https://unpkg.com/@chartisan/chartjs@^2.1.0/dist/chartisan_chartjs.umd.js"></script>
     <!--totais, médias, máximos, mínimos de vendas em valor ou quantidade
         por mês, por ano,
         organizadas por estampas ou categorias, por cliente, -->

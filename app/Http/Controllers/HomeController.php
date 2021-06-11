@@ -28,6 +28,6 @@ class HomeController extends Controller
 
     public function carrinho()
     {
-        return view('pages.carrinho');
+        return view('carrinho.index');
     }
 }

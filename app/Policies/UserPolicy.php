@@ -127,6 +127,15 @@ class UserPolicy
         return false;
     }
 
+    public function updateBloquear(User $user, User $user2)
+    {
+        if ($user->tipo == 'A') {
+            return true;
+        }
+
+        return false;
+    }
+
     public function delete(User $user)
     {
         if ($user->tipo == 'A') {

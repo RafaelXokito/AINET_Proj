@@ -15,7 +15,7 @@ class EncomendaPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        if ($user->tipo == 'A') {
+        if ($user->tipo == 'A' && $ability != 'viewPdf') {
             return true;
         }
     }
@@ -23,6 +23,14 @@ class EncomendaPolicy
 
     public function viewAny(User $user)
     {
+        return false;
+    }
+
+    public function viewPdf(User $user, Encomenda $encomenda)
+    {
+        if (( ($user->tipo == 'C' && $encomenda->cliente->user->id == $user->id) || $user->tipo == 'A') && ($encomenda->estado == 'fechada')) {
+            return true;
+        }
         return false;
     }
 

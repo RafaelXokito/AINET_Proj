@@ -20,14 +20,13 @@ class ClientesController extends Controller
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed'
             ]);
-            dd($request);
         } catch (\Throwable $th) {
             $data = array(
                 'name'      =>  env('APP_NAME', 'fallback_app_name').' - PrecoController',
                 'message'   =>   $th->getMessage()
             );
 
-            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->send(new SendMail($data));
+            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->queue(new SendMail($data));
             return null;
         }
     }

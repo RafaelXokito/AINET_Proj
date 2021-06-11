@@ -2,10 +2,10 @@
 
 namespace App\Mail;
 
+use App\Models\Estampa;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendMail extends Mailable
 {
@@ -28,10 +28,18 @@ class SendMail extends Mailable
      */
     public function build()
     {
+        //->attachFromStorage('pdf_recibos/recibo_'.$this->data['encomenda']->id.'.pdf');
+
         //Fatura build
         if ($this->data['message'] == 'fatura') {
-            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'fallback_DEVELOPER_MAIL_USERNAME'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('pages.fatura_email_template')->with('data', $this->data);
+            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('encomendas.fatura_email_template')->with('data', $this->data);
         }
-        return $this->from(env('DEVELOPER_MAIL_USERNAME', 'fallback_DEVELOPER_MAIL_USERNAME'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('pages.dynamic_email_template')->with('data', $this->data);
+        if ($this->data['message'] == 'encomenda_paga') {
+            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('encomendas.informacao_email_template')->with('data', $this->data);
+        }
+        if ($this->data['message'] == 'encomenda_fechada') {
+            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->attachFromStorage('pdf_recibos\recibo_'.$this->data['encomenda']->id.'.pdf')->view('encomendas.informacao_email_template')->with('data', $this->data);
+        }
+        return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('encomendas.dynamic_email_template')->with('data', $this->data);
     }
 }

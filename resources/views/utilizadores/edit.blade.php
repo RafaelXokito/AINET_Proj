@@ -60,9 +60,9 @@
         <!-- Foto -->
         @isset($user->foto_url)
             <div class="form-group">
-                <img src="{{$user->foto_url ? asset('storage/fotos/' . $user->foto_url) : asset('img/default_img.png') }}"
+                <img class="rounded float-left" src="{{$user->foto_url ? asset('storage/fotos/' . $user->foto_url) : asset('img/default_img.png') }}"
                      alt="Foto do user"  class="img-profile"
-                     style="max-width:100%">
+                     style="max-width:100%; width:200px">
             </div>
         @endisset
         <div class="form-group text-right">

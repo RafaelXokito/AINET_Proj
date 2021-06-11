@@ -40,7 +40,7 @@ class TshirtsController extends Controller
         return view('carrinho.index')
             ->withInformacoesextra($informacoes_extra)
             ->withCores($listaCores)
-            ->withCliente($cliente)
+            ->withUser($cliente)
             ->withPrecos($precos)
             ->with('pageTitle', 'Carrinho de compras')
             ->with('carrinho', session('carrinho') ?? []);
@@ -115,7 +115,7 @@ class TshirtsController extends Controller
         $msg = '';
         $qtd = $carrinho[$key]['quantidade'] - $validatedData['quantidade'];
         if ($qtd > 0) {
-            $msg = 'Foram removidas ' . $qtd . ' tshirts! Quantidade atual = ' .  $validatedData['quantidade'];
+            $msg = 'Foram removidas ' . $qtd . ' tshirts! Quantidade atual = ' .  $validatedData['quantidade']. '.';
         } elseif ($qtd < 0) {
             $msg = 'Foram adicionadas ' . $qtd*(-1) . ' tshirts! Quantidade atual = ' .  $validatedData['quantidade'];
         }
@@ -142,7 +142,7 @@ class TshirtsController extends Controller
         }
 
         if ($validatedData['cor_codigo'] != $carrinho[$key]['cor_codigo']) {
-            $msg = $msg.'A cor da tshirt foi alterada.';
+            $msg = $msg.' A cor da tshirt foi alterada.';
         }
 
         if ($qtd <= 0) {
@@ -255,7 +255,7 @@ class TshirtsController extends Controller
                 'encomenda' =>  $encomenda
             );
 
-            Mail::to(Auth::user()->email)->send(new SendMail($data));
+            Mail::to(Auth::user()->email)->queue(new SendMail($data));
 
 
             return back()
@@ -271,7 +271,7 @@ class TshirtsController extends Controller
                 'message'   =>   $th->getMessage()
             );
 
-            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->send(new SendMail($data));
+            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->queue(new SendMail($data));
 
             return back()
                 ->with('alert-msg', 'Não conseguimos concluir a sua compra!')

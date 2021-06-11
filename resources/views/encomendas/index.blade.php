@@ -41,7 +41,6 @@
     </thead>
     <tbody>
         @foreach($encomendas as $encomenda)
-
                 <tr {{$encomenda->estado == 'pendente' ? 'class=table-warning' : ''}} {{$encomenda->estado == 'paga' ? 'class=table-primary' : ''}} {{$encomenda->estado == 'fechada' ? 'class=table-success' : ''}} {{$encomenda->estado == 'anulada' ? 'class=table-danger' : ''}} >
                     <td>{{$encomenda->cliente->user->name}}</td>
                     <td>{{$encomenda->id}}</td>
@@ -49,8 +48,13 @@
                     <td>{{$encomenda->data}}</td>
                     <td>
                         @can('view', $encomenda)
-                            <a href="" data-toggle="modal" data-target="#alterarEstadoEncomendaModal{{$encomenda->id}}" class="btn btn-primary btn-sm" role="button" aria-pressed="true">{{Auth::user()->tipo == 'C' ? 'Ver' : 'Alterar'}} Estado</a>
+                            <a href="" data-toggle="modal" onclick="alterarOnClickAppear({{$encomenda->id}})" data-target="#alterarEstadoEncomendaModal{{$encomenda->id}}" class="btn btn-primary btn-sm" role="button" aria-pressed="true">{{Auth::user()->tipo == 'C' ? 'Ver' : 'Alterar'}} Estado</a>
                             @include('encomendas.partials.modal')
+                        @endcan
+                    </td>
+                    <td>
+                        @can('viewPdf', $encomenda)
+                            <a href="{{route('encomendas.viewPdf', $encomenda)}}" class="btn btn-danger btn-sm" role="button" aria-pressed="true">Ver Recibo</a>
                         @endcan
                     </td>
                 </tr>

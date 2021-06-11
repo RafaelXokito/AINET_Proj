@@ -191,7 +191,7 @@ class EstampasController extends Controller
                 'message'   =>   $th->getMessage()
             );
 
-            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->send(new SendMail($data));
+            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->queue(new SendMail($data));
             return redirect()->route('estampas.edit', $estampa)
                 ->withInputPosicao($request['inputPosicao'])
                 ->withInputRotacao($request['inputRotacao'])
@@ -247,7 +247,7 @@ class EstampasController extends Controller
                 'message'   =>   $th->getMessage()
             );
 
-            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->send(new SendMail($data));
+            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->queue(new SendMail($data));
             return redirect()->route('estampas.create')
                 ->withEstampa($estampa)
                 ->withInput()
@@ -288,7 +288,7 @@ class EstampasController extends Controller
         $this->authorize('restore', $estampa);
         try {
             $estampa->restore();
-            return redirect()->route('estampas')
+            return redirect()->back()
                     ->with('alert-msg', 'Estampa "' . $estampa->nome . '" foi recuperado com sucesso!')
                     ->with('alert-type', 'success');
         } catch (\Throwable $th) {
@@ -320,13 +320,13 @@ class EstampasController extends Controller
         return response()->file(storage_path('app\estampas_privadas\\'.$estampa->imagem_url));
     }
 
-    public function preview(Estampa $estampa = null, $cor, $posicao, $rotacao, $opacidade, $zoom)
+    public function preview($estampa , $cor, $posicao, $rotacao, $opacidade, $zoom)
     {
         try {
+            $estampa = Estampa::withTrashed()->findOrFail($estampa);
 
             // create new Intervention Image
             $img = Image::make(public_path('storage\tshirt_base\\'). $cor.'.jpg');
-
 
             $width = 210; // your max width
             $height = 210; // your max heigh

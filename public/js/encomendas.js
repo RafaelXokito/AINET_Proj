@@ -9,6 +9,16 @@ function alterarOnClick(id, estado) {
     $('#modalTitle').html('Alterar Estado da Encomenda');
     $('#modalCriarBtn').html('Alterar');
     $('#inputNomeModal').val(estado);
+    alert($('#detalhes'+id));
+    //$('#detalhes'+id).append('@include('encomendas.partials.detalhes')');
+};
+
+function alterarOnClickAppear(id) {
+    Array.from($('.preview_encomenda'+id)).forEach(
+        function(element, index, array) {
+            element.setAttribute('src', element.getAttribute("data-src"));
+        }
+    );
 };
 
 
