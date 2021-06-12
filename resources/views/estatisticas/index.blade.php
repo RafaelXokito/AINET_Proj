@@ -1,140 +1,148 @@
 @extends('layout')
 @section('title','Estatísticas' )
 @section('content')
-<html>
-  <head>
-      <!-- Charting library -->
+<link href="{{asset('css/estatisticas.css')}}" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
+<div class="container">
+    <div id="chartBar" style="height: 300px;"></div>
+    <br><br>
+    <div id="chartCircle" style="height: 300px;"></div>
+    <br><br>
+    <div id="chartBarCurve" style="height: 300px;"></div>
+
+
+
+    <div class="col-md-12 mt-5">
+        <div class="row">
+            <div class="col-xl-3 col-lg-6">
+                <div class="card l-bg-cherry">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Média de tshirts compradas por cliente</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-6">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{$mediaTshirtsPorCliente}}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6">
+                <div class="card l-bg-blue-dark">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-users"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Total Clientes Ativos</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-6">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{$totalClientesAtivos}}
+                                </h2>
+                            </div>
+                            <div class="col text-right">
+                                @if ($percentagemClientesAtivos > 0)
+                                    <span>{{$percentagemClientesAtivos}}% <i class="fa fa-arrow-up"></i></span>
+                                @else
+                                    <span>{{$percentagemClientesAtivos}}% <i class="fa fa-arrow-down"></i></span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6">
+                <div class="card l-bg-green-dark">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-ticket-alt"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Maior compra dos ultimos 7 dias</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-6">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{$valorTopDeVendasSemanal}}
+                                </h2>
+                            </div>
+                            <div class="col text-right">
+                                @if ($percentagemValorTopDeVendasSemanal > 0)
+                                    <span>{{$percentagemValorTopDeVendasSemanal}}% <i class="fa fa-arrow-up"></i></span>
+                                @else
+                                    <span>{{$percentagemValorTopDeVendasSemanal}}% <i class="fa fa-arrow-down"></i></span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6">
+                <div class="card l-bg-orange-dark">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="mb-4">
+                            <h5 class="card-title mb-0">Valor de vendas dos ultimos 7 dias</h5>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="col-8">
+                                <h2 class="d-flex align-items-center mb-0">
+                                    {{$valorDeVendasSemanal}}€
+                                </h2>
+                            </div>
+                            <div class="col text-right">
+                                @if ($percentagemValorDeVendasSemanal > 0)
+                                    <span>{{$percentagemValorDeVendasSemanal}}% <i class="fa fa-arrow-up"></i></span>
+                                @else
+                                    <span>{{$percentagemValorDeVendasSemanal}}% <i class="fa fa-arrow-down"></i></span>
+                                @endif
+                            </div>
+                        </div>
+                        <!--<div class="progress mt-1 " data-height="8" style="height: 8px;">
+                            <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;"></div>
+                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- Charting library -->
 <script src="https://unpkg.com/chart.js@2.9.3/dist/Chart.min.js"></script>
 <!-- Chartisan -->
 <script src="https://unpkg.com/@chartisan/chartjs@^2.1.0/dist/chartisan_chartjs.umd.js"></script>
-    <!--totais, médias, máximos, mínimos de vendas em valor ou quantidade
-        por mês, por ano,
-        organizadas por estampas ou categorias, por cliente, -->
+<!-- Your application script -->
+<script>
+    const chartBar = new Chartisan({
+    el: '#chartBar',
+    url: 'http://ainet_proj.test/estatisticasEncomendasPorMes',
+    hooks: new ChartisanHooks()
+        .beginAtZero()
+        .colors(),
+    })
+    const chartCircle     = new Chartisan({
+    el: '#chartCircle',
+    url: 'http://ainet_proj.test/estatisticasCoresMaisUsadas',
+    hooks: new ChartisanHooks()
+        .datasets('doughnut')
+        .pieColors({!! $cores !!}),
+    })
 
-    <!--Load the AJAX API-->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-
-      // Load the Visualization API and the corechart package.
-      google.charts.load('current', {'packages':['corechart']});
-
-      // Set a callback to run when the Google Visualization API is loaded.
-      google.charts.setOnLoadCallback(drawBarChart);
-      google.charts.setOnLoadCallback(drawPieChart);
-      google.charts.setOnLoadCallback(drawAreaChart);
-      google.charts.setOnLoadCallback(drawColorChart);
-      google.charts.setOnLoadCallback(drawPieChart);
-
-
-      // Callback that creates and populates a data table,
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawBarChart() {
-
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Topping');
-        data.addColumn('number', 'Slices');
-        data.addRows([
-          ['Mushrooms', 3],
-          ['Onions', 1],
-          ['Olives', 1],
-          ['Zucchini', 1],
-          ['Pepperoni', 2]
-        ]);
-
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.BarChart(document.getElementById('barChart_div'));
-        chart.draw(data, {width: 500,
-                height: 300,
-                title: 'Toppings I Like On My Pizza',
-                colors: ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6']
-                });
-      }
-      //
-      function drawPieChart() {
-
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Topping');
-        data.addColumn('number', 'Slices');
-        data.addRows([
-        ['Mushrooms', 3],
-        ['Onions', 1],
-        ['Olives', 1],
-        ['Zucchini', 1],
-        ['Pepperoni', 2]
-        ]);
-
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.PieChart(document.getElementById('pieChart_div'));
-        chart.draw(data, {
-                width: 400,
-                height: 240,
-                title: 'Toppings I Like On My Pizza',
-                colors: ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6'],
-                is3D: true
-                });
-    }
-    //vendas por mes ou ano
-    function drawAreaChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses'],
-          ['2013',  1000,      400],
-          ['2014',  1170,      460],
-          ['2015',  660,       1120],
-          ['2016',  1030,      540]
-        ]);
-
-        var options = {
-          title: 'Company Performance',
-          hAxis: {title: 'Year',  titleTextStyle: {color: '#333'}},
-          vAxis: {minValue: 0}
-        };
-
-        var chart = new google.visualization.AreaChart(document.getElementById('areaChart_div'));
-        chart.draw(data, options);
-      }
-      //Cores de t-shirts mais usadas
-      function drawColorChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Language', 'Speakers (in millions)'],
-          ['Assamese', 13], ['Bengali', 83], ['Bodo', 1.4],
-          ['Dogri', 2.3], ['Gujarati', 46], ['Hindi', 300],
-          ['Kannada', 38], ['Kashmiri', 5.5], ['Konkani', 5],
-          ['Maithili', 20], ['Malayalam', 33], ['Manipuri', 1.5],
-          ['Marathi', 72], ['Nepali', 2.9], ['Oriya', 33],
-          ['Punjabi', 29], ['Sanskrit', 0.01], ['Santhali', 6.5],
-          ['Sindhi', 2.5], ['Tamil', 61], ['Telugu', 74], ['Urdu', 52]
-        ]);
-
-        var options = {
-          title: 'Indian Language Use',
-          legend: 'none',
-          pieSliceText: 'label',
-          slices: {  4: {offset: 0.2},
-                    12: {offset: 0.3},
-                    14: {offset: 0.4},
-                    15: {offset: 0.5},
-          },
-          is3D: true,
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('colorPiechart'));
-        chart.draw(data, options);
-      }
-    </script>
-
-  </head>
-
-  <body>
-    <!--Div that will hold the pie chart-->
-    <div id="barChart_div"> ola</div>
-    <div id="pieChart_div"></div>
-    <div id="areaChart_div"></div>
-    <div id="colorPiechart"></div>
-    <div id="pieChart_div"></div>
-  </body>
-</html>
+    const chart = new Chartisan({
+    el: '#chartBarCurve',
+    url: 'http://ainet_proj.test/estatisticasEncomendasPorAno',
+    hooks: new ChartisanHooks()
+        .beginAtZero()
+        .colors()
+        .borderColors()
+        .datasets([{ type: 'line', fill: false }, 'bar']),
+    })
+</script>
+<!--totais, médias, máximos, mínimos de vendas em valor ou quantidade
+    por mês, por ano,
+    organizadas por estampas ou categorias, por cliente, -->
 
 @endsection

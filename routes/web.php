@@ -43,6 +43,9 @@ Route::middleware('auth')->middleware('verified')->group( function () {
 
     //estatisticas
     Route::get('estatisticas', [PageController::class, 'indexEstatisticas'])->name('estatisticas');
+    Route::get('estatisticasEncomendasPorMes', [PageController::class, 'indexEstatisticasEncomendasPorMes'])->name('estatisticas');
+    Route::get('estatisticasEncomendasPorAno', [PageController::class, 'indexEstatisticasEncomendasPorAno'])->name('estatisticas');
+    Route::get('estatisticasCoresMaisUsadas', [PageController::class, 'indexEstatisticasCoresMaisUsadas'])->name('estatisticas');
 
     //preços
     Route::get('precos/editar', [PrecosController::class, 'edit'])->name('precos.edit')->middleware('can:edit,App\Models\Preco');
