@@ -193,11 +193,7 @@ class TshirtsController extends Controller
     public function store(EncomendaPost $request)
     {
         try {
-
-
             $validatedData = $request->validated();
-
-
             DB::beginTransaction();
 
             $encomenda = new Encomenda;

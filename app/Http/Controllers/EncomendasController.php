@@ -113,7 +113,6 @@ class EncomendasController extends Controller
             $newMail->to($encomenda->cliente->user->email);
             GenerateInvoiceJob::withChain([
                 new SendEmailJob($data),
-
             ])->dispatch($data);
             //GenerateInvoiceJob::dispatch($data);
             //dispatch(new \App\Jobs\GenerateInvoiceJob($data));
@@ -124,8 +123,6 @@ class EncomendasController extends Controller
                 ->with('alert-msg', 'O estado da escomenda não pode voltar a ser pendente!! O estado atual é '. $encomenda->estado)
                 ->with('alert-type', 'danger');
         }
-
-
         return redirect()->route('encomendas')
             ->with('alert-msg', 'O estado da escomenda foi alterado com sucesso!! O estado atual é '. $encomenda->estado)
             ->with('alert-type', 'success');
@@ -135,7 +132,13 @@ class EncomendasController extends Controller
 
     public function viewPdf(Encomenda $encomenda)
     {
-        return response()->file(storage_path('app\pdf_recibos\recibo_'.$encomenda->id.'.pdf'));
+        if (Storage::exists('pdf_recibos\recibo_'.$encomenda->id.'.pdf')) {
+            return response()->file(storage_path('app\pdf_recibos\recibo_'.$encomenda->id.'.pdf'));
+        } else {
+            return redirect()->route('encomendas')
+                ->with('alert-msg', 'O recibo não foi encontrado, por favor solicite a ajuda da equipa tecnica! Encomenda: '. $encomenda->id)
+                ->with('alert-type', 'danger');
+        }
     }
 
     public function delete(Encomenda $encomenda)

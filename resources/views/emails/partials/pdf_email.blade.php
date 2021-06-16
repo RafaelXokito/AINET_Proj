@@ -1,9 +1,6 @@
-@include('encomendas.partials.email_css')
-
+@include('emails.partials.email_css')
 <table>
-
 <tr>
-
     <td class="content-cell">
         <div class="sidebar-brand-icon">
             <i class="fas fa-hat-wizard"></i>
@@ -98,7 +95,10 @@
                   <p class="f-fallback">Cor</p>
                 </th>
                 <th>
-                  <p class="f-fallback">Preço</p>
+                  <p class="f-fallback">Preço Uni.</p>
+                </th>
+                <th>
+                    <p class="f-fallback">Sub. Total</p>
                 </th>
             </tr>
             @php
@@ -109,17 +109,17 @@
             $informacoesextra = json_decode($tshirt->estampa->informacao_extra, true);
             @endphp
             <tr>
-
             <td class="purchase_item">
                 <span class="f-fallback">
-                    <img id="previewImage{{$tshirt->id}}" width="70" class="img-fluid rounded shadow-sm" src="{{public_path('/temp'.$i++.'.jpg')}}">
+                    <img id="previewImage{{$tshirt->id}}" width="70" class="img-fluid rounded shadow-sm" src="{{route('estampas.preview', ['estampa' => $tshirt->estampa->id, 'cor' => $tshirt->cor_codigo, 'posicao' => $informacoesextra['inputPosicao'] ?? 'top', 'rotacao' => $informacoesextra['inputRotacao'] ?? '0', 'opacidade' => $informacoesextra['inputOpacidade'] ?? '100', 'zoom' => $informacoesextra['inputZoom'] ?? '0']) }}">
                 </span>
             </td>
             <td class="purchase_item"><span class="f-fallback">{{$tshirt->estampa->nome}}</span></td>
             <td class="purchase_item"><span class="f-fallback">{{$tshirt->quantidade}}</span></td>
             <td class="purchase_item"><span class="f-fallback">{{$tshirt->tamanho}}</span></td>
-            <td class="purchase_item"><span class="f-fallback"><img style="width: 16px; height: 16px; background-color: #{{$tshirt->cor_codigo}}" /></span></td>
+            <td class="purchase_item"><span class="f-fallback"><img style="width: 16px; height: 16px; background-color: #{{$tshirt->cor_codigo}} !important"/>#{{strtoupper($tshirt->cor_codigo)}}</span></td>
             <td class="purchase_item"><span class="f-fallback">{{number_format($tshirt->preco_un,2)}} €</span></td>
+            <td class="purchase_item"><span class="f-fallback">{{number_format($tshirt->subtotal,2)}} €</span></td>
             </tr>
             @endforeach
 

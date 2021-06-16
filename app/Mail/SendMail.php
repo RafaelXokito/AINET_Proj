@@ -32,14 +32,14 @@ class SendMail extends Mailable
 
         //Fatura build
         if ($this->data['message'] == 'fatura') {
-            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('encomendas.fatura_email_template')->with('data', $this->data);
+            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('emails.fatura_email_template')->with('data', $this->data);
         }
         if ($this->data['message'] == 'encomenda_paga') {
-            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('encomendas.informacao_email_template')->with('data', $this->data);
+            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('emails.informacao_email_template')->with('data', $this->data);
         }
         if ($this->data['message'] == 'encomenda_fechada') {
-            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->attachFromStorage('pdf_recibos\recibo_'.$this->data['encomenda']->id.'.pdf')->view('encomendas.informacao_email_template')->with('data', $this->data);
+            return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->attachFromStorage('pdf_recibos\recibo_'.$this->data['encomenda']->id.'.pdf')->view('emails.informacao_email_template')->with('data', $this->data);
         }
-        return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('encomendas.dynamic_email_template')->with('data', $this->data);
+        return $this->from(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MagicTshirt.pt'))->subject(env('APP_NAME', 'fallback_app_name').' Automatic Email')->view('emails.dynamic_email_template')->with('data', $this->data);
     }
 }

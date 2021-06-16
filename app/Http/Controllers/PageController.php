@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Charts\SampleChart;
+use App\Models\Cliente;
 use App\Models\Cor;
 use App\Models\Encomenda;
+use App\Models\Estampa;
+use App\Models\Tshirt;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
@@ -39,6 +42,19 @@ class PageController extends Controller
         $valorTopDeVendasOldSemanal = DB::table('encomendas')->select(DB::raw('MAX(preco_total) as total'))->where('estado', '=', 'fechada')->whereRaw(DB::raw('data <= NOW() - INTERVAL 7 DAY'))->whereRaw(DB::raw('data >= NOW() - INTERVAL 14 DAY'))->first()->total ?? 0;
         $percentagemValorTopDeVendasSemanal = $valorTopDeVendasSemanal > $valorTopDeVendasOldSemanal ? ($valorTopDeVendasSemanal / $valorTopDeVendasOldSemanal)*100 : ($valorTopDeVendasSemanal > 0 ? ('-'.(($valorTopDeVendasOldSemanal / $valorTopDeVendasSemanal)*100)) : 0);
 
+        $join = DB::table('tshirts')->select(DB::raw('tshirts.estampa_id, COUNT(*) as countTOP'))->groupBy('tshirts.estampa_id')->orderBy(DB::raw('COUNT(*)'), 'desc')->join('encomendas', 'encomendas.id', 'tshirts.encomenda_id')->whereRaw(DB::raw('encomendas.created_at >= NOW() - INTERVAL 3 MONTH'))->take(50);
+        $estampasTOP = Estampa::whereNull('estampas.cliente_id')->select('estampas.*', 'countTOP')
+            ->joinSub($join, 'tshirt', 'tshirt.estampa_id', 'estampas.id');
+
+        $join = Tshirt::select(DB::raw('COUNT(*) as countTOP, encomendas.cliente_id as cliente_id'))->groupBy(DB::raw('encomendas.cliente_id'))->join('encomendas', 'encomendas.id', '=', 'tshirts.encomenda_id');
+        $join = DB::table('encomendas')->select(DB::raw('encomendas.cliente_id, COUNT(*) as countTOPEncomendas, tshirts.countTOP as countTOPTshirts'))->groupBy('encomendas.cliente_id')->whereRaw(DB::raw('encomendas.created_at >= NOW() - INTERVAL 3 MONTH'))
+            ->joinSub($join, 'tshirts', 'tshirts.cliente_id', 'encomendas.cliente_id')
+            ->take(50);
+
+        $clientesTOP = Cliente::select('clientes.*', 'countTOPEncomendas', 'countTOPTshirts')
+            ->orderBy(DB::raw('countTOPTshirts'), 'desc')
+            ->joinSub($join, 'encomendas', 'encomendas.cliente_id', 'clientes.id');
+
         return view('estatisticas.index')
             ->withTotalClientesAtivos($totalClientesAtivos)
             ->withPercentagemClientesAtivos(number_format(($percentagemClientesAtivos), 2))
@@ -47,7 +63,9 @@ class PageController extends Controller
             ->withPercentagemValorDeVendasSemanal(number_format($percentagemValorDeVendasSemanal, 2))
             ->withValorTopDeVendasSemanal($valorTopDeVendasSemanal)
             ->withPercentagemValorTopDeVendasSemanal(number_format($percentagemValorTopDeVendasSemanal, 2))
-            ->withCores($cores);
+            ->withCores($cores)
+            ->withEstampasTOP($estampasTOP->paginate(6))
+            ->withClientesTOP($clientesTOP->paginate(6));
     }
 
     public function indexEstatisticasEncomendasPorMes()

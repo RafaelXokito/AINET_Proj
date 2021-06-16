@@ -25,7 +25,7 @@ use App\Models\Categoria;
 |
 */
 
-Route::get('/', [PageController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/estampas', [EstampasController::class, 'index'])->name('estampas');
 

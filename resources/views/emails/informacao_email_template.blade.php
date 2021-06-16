@@ -8,7 +8,7 @@
     <meta name="supported-color-schemes" content="light dark" />
     <title></title>
     <link href="{{ asset('css/emailFatura.css') }}" rel="stylesheet">
-    @include('encomendas.partials.email_css')
+    @include('emails.partials.email_css')
 
     <!--[if mso]>
     <style type="text/css">
@@ -28,7 +28,7 @@
               <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
                 <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                   <!-- Body content -->
-                        @include('encomendas.partials.detalhes_email_encomenda')
+                        @include('emails.partials.detalhes_email_encomenda')
                         </table>
                         <p>Se você tem qualquer questão sobre este email, simples responda a este email ou contacte-nos <a href="mailto:{{env('MAIL_USERNAME')}}?subject = Problemas com a encomenda (PENDENTE) {{$data['encomenda']->id}}&body = <Descreva o seu problema>">equipa de suporte</a> para ajuda.</p>
                         <p>Cumprimentos,

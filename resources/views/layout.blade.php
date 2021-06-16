@@ -29,7 +29,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{url('/')}}">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('home')}}">
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-hat-wizard"></i>
                 </div>
@@ -216,7 +216,7 @@
                                 @endcan
 
                                 @cannot('isStaff', App\Models\User::class)
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{{route('encomendas')}}">
                                     <i class="fas fa-clipboard-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Histórico de encomendas
                                 </a>

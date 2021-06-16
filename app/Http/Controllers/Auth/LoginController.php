@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -27,7 +28,21 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
-
+    /**
+     * Attempt to log the user into the application.
+     * NOTE: this override DO NOT uses at all the trait version
+     * See: https://laravel.com/docs/5.5/authentication#authenticating-users
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function attemptLogin(\Illuminate\Http\Request $request)
+    {
+        return Auth::attempt(
+            $this->credentials($request) + ["bloqueado" => 0],
+            $request->filled('remember')
+        );
+    }
     /**
      * Create a new controller instance.
      *
