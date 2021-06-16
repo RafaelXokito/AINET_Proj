@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateUserPost;
 use App\Http\Requests\UserPost;
+use App\Mail\SendMail;
 use App\Models\Cliente;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
@@ -54,39 +57,51 @@ class UsersController extends Controller
     {
         $cliente = null;
         $validated_data = $request->validated();
-        $user->name = $validated_data['name'];
-        if ($user->tipo == 'C') {
-            $cliente = Cliente::find($user->id);
-            $cliente->nif = $validated_data['nif'];
-            $cliente->endereco = $validated_data['endereco'];
-            $cliente->tipo_pagamento = $validated_data['tipo_pagamento'];
-            $cliente->ref_pagamento = $validated_data['ref_pagamento'];
-            $cliente->save();
+        try {
+            $user->name = $validated_data['name'];
+            if ($user->tipo == 'C') {
+                $cliente = Cliente::find($user->id);
+                $cliente->nif = $validated_data['nif'];
+                $cliente->endereco = $validated_data['endereco'];
+                $cliente->tipo_pagamento = $validated_data['tipo_pagamento'];
+                $cliente->ref_pagamento = $validated_data['ref_pagamento'];
+                $cliente->save();
+            }
+            if ($user->tipo == 'F' || $user->tipo == 'A') {
+                $validated_data = $request->validate([
+                    'bloqueado' =>    'required',
+                    'tipo' =>         'required',
+                ]);
+                $user->tipo = $validated_data['tipo'];
+                $user->bloqueado = $validated_data['bloqueado'];
+            }
+            if ($request->hasFile('foto')) {
+                Storage::delete('public/fotos/' . $user->foto_url);
+                $path = $request->foto->store('public/fotos');
+                $user->foto_url = basename($path);
+            }
+            $user->save();
+            if ($user->tipo == 'F' || $user->tipo == 'A')
+            return redirect()->route('utilizadores')
+                ->with('alert-msg', 'Utilizador "' . $user->name . '" alterado com sucesso!')
+                ->with('alert-type', 'success');
+            else
+            return redirect()->route('utilizadores.edit', $user)
+                ->with('alert-msg', 'Utilizador "' . $user->name . '" alterado com sucesso!')
+                ->with('alert-type', 'success')
+                ->withCliente($cliente)
+                ->withUser($user);
+        } catch (\Throwable $th) {
+            $data = array(
+                'name'      =>  env('APP_NAME', 'fallback_app_name').' - UserController (Store)',
+                'message'   =>   $th->getMessage()
+            );
+
+            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->queue(new SendMail($data));
+            return redirect()->back()
+                    ->with('alert-msg', 'Não foi possível alterar o Utilizador "' . $validated_data['name'] . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-type', 'danger');
         }
-        if ($user->tipo == 'F' || $user->tipo == 'A') {
-            $validated_data = $request->validate([
-                'bloqueado' =>    'required',
-                'tipo' =>         'required',
-            ]);
-            $user->tipo = $validated_data['tipo'];
-            $user->bloqueado = $validated_data['bloqueado'];
-        }
-        if ($request->hasFile('foto')) {
-            Storage::delete('public/fotos/' . $user->foto_url);
-            $path = $request->foto->store('public/fotos');
-            $user->foto_url = basename($path);
-        }
-        $user->save();
-        if ($user->tipo == 'F' || $user->tipo == 'A')
-        return redirect()->route('utilizadores')
-            ->with('alert-msg', 'Utilizador "' . $user->name . '" alterado com sucesso!')
-            ->with('alert-type', 'success');
-        else
-        return redirect()->route('utilizadores.edit', $user)
-            ->with('alert-msg', 'Utilizador "' . $user->name . '" alterado com sucesso!')
-            ->with('alert-type', 'success')
-            ->withCliente($cliente)
-            ->withUser($user);
     }
 
     public function updateBloquear(Request $request, User $user)
@@ -132,13 +147,13 @@ class UsersController extends Controller
         try {
             $user->foto_url = null;
             $user->save();
-            if($user->tipo == 'C'){
+            if ($user->tipo == 'C') {
                 Cliente::find($user->id)->delete();
             }
             $user->delete();
             User::destroy($oldUserID);
             Storage::delete('public/fotos/' . $oldUrlFoto);
-            return redirect()->route('utilizadores')
+            return redirect()->back()
                 ->with('alert-msg', 'Utilizador "' . $oldName . '" apagado com sucesso!')
                 ->with('alert-type', 'success');
         } catch (\Throwable $th) {
@@ -146,11 +161,11 @@ class UsersController extends Controller
             // Descomentar a próxima linha para verificar qual a informação que a exceção tem
 
             if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
-                return redirect()->route('utilizadores')
+                return redirect()->back()
                     ->with('alert-msg', 'Não foi possível apagar o Utilizador "' . $oldName . '", porque este user está em uso!')
                     ->with('alert-type', 'danger');
             } else {
-                return redirect()->route('utilizadores')
+                return redirect()->back()
                     ->with('alert-msg', 'Não foi possível apagar o Utilizador "' . $oldName . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
             }
@@ -171,14 +186,50 @@ class UsersController extends Controller
         $user = User::withTrashed()->findOrFail($id);
         $this->authorize('restore', $user);
         try {
+            DB::beginTransaction();
             $user->restore();
-            return redirect()->route('utilizadores')
+            if ($user->tipo == 'C') {
+                Cliente::withTrashed()->findOrFail($id)->restore();
+            }
+            DB::commit();
+            return redirect()->back()
                     ->with('alert-msg', 'Utilizador "' . $user->name . '" foi recuperado com sucesso!')
                     ->with('alert-type', 'success');
         } catch (\Throwable $th) {
-            return redirect()->route('utilizadores')
+            DB::rollBack();
+            return redirect()->back()
                     ->with('alert-msg', 'Não foi possível restaurar o Utilizador "' . $user->name . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
+        }
+    }
+
+    public function forceDelete($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $user);
+        $nome = $user->nome;
+        try {
+            DB::beginTransaction();
+            if ($user->tipo == 'C') {
+                Cliente::withTrashed()->findOrFail($id)->forceDelete();
+            }
+            $user->forceDelete();
+            DB::commit();
+            return redirect()->back()
+                    ->with('alert-msg', 'A user "' . $nome . '" foi apagada para sempre!')
+                    ->with('alert-type', 'success');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
+                return redirect()->back()
+                    ->with('alert-msg', 'Não foi possível apagar o user "' . $nome . '", porque esta já está em uso!')
+                    ->with('alert-type', 'danger');
+            } else {
+                return redirect()->back()
+                    ->with('alert-msg', 'Não foi possível apagar o user "' . $nome . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-type', 'danger');
+            }
+
         }
     }
 

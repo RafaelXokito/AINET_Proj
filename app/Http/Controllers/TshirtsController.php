@@ -235,7 +235,6 @@ class TshirtsController extends Controller
 
             $request->session()->forget('carrinho');
 
-            DB::commit();
 
             $data = array(
                 'name'      =>  env('APP_NAME', 'fallback_app_name').' - Fatura Simplificada',
@@ -246,6 +245,7 @@ class TshirtsController extends Controller
 
             Mail::to(Auth::user()->email)->queue(new SendMail($data));
 
+            DB::commit();
 
             return back()
                 ->with('alert-msg', 'A sua compra foi efetuada! Verifique a fatura no seu Email')
@@ -254,7 +254,6 @@ class TshirtsController extends Controller
         } catch (\Throwable $th) {
 
             DB::rollBack();
-
             $data = array(
                 'name'      =>  env('APP_NAME', 'fallback_app_name').' - TshirtController (store)',
                 'message'   =>   $th->getMessage()

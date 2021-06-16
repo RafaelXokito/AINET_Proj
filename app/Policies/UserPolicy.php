@@ -116,18 +116,16 @@ class UserPolicy
     {
         if ($user->tipo == 'A' && $user2->tipo == 'F') {
             return true;
-        }elseif($user->tipo == 'A' && $user2->tipo == 'A')
-        {
+        } else if($user->tipo == 'A' && $user2->tipo == 'A') {
             return true;
-        }elseif($user2->id == $user->id)
-        {
+        } else if($user2->id == $user->id) {
             return true;
         }
 
         return false;
     }
 
-    public function updateBloquear(User $user, User $user2)
+    public function updateBloquear(User $user)
     {
         if ($user->tipo == 'A') {
             return true;
@@ -144,7 +142,7 @@ class UserPolicy
         return false;
     }
 
-    public function restore(User $user, User $user2)
+    public function restore(User $user)
     {
         if ($user->tipo == 'A') {
             return true;
@@ -152,7 +150,7 @@ class UserPolicy
         return false;
     }
 
-    public function forceDelete(User $user, User $user2)
+    public function forceDelete(User $user)
     {
         if ($user->tipo == 'A') {
             return true;

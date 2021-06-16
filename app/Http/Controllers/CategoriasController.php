@@ -124,7 +124,7 @@ class CategoriasController extends Controller
         } catch (\Throwable $th) {
             if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
                 return redirect()->back()
-                    ->with('alert-msg', 'Não foi possível apagar o categoria "' . $nome . '", porque esta já está em uso!')
+                    ->with('alert-msg', 'Não foi possível apagar a categoria "' . $nome . '", porque esta já está em uso!')
                     ->with('alert-type', 'danger');
             } else {
                 return redirect()->back()

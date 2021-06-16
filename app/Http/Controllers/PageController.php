@@ -78,8 +78,6 @@ class PageController extends Controller
             "chart": { "labels": '.json_encode(array_keys($dbRate->toArray())).' },
             "datasets": [
                         { "name": "Quantidade de encomendas", "values": '.json_encode(array_values($dbRate->toArray())).' }]}';
-
-        //$data['chart']['labels'] = json_encode(["First", "Second", "Third"]);
         return response()
             ->json(json_decode($data));
     }
@@ -95,7 +93,6 @@ class PageController extends Controller
             "datasets": [
                         { "name": "Quantidade de encomendas", "values": '.json_encode(array_values($dbRate->toArray())).' }]}';
 
-        //$data['chart']['labels'] = json_encode(["First", "Second", "Third"]);
         return response()
             ->json(json_decode($data));
     }
@@ -111,7 +108,6 @@ class PageController extends Controller
             "datasets": [
                         { "name": "Quantidade de encomendas", "values": '.json_encode(array_values($dbRate->toArray())).' }]}';
 
-        //$data['chart']['labels'] = json_encode(["First", "Second", "Third"]);
         return response()
             ->json(json_decode($data));
     }
