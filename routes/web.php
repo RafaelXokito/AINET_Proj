@@ -67,6 +67,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::put('/categorias/{categoria}/update', [CategoriasController::class, 'update'])->name('categorias.update')->middleware('can:update,App\Models\Categoria');
     Route::delete('/categorias/{categoria}/delete', [CategoriasController::class, 'delete'])->name('categorias.delete')->middleware('can:delete,App\Models\Categoria');
     Route::post('/categorias/{id}/restore', [CategoriasController::class, 'restore'])->name('categorias.restore'); //não tem middleware pois tem o authorize no controller
+    Route::post('/categorias/{id}/forceDelete', [CategoriasController::class, 'forceDelete'])->name('categorias.forceDelete'); //não tem middleware pois tem o authorize no controller
 
     //Encomendas
     Route::get('/encomendas', [EncomendasController::class, 'index'])->name('encomendas');
@@ -79,6 +80,7 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::put('/cores/{cor}/update', [CoresController::class, 'update'])->name('cores.update')->middleware('can:update,App\Models\Cor');
     Route::delete('/cores/{cor}/delete', [CoresController::class, 'delete'])->name('cores.delete')->middleware('can:delete,App\Models\Cor');
     Route::post('/cores/{codigo_cor}/restore', [CoresController::class, 'restore'])->name('cores.restore'); //não tem middleware pois tem o authorize no controller
+    Route::post('/cores/{codigo_cor}/forceDelete', [CoresController::class, 'forceDelete'])->name('cores.forceDelete'); //não tem middleware pois tem o authorize no controller
 
     //carrinho de compras
     Route::delete('carrinho/{key}/destroy_tshirt', [TshirtsController::class, 'destroy_tshirt'])->name('carrinho.destroy_tshirt')->middleware('can:isClient,App\Models\User');

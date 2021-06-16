@@ -40,6 +40,7 @@
             <th>Nome</th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -61,14 +62,28 @@
                         <form action="{{route('cores.delete', ['cor' => $cor])}}" method="POST">
                             @csrf
                             @method("DELETE")
-                            <input type="submit" class="btn btn-danger btn-sm" value="Apagar">
+                            <div class="col-2 pl-0">
+                                <button type="submit" class="btn btn-outline-danger"><i class="fad fa-trash"></i></button>
+                            </div>
                         </form>
                         @endcan
                     @else
                         @can('restore', $cor)
                         <form action="{{route('cores.restore', ['codigo_cor' => $cor->codigo])}}" method="POST">
                             @csrf
-                            <input type="submit" class="btn btn-success btn-sm" value="Restaurar">
+                            <div class="col-2 pl-0">
+                                <button class="btn btn-outline-success"><i class="fad fa-trash-restore"></i></button>
+                            </div>
+                        </form>
+                        @endcan
+                        @can('forceDelete', App\Model\Cor::class)
+                </td>
+                <td>
+                        <form action="{{route('cores.forceDelete', ['codigo_cor' => $cor->codigo])}}" method="POST" id="forceDeleteForm{{$cor->codigo}}">
+                            @csrf
+                            <div class="col-2 pl-0">
+                                <button type="button" class="btn btn-outline-danger" onclick="forceDeleteClicked('{{$cor->codigo}}')" data-toggle="modal" data-target="#forceDeleteModal"><i class="fas fa-ban"></i></button>
+                            </div>
                         </form>
                         @endcan
                     @endif
@@ -80,6 +95,32 @@
 <div class="d-flex justify-content-center">
 {!! $cores->withQueryString()->links("pagination::bootstrap-4") !!}
 </div>
+
+@can('forceDelete', App\Model\Cor::class)
+    <!-- Modal -->
+    <div class="modal fade" id="forceDeleteModal" tabindex="-1" role="dialog" aria-labelledby="forceDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="forceDeleteModalLabel">Apagar permanentemente</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    Tem a certeza que quer apagar permanentemente a cor #<span id="corNomeModal"></span>?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="" id="corBtnSubmitModal" class="btn btn-danger">Apagar</button>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
+@endcan
 
 @include('cores.partials.modal')
 

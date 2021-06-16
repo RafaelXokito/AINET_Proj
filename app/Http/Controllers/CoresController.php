@@ -104,18 +104,18 @@ class CoresController extends Controller
         try {
             $cor->delete();
             Cor::destroy($oldCorID);
-            return redirect()->route('cores')
+            return redirect()->back()
                 ->with('alert-msg', 'Cor "' . $oldName . '" foi apagado com sucesso!')
                 ->with('alert-type', 'success');
         } catch (\Throwable $th) {
             // $th é a exceção lançada pelo sistema - por norma, erro ocorre no servidor BD MySQL
             // Descomentar a próxima linha para verificar qual a informação que a exceção tem
             if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
-                return redirect()->route('cores')
+                return redirect()->back()
                     ->with('alert-msg', 'Não foi possível apagar a Cor "' . $oldName . '", porque este user já está em uso!')
                     ->with('alert-type', 'danger');
             } else {
-                return redirect()->route('cores')
+                return redirect()->back()
                     ->with('alert-msg', 'Não foi possível apagar a Cor "' . $oldName . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
             }
@@ -128,13 +128,37 @@ class CoresController extends Controller
         $this->authorize('restore', $cor);
         try {
             $cor->restore();
-            return redirect()->route('cores')
+            return redirect()->back()
                     ->with('alert-msg', 'Cor "' . $cor->nome . '" foi recuperada com sucesso!')
                     ->with('alert-type', 'success');
         } catch (\Throwable $th) {
-            return redirect()->route('cores')
+            return redirect()->back()
                     ->with('alert-msg', 'Não foi possível restaurar a Cor "' . $cor->nome . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
+        }
+    }
+
+    public function forceDelete($codigo)
+    {
+        $cor = Cor::withTrashed()->findOrFail($codigo);
+        $this->authorize('forceDelete', $cor);
+        $nome = $cor->nome;
+        try {
+            $cor->forceDelete();
+            return redirect()->back()
+                    ->with('alert-msg', 'A cor "' . $nome . '" foi apagada para sempre!')
+                    ->with('alert-type', 'success');
+        } catch (\Throwable $th) {
+            if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
+                return redirect()->back()
+                    ->with('alert-msg', 'Não foi possível apagar o cor "' . $nome . '", porque esta já está em uso!')
+                    ->with('alert-type', 'danger');
+            } else {
+                return redirect()->back()
+                    ->with('alert-msg', 'Não foi possível apagar a cor "' . $nome . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-type', 'danger');
+            }
+
         }
     }
 }

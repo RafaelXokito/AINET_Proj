@@ -76,7 +76,7 @@ class CategoriasController extends Controller
         try {
             $categoria->delete();
             Categoria::destroy($oldCategoriaID);
-            return redirect()->route('categorias')
+            return redirect()->back()
                 ->with('alert-msg', 'Categoria "' . $oldName . '" foi apagado com sucesso!')
                 ->with('alert-type', 'success');
         } catch (\Throwable $th) {
@@ -84,11 +84,11 @@ class CategoriasController extends Controller
             // Descomentar a próxima linha para verificar qual a informação que a exceção tem
 
             if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
-                return redirect()->route('categorias')
+                return redirect()->back()
                     ->with('alert-msg', 'Não foi possível apagar o Categoria "' . $oldName . '", porque este user já está em uso!')
                     ->with('alert-type', 'danger');
             } else {
-                return redirect()->route('categorias')
+                return redirect()->back()
                     ->with('alert-msg', 'Não foi possível apagar o Categoria "' . $oldName . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
             }
@@ -101,13 +101,37 @@ class CategoriasController extends Controller
         $this->authorize('restore', $categoria);
         try {
             $categoria->restore();
-            return redirect()->route('categorias')
+            return redirect()->back()
                     ->with('alert-msg', 'Categoria "' . $categoria->nome . '" foi recuperado com sucesso!')
                     ->with('alert-type', 'success');
         } catch (\Throwable $th) {
-            return redirect()->route('categorias')
+            return redirect()->back()
                     ->with('alert-msg', 'Não foi possível restaurar o Categoria "' . $categoria->nome . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
+        }
+    }
+
+    public function forceDelete($id)
+    {
+        $categoria = Categoria::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $categoria);
+        $nome = $categoria->nome;
+        try {
+            $categoria->forceDelete();
+            return redirect()->back()
+                    ->with('alert-msg', 'A categoria "' . $nome . '" foi apagada para sempre!')
+                    ->with('alert-type', 'success');
+        } catch (\Throwable $th) {
+            if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
+                return redirect()->back()
+                    ->with('alert-msg', 'Não foi possível apagar o categoria "' . $nome . '", porque esta já está em uso!')
+                    ->with('alert-type', 'danger');
+            } else {
+                return redirect()->back()
+                    ->with('alert-msg', 'Não foi possível apagar a categoria "' . $nome . '". Erro: ' . $th->errorInfo[2])
+                    ->with('alert-type', 'danger');
+            }
+
         }
     }
 }

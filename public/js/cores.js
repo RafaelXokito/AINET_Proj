@@ -57,3 +57,8 @@ document.getElementById('inputFotoModal').onchange = function () {
     document.getElementById('inputFotoModalLabel').textContent = this.files.item(0).name;
     document.getElementById('inputFotoModalLabel').value = this.files.item(0).name;
 };
+
+function forceDeleteClicked(codigo) {
+    $('#corNomeModal').html(codigo.toUpperCase());
+    $('#corBtnSubmitModal').attr('form', 'forceDeleteForm'+codigo);
+}

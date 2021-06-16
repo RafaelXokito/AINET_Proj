@@ -7,11 +7,13 @@
         <form method="GET" action="{{Route::currentRouteName()=='estampas' ? route('estampas') : route('estampasUser', ['user' => Auth::user()]) }}" class="form-group">
             <div class="input-group">
                 @can('SeeDelete', App\Models\Estampa::class)
+                @if (Auth::user()->tipo == 'C' && Route::currentRouteName()=='estampasUser' || Auth::user()->tipo == 'A')
                 <select class="form-control col-3" name="apagado">
                     <option value="notDeleted" {{'notDeleted' == $apagado ? 'selected' : 'notDeleted'}} class="dropdown-item">Estampas Disponíveis</option>
                     <option value="all" {{'all' == $apagado ? 'selected' : 'all'}} class="dropdown-item">Todas as Estampas</option>
                     <option value="deleted" {{'deleted' == $apagado ? 'selected' : 'deleted'}} class="dropdown-item">Estampas Apagadas</option>
                 </select>
+                @endif
                 @endcan
                 @if (Route::currentRouteName()=='estampas')
                 <select class="form-control col-3" name="categoria" id="inputCategoria">

@@ -55,15 +55,29 @@
                             <form action="{{route('categorias.delete', ['categoria' => $categoria])}}" method="POST">
                                 @csrf
                                 @method("DELETE")
-                                <input type="submit" class="btn btn-danger btn-sm" value="Apagar">
+                                <div class="col-2 pl-0">
+                                    <button type="submit" class="btn btn-outline-danger"><i class="fad fa-trash"></i></button>
+                                </div>
                             </form>
                         @endcan
                     @else
                         @can('restore', App\Models\Categoria::class)
                             <form action="{{route('categorias.restore', ['id' => $categoria])}}" method="POST">
                                 @csrf
-                                <input type="submit" class="btn btn-success btn-sm" value="Restaurar">
+                                <div class="col-2 pl-0">
+                                    <button class="btn btn-outline-success"><i class="fad fa-trash-restore"></i></button>
+                                </div>
                             </form>
+                        @endcan
+                        @can('forceDelete', App\Model\Categoria::class)
+                </td>
+                <td>
+                        <form action="{{route('categorias.forceDelete', ['id' => $categoria->id])}}" method="POST" id="forceDeleteForm{{$categoria->id}}">
+                            @csrf
+                            <div class="col-2 pl-0">
+                                <button type="button" class="btn btn-outline-danger" onclick="forceDeleteClicked('{{$categoria->id}}', '{{$categoria->nome}}')" data-toggle="modal" data-target="#forceDeleteModal"><i class="fas fa-ban"></i></button>
+                            </div>
+                        </form>
                         @endcan
                     @endif
 
@@ -75,6 +89,32 @@
 <div class="d-flex justify-content-center">
 {!! $categorias->withQueryString()->links("pagination::bootstrap-4") !!}
 </div>
+
+@can('forceDelete', App\Model\Categoria::class)
+    <!-- Modal -->
+    <div class="modal fade" id="forceDeleteModal" tabindex="-1" role="dialog" aria-labelledby="forceDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="forceDeleteModalLabel">Apagar permanentemente</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    Tem a certeza que quer apagar permanentemente a categoria <span id="categoriaNomeModal"></span>?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="" id="categoriaBtnSubmitModal" class="btn btn-danger">Apagar</button>
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
+@endcan
 
 @include('categorias.partials.modal')
 

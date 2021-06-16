@@ -55,7 +55,7 @@ class PrecoPolicy
         //
     }
 
-    public function forceDelete(User $user, Noticia $noticia)
+    public function forceDelete(User $user)
     {
         //
     }

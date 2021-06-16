@@ -17,3 +17,8 @@ function criarOnClick() {
     $('#inputNomeModal').val('');
 };
 
+function forceDeleteClicked(id, nome) {
+    $('#categoriaNomeModal').html(nome);
+    $('#categoriaBtnSubmitModal').attr('form', 'forceDeleteForm'+id);
+}
+
