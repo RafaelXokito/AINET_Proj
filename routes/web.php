@@ -41,11 +41,15 @@ Route::put('carrinho/{key}/update_tshirt', [TshirtsController::class, 'update_ts
 Route::middleware('auth')->middleware('verified')->group( function () {
 
     //estatisticas
-    Route::get('estatisticas', [PageController::class, 'indexEstatisticas'])->name('estatisticas');
-    Route::get('estatisticasEncomendasPorMes', [PageController::class, 'indexEstatisticasEncomendasPorMes'])->name('estatisticas');
-    Route::get('estatisticasEncomendasPorAno', [PageController::class, 'indexEstatisticasEncomendasPorAno'])->name('estatisticas');
-    Route::get('estatisticasCoresMaisUsadas', [PageController::class, 'indexEstatisticasCoresMaisUsadas'])->name('estatisticas');
-    Route::get('estatisticasExportar', [PageController::class, 'estatisticasExportar'])->name('estatisticasExportar');
+    Route::middleware('can:isAdmin', App\Models\User::class)->group( function ()
+    {
+        Route::get('estatisticas', [PageController::class, 'indexEstatisticas'])->name('estatisticas');
+        Route::get('estatisticasEncomendasPorMes', [PageController::class, 'indexEstatisticasEncomendasPorMes'])->name('estatisticas');
+        Route::get('estatisticasEncomendasPorAno', [PageController::class, 'indexEstatisticasEncomendasPorAno'])->name('estatisticas');
+        Route::get('estatisticasCoresMaisUsadas', [PageController::class, 'indexEstatisticasCoresMaisUsadas'])->name('estatisticas');
+        Route::get('estatisticasExportar', [PageController::class, 'estatisticasExportar'])->name('estatisticasExportar');
+    });
+
 
 
     //preços

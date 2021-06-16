@@ -84,7 +84,7 @@
                     </a>
                 </li>
                 @endcan
-
+                @can('isAdmin', App\Models\User::class)
                 <!-- Nav Item -->
                 <li class="nav-item {{Route::currentRouteName()=='estatisticas'? 'active': ''}}">
                     <a class="nav-link" href="{{url('estatisticas')}}">
@@ -92,6 +92,7 @@
                         <span>Estatísticas</span>
                     </a>
                 </li>
+                @endcan
 
                 @can('edit', App\Models\Preco::class)
                 <!-- Nav Item -->
