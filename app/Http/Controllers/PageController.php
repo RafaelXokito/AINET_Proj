@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Charts\SampleChart;
+use App\Exports\StatisticsExport;
+use App\Http\Requests\EstatisticasExportPost;
 use App\Models\Cliente;
-use App\Models\Cor;
-use App\Models\Encomenda;
 use App\Models\Estampa;
 use App\Models\Tshirt;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use LaravelDaily\LaravelCharts\Classes\LaravelChart;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 
@@ -110,5 +110,11 @@ class PageController extends Controller
 
         return response()
             ->json(json_decode($data));
+    }
+
+    public function estatisticasExportar(EstatisticasExportPost $request)
+    {
+        $validatedData = $request->validated();
+        return Excel::download(new StatisticsExport($validatedData['inputChoosed']), ($validatedData['fileName'] ?? 'estatisticas').'.xlsx');
     }
 }

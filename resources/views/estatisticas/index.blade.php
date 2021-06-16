@@ -5,6 +5,45 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
 <div class="container">
     <input id="url" data-url='{{url('/')}}' hidden>
+    <div class="card-header text-center mt-5">
+        <h3>Exportar para excel</h3>
+        <small>Selecione e exporte as estisticas</small>
+    </div>
+    <form action="{{route('estatisticasExportar')}}" method="get">
+        <div class="row col-10 mx-auto mt-2">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                <button type="submit" class="btn btn-outline-secondary">Exportar</button>
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span id="choosedDropdownExportExcel" class="">Roda das cores</span>
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item active" href="#">Roda das cores</a>
+                    <a class="dropdown-item" href="#">Encomendas por ano</a>
+                    <a class="dropdown-item" href="#">Quantidade de encomendas por mês</a>
+                    <a class="dropdown-item" href="#">Estampas mais vendidas nos ultimos 3 meses</a>
+                    <a class="dropdown-item" href="#">Clientes que mais compraram nos ultimos 3 meses</a>
+                    <a class="dropdown-item" href="#">Estatisticas simples</a>
+                    <!--<div role="separator" class="dropdown-divider"></div>
+                    <a class="dropdown-item active" href="#">Todas</a>-->
+                </div>
+                </div>
+                <input id="inputChoosedDropdownExportExcel" name="inputChoosed" value="Roda das cores" hidden>
+                <input type="text" placeholder="Nome do exportável" name="fileName" class="form-control" aria-label="Nome do exportável">
+
+                <div class="input-group-append">
+                    <span class="input-group-text">.xlsx</span>
+                </div>
+            </div>
+            @error('inputChoosed')
+                <div class="small text-danger">{{$message}}</div>
+            @enderror
+            @error('fileName')
+                <div class="small text-danger">{{$message}}</div>
+            @enderror
+        </div>
+
+    </form>
     <br><br>
     <div class="card-header text-center mt-5">
         <h3>Roda das cores</h3>
@@ -200,6 +239,13 @@
         .borderColors()
         .datasets([{ type: 'line', fill: false }, 'bar']),
     })
+
+    $('.dropdown-item').click(function(){
+        $('#choosedDropdownExportExcel').html($(this).html());
+        $('#inputChoosedDropdownExportExcel').val($(this).html());
+        $('.dropdown-item.active').removeClass('active');
+        $(this).addClass('active');
+    });
 </script>
 <!--totais, médias, máximos, mínimos de vendas em valor ou quantidade
     por mês, por ano,
