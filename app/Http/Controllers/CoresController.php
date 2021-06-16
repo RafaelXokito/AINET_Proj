@@ -76,7 +76,8 @@ class CoresController extends Controller
                 Storage::disk('public')->delete('tshirt_base\\'.$cor->getOriginal('codigo').'.jpg');
                 Storage::disk('public')->putFileAs('tshirt_base\\', $validatedData['foto'], strtolower($validatedData['codigo']) . '.jpg');
             } else {
-                Storage::disk('public')->move('tshirt_base\\'.$cor->getOriginal('codigo').'.jpg', 'tshirt_base\\'.strtolower($validatedData['codigo']).'.jpg');
+                if ($cor->getOriginal('codigo') != $cor->codigo)
+                    Storage::disk('public')->move('tshirt_base\\'.$cor->getOriginal('codigo').'.jpg', 'tshirt_base\\'.strtolower($validatedData['codigo']).'.jpg');
             }
 
             $cor->save();
@@ -85,7 +86,6 @@ class CoresController extends Controller
                 ->with('alert-msg', 'A cor '.$cor->nome.' foi alterada com sucesso!')
                 ->with('alert-type', 'success');
         } catch (\Throwable $th) {
-            dd($th);
             if ($th->errorInfo[1] == 1062) {
                 return redirect()->route('cores')
                     ->with('alert-msg', 'A cor '.$cor->nome.' não foi alterada com sucesso! O código da cor deve ser único')

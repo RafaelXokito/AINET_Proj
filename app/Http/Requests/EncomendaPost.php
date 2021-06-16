@@ -38,7 +38,7 @@ class EncomendaPost extends FormRequest
                     }
                 }
             ],
-            'notas' => 'required|string'
+            'notas' => 'nullable|string'
         ];
     }
 }

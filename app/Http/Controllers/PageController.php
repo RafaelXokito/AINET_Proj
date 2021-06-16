@@ -23,8 +23,12 @@ class PageController extends Controller
 
     public function indexEstatisticas()
     {
-        $cores = DB::table("cores")->select(DB::raw("CONCAT('#',codigo) as codigo"))->pluck('codigo');
-
+        $cores = DB::table("tshirts")
+            ->select(DB::raw('count(tshirts.id) as `count`'), DB::raw('CONCAT("#",UPPER(cores.codigo)) AS CODIGO'))
+            ->join('cores', 'tshirts.cor_codigo', 'cores.codigo')
+            ->groupby('CODIGO')
+            ->orderBy('count')
+            ->pluck('CODIGO');
         $totalClientesAtivos = DB::table("users")->select(DB::raw('count(*) as count'))->where('bloqueado', '=', '0')->first()->count;
         $newDateTime = Carbon::now()->subMonths(1);
         $totalClientesOldAtivos = DB::table("users")->select(DB::raw('count(*) as count'))->where('bloqueado', '=', '0')->where('created_at', '<=', $newDateTime)->first()->count;
@@ -100,9 +104,11 @@ class PageController extends Controller
     public function indexEstatisticasCoresMaisUsadas()
     {
         $dbRate = DB::table("tshirts")
-            ->select(DB::raw('count(id) as `count`'), 'cor_codigo')
-            ->groupby('cor_codigo')
-            ->pluck('count', 'cor_codigo');
+            ->select(DB::raw('count(tshirts.id) as `count`'), DB::raw('CONCAT ( CONCAT (CONCAT("#",UPPER(cores.codigo)), " " ) , cores.nome ) AS CODIGO'))
+            ->join('cores', 'tshirts.cor_codigo', 'cores.codigo')
+            ->groupby('CODIGO')
+            ->orderBy('count')
+            ->pluck('count', 'CODIGO');
         $data = '{
             "chart": { "labels": '.json_encode(array_keys($dbRate->toArray())).' },
             "datasets": [

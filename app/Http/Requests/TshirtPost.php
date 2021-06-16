@@ -26,7 +26,7 @@ class TshirtPost extends FormRequest
         return [
             'cor_codigo' => 'required|exists:cores,codigo',
             'tamanho' => 'required|in:XS,S,M,L,XL',
-            'quantidade' => 'required|min:0|numeric',
+            'quantidade' => 'required|min:1|numeric',
         ];
     }
 }
