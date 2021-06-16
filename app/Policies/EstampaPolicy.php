@@ -60,6 +60,14 @@ class EstampaPolicy
         return false;
     }
 
+    public function SeeDelete(User $user)
+    {
+        if ($user->tipo == 'A' || $user->tipo == 'C') {
+            return true;
+        }
+        return false;
+    }
+
     public function delete(User $user, $estampa)
     {
         if ($user->tipo == 'A' || $user->id == $estampa->cliente_id) {

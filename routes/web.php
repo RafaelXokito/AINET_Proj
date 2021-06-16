@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\CategoriasController;
-use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\CoresController;
 use App\Http\Controllers\EncomendasController;
 use App\Http\Controllers\HomeController;
@@ -74,9 +73,6 @@ Route::middleware('auth')->middleware('verified')->group( function () {
     Route::post('/encomendas/store', [EncomendasController::class, 'store'])->name('encomendas.store')->middleware('can:store,App\Models\Encomenda');
     Route::put('/encomendas/{encomenda}/update', [EncomendasController::class, 'updateEstado'])->name('encomendas.updateEstado')->middleware('can:update,App\Models\Encomenda');
     Route::get('/encomendas/{encomenda}/viewPdf', [EncomendasController::class, 'viewPdf'])->name('encomendas.viewPdf')->middleware('can:viewPdf,encomenda');
-    Route::delete('/encomendas/{encomenda}/delete', [EncomendasController::class, 'delete'])->name('encomendas.delete')->middleware('can:delete,App\Models\Encomenda');
-    Route::post('/encomendas/{id}/restore', [EncomendasController::class, 'restore'])->name('encomendas.restore'); //não tem middleware pois tem o authorize no controller
-
     //cores
     Route::get('/cores', [CoresController::class, 'index'])->name('cores')->middleware('can:isStaff,App\Models\User');
     Route::post('/cores/store', [CoresController::class, 'store'])->name('cores.store')->middleware('can:store,App\Models\Cor');

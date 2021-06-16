@@ -13,7 +13,7 @@ class TshirtPost extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class TshirtPost extends FormRequest
     public function rules()
     {
         return [
-            //
+            'cor_codigo' => 'required|exists:cores,codigo',
+            'tamanho' => 'required|in:XS,S,M,L,XL',
+            'quantidade' => 'required|min:0|numeric',
         ];
     }
 }

@@ -243,7 +243,7 @@ class EstampasController extends Controller
 
         } catch (\Throwable $th) {
             $data = array(
-                'name'      =>  env('APP_NAME', 'fallback_app_name').' - PrecoController',
+                'name'      =>  env('APP_NAME', 'fallback_app_name').' - EstampasController (Store)',
                 'message'   =>   $th->getMessage()
             );
 
@@ -263,7 +263,7 @@ class EstampasController extends Controller
         try {
             $estampa->delete();
             Estampa::destroy($oldEstampaID);
-            return redirect()->route('estampas')
+            return redirect()->back()
                 ->with('alert-msg', 'Estampa "' . $oldName . '" foi apagado com sucesso!')
                 ->with('alert-type', 'success');
         } catch (\Throwable $th) {
@@ -272,7 +272,7 @@ class EstampasController extends Controller
 
             if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
                 return redirect()->route('estampas')
-                    ->with('alert-msg', 'Não foi possível apagar o Estampa "' . $oldName . '", porque este user já está em uso!')
+                    ->with('alert-msg', 'Não foi possível apagar o Estampa "' . $oldName . '", porque esta já está em uso!')
                     ->with('alert-type', 'danger');
             } else {
                 return redirect()->route('estampas')
@@ -305,13 +305,20 @@ class EstampasController extends Controller
         $nome = $estampa->nome;
         try {
             $estampa->forceDelete();
-            return redirect()->route('estampas')
+            return redirect()->back()
                     ->with('alert-msg', 'A estampa "' . $nome . '" foi apagada para sempre!')
                     ->with('alert-type', 'success');
         } catch (\Throwable $th) {
-            return redirect()->route('estampas')
+            if ($th->errorInfo[1] == 1451) {   // 1451 - MySQL Error number for "Cannot delete or update a parent row: a foreign key constraint fails (%s)"
+                return redirect()->route('estampas')
+                    ->with('alert-msg', 'Não foi possível apagar o Estampa "' . $nome . '", porque esta já está em uso!')
+                    ->with('alert-type', 'danger');
+            } else {
+                return redirect()->route('estampas')
                     ->with('alert-msg', 'Não foi possível apagar a Estampa "' . $nome . '". Erro: ' . $th->errorInfo[2])
                     ->with('alert-type', 'danger');
+            }
+
         }
     }
 

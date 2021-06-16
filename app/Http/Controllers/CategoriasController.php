@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoriaPost;
+use App\Mail\SendMail;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CategoriasController extends Controller
 {
@@ -35,11 +37,24 @@ class CategoriasController extends Controller
         $validatedData = $request->validated();
         $newCategoria = new Categoria;
         $newCategoria->nome = $validatedData['nome'];
-        $newCategoria->save();
+        try {
+            $newCategoria->save();
+            return redirect()->route('categorias')
+                ->with('alert-msg', 'A categoria '.$newCategoria->nome.' foi criada com sucesso!')
+                ->with('alert-type', 'success');
+        } catch (\Throwable $th) {
+            $data = array(
+                'name'      =>  env('APP_NAME', 'fallback_app_name').' - TshirtController (store)',
+                'message'   =>   $th->getMessage()
+            );
 
-        return redirect()->route('categorias')
-            ->with('alert-msg', 'A categoria '.$newCategoria->nome.' foi criada com sucesso!')
-            ->with('alert-type', 'success');
+            Mail::to(env('DEVELOPER_MAIL_USERNAME', 'GERAL@MAGICTSHIRTS.com'))->queue(new SendMail($data));
+            return redirect()->route('categorias')
+                ->with('alert-msg', 'A categoria '.$newCategoria->nome.' foi não criada com sucesso!')
+                ->with('alert-type', 'danger');
+        }
+
+
     }
 
     public function update(CategoriaPost  $request, Categoria $categoria)

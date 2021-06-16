@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EncomendaPost;
+use App\Http\Requests\TshirtPost;
 use App\Mail\SendMail;
 use App\Models\Cor;
 use App\Models\Encomenda;
@@ -46,18 +47,14 @@ class TshirtsController extends Controller
             ->with('carrinho', session('carrinho') ?? []);
     }
 
-    public function store_tshirt(Request $request, Estampa $estampa)
+    public function store_tshirt(TshirtPost $request, Estampa $estampa)
     {
         if (!Auth::guest()) {
             $this->authorize('isNotStaff', App\Models\User::class);
         }
         $previusRoute = app('router')->getRoutes(url()->previous())->match(app('request')->create(url()->previous()))->getName();
 
-        $validatedData = $request->validate([
-            'cor_codigo' => 'required|exists:cores,codigo',
-            'tamanho' => 'required|in:XS,S,M,L,XL',
-            'quantidade' => 'required|min:0|numeric',
-        ]);
+        $validatedData = $request->validated();
 
         $preco_un = 0;
         $preco_subotal = 0;
@@ -100,15 +97,11 @@ class TshirtsController extends Controller
             ->with('alert-type', 'success');
     }
 
-    public function update_tshirt(Request $request, $key)
+    public function update_tshirt(TshirtPost $request, $key)
     {
         $carrinho = $request->session()->get('carrinho', []);
 
-        $validatedData = $request->validate([
-            'cor_codigo' => 'required|exists:cores,codigo',
-            'tamanho' => 'required|in:XS,S,M,L,XL',
-            'quantidade' => 'required|min:0|numeric',
-        ]);
+        $validatedData = $request->validated();
 
         $estampa = Estampa::findOrFail($carrinho[$key]['estampa']->id);
 
