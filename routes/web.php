@@ -41,7 +41,7 @@ Route::put('carrinho/{key}/update_tshirt', [TshirtsController::class, 'update_ts
 Route::middleware('auth')->middleware('verified')->group( function () {
 
     //estatisticas
-    Route::middleware('can:isAdmin', App\Models\User::class)->group( function ()
+    Route::middleware('can:isAdmin, App\Models\User::class')->group( function ()
     {
         Route::get('estatisticas', [PageController::class, 'indexEstatisticas'])->name('estatisticas');
         Route::get('estatisticasEncomendasPorMes', [PageController::class, 'indexEstatisticasEncomendasPorMes'])->name('estatisticas');
